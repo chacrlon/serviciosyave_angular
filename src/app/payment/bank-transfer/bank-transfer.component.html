@@ -1,0 +1,7 @@
+<form (ngSubmit)="submit()" #bankTransferForm="ngForm">  
+    <h3 class="text-lg font-bold">Registro - Transferencia Bancaria</h3>  
+    <label>Cuenta Bancaria: <input type="text" [(ngModel)]="bankTransfer.account" name="bankAccount" required /></label>  
+    <label>Nombre del Titular: <input type="text" [(ngModel)]="bankTransfer.accountHolderName" name="accountHolder" required /></label>  
+    <label>Cédula/RIF: <input type="text" [(ngModel)]="bankTransfer.cedula" name="bankCedula" required /></label>  
+    <button type="submit" class="mt-4 p-2 bg-blue-500 text-white rounded">Registrar Transferencia</button>  
+</form>

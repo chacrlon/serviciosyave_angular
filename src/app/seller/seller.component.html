@@ -1,0 +1,102 @@
+<div class="container">  
+    <h1>Welcome, Seller!</h1>  
+    <button (click)="openModal('bankTransfer')">Bank Transfer</button>  
+    <button (click)="openModal('binance')">Binance</button>  
+    <button (click)="openModal('mobile')">Mobile</button>  
+
+    <!-- Mensaje de Notificación -->  
+    <div *ngIf="notificationMessage" class="notification">  
+        {{ notificationMessage }}  
+    </div>  
+
+    <!-- Formulario para registrar un servicio -->  
+    <div class="service-form" *ngIf="!modalType">  
+        <h2>Register Service</h2>  
+        <form (ngSubmit)="submitService()">  
+            <label for="nombre">Nombre:</label>  
+            <input type="text" id="nombre" [(ngModel)]="serviceData.nombre" name="nombre" required>  
+
+            <label for="descripcion">Descripción:</label>  
+            <input type="text" id="descripcion" [(ngModel)]="serviceData.descripcion" name="descripcion" required>  
+
+            <label for="precio">Precio:</label>  
+            <input type="number" id="precio" [(ngModel)]="serviceData.precio" name="precio" required>  
+
+            <label for="destacado">Destacado:</label>  
+            <input type="checkbox" id="destacado" [(ngModel)]="serviceData.destacado" name="destacado">  
+
+            <button type="submit">Register Service</button>  
+        </form>  
+    </div>  
+
+    <!-- Tabla para visualizar servicios registrados -->  
+    <div>  
+        <h2>Registered Services</h2>  
+        <table>  
+            <thead>  
+                <tr>  
+                    <th>ID</th>  
+                    <th>Nombre</th>  
+                    <th>Descripción</th>  
+                    <th>Precio</th>  
+                    <th>Destacado</th>  
+                </tr>  
+            </thead>  
+            <tbody>  
+                <tr *ngFor="let service of services">  
+                    <td>{{ service.id }}</td>  
+                    <td>{{ service.nombre }}</td>  
+                    <td>{{ service.descripcion }}</td>  
+                    <td>{{ service.precio }}</td>  
+                    <td>{{ service.destacado ? 'Sí' : 'No' }}</td>  
+                </tr>  
+            </tbody>  
+        </table>  
+    </div>  
+
+    <!-- Otros Modales -->  
+    <div *ngIf="modalType === 'bankTransfer'">  
+        <h2>Bank Transfer Form</h2>  
+        <form (ngSubmit)="submitBankTransfer()">  
+            <label for="accountNumber">Account Number:</label>  
+            <input type="text" id="accountNumber" [(ngModel)]="bankTransferData.cuentaBancaria" name="cuentaBancaria" required>  
+
+            <label for="accountHolder">Account Holder's Name:</label>  
+            <input type="text" id="accountHolder" [(ngModel)]="bankTransferData.nombreTitular" name="nombreTitular" required>  
+
+            <label for="idNumber">ID Number / RIF:</label>  
+            <input type="text" id="idNumber" [(ngModel)]="bankTransferData.rif" name="rif" required>  
+
+            <button type="submit">Submit</button>  
+            <button type="button" (click)="closeModal()">Close</button>  
+        </form>  
+    </div>  
+
+    <div *ngIf="modalType === 'binance'">  
+        <h2>Binance Form</h2>  
+        <form (ngSubmit)="submitBinance()">  
+            <label for="binanceEmail">Email:</label>  
+            <input type="email" id="binanceEmail" [(ngModel)]="binanceData.binanceEmail" name="binanceEmail" required>  
+
+            <button type="submit">Submit</button>  
+            <button type="button" (click)="closeModal()">Close</button>  
+        </form>  
+    </div>  
+
+    <div *ngIf="modalType === 'mobile'">  
+        <h2>Mobile Form</h2>  
+        <form (ngSubmit)="submitMobile()">  
+            <label for="idNumber">ID Number:</label>  
+            <input type="text" id="idNumber" [(ngModel)]="mobileData.cedula" name="cedula" required>  
+
+            <label for="phoneNumber">Phone Number:</label>  
+            <input type="text" id="phoneNumber" [(ngModel)]="mobileData.numeroTelefono" name="numeroTelefono" required>  
+
+            <label for="bank">Bank:</label>  
+            <input type="text" id="bank" [(ngModel)]="mobileData.banco" name="banco" required>  
+
+            <button type="submit">Submit</button>  
+            <button type="button" (click)="closeModal()">Close</button>  
+        </form>  
+    </div>  
+</div>

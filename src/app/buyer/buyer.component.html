@@ -1,0 +1,21 @@
+<h2>Servicios Disponibles</h2>  
+<table>  
+  <thead>  
+    <tr>  
+      <th>ID</th>  
+      <th>Nombre</th>  
+      <th>Descripción</th>  
+      <th>Precio</th>  
+      <th>Destacado</th>  
+    </tr>  
+  </thead>  
+  <tbody>  
+    <tr *ngFor="let service of services">  
+      <td>{{ service.id }}</td>  
+      <td>{{ service.nombre }}</td>  
+      <td>{{ service.descripcion }}</td>  
+      <td>{{ service.precio }}</td>  
+      <td>{{ service.destacado ? 'Sí' : 'No' }}</td>  
+    </tr>  
+  </tbody>  
+</table>

@@ -1,0 +1,9 @@
+<form (ngSubmit)="submitService()" #serviceForm="ngForm">  
+    <h3 class="text-lg font-bold">Registrar Servicio</h3>  
+    
+    <label>Nombre del Servicio: <input type="text" [(ngModel)]="service.name" name="serviceName" required /></label>  
+    <label>Descripción: <textarea [(ngModel)]="service.description" name="serviceDescription" required></textarea></label>  
+    <label>Precio: <input type="number" [(ngModel)]="service.price" name="servicePrice" required /></label>  
+
+    <button type="submit" class="mt-4 p-2 bg-blue-500 text-white rounded">Publicar Servicio</button>  
+</form>

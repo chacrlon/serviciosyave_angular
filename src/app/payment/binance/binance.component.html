@@ -1,0 +1,5 @@
+<form (ngSubmit)="submit()" #binanceForm="ngForm">  
+    <h3 class="text-lg font-bold">Registro - Binance</h3>  
+    <label>Correo Asociado a Binance: <input type="text" [(ngModel)]="binance.email" name="binanceEmail" required /></label>  
+    <button type="submit" class="mt-4 p-2 bg-blue-500 text-white rounded">Registrar Binance</button>  
+</form>

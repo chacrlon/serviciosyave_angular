@@ -1,0 +1,6 @@
+<form (ngSubmit)="submit()" #mobilePaymentForm="ngForm">  
+    <h3 class="text-lg font-bold">Registro - Pago Móvil</h3>  
+    <label>Cédula: <input type="text" [(ngModel)]="mobilePayment.cedula" name="mobileCedula" required /></label>  
+    <label>Número de Teléfono: <input type="text" [(ngModel)]="mobilePayment.phoneNumber" name="mobilePhone" required /></label>  
+    <button type="submit" class="mt-4 p-2 bg-blue-500 text-white rounded">Registrar Pago Móvil</button>  
+</form>
