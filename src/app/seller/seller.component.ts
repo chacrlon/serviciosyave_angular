@@ -58,7 +58,7 @@ export class SellerComponent {
   }  
 
   loadServices() {  
-    this.http.get('http://localhost:8080/api/service/') // Cambiar a la URL de tu API  
+    this.http.get('http://localhost:8080/api/service/user') // Cambiar a la URL de tu API  
       .subscribe((response: any) => {  
         this.services = response;  
       }, error => {  
