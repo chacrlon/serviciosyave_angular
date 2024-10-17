@@ -8,7 +8,8 @@ import { SharingDataService } from '../../services/sharing-data.service';
   selector: 'app-auth',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './auth.component.html'
+  templateUrl: './auth.component.html',
+  styleUrls: ['./auth.component.css'] // Este es el archivo CSS automáticamente asociado 
 })
 export class AuthComponent {
 

@@ -1,88 +1,84 @@
 <!-- src/app/register/register.component.html -->  
 
 <div class="card">  
-    <div class="card-content">  
-        <div class="card-header">  
-            <h5 class="card-title">{{(user.id > 0) ? 'Update' : 'Create'}} User</h5>  
-        </div>  
-        <div class="card-body">  
-            <form (ngSubmit)="onSubmit(userForm)" #userForm="ngForm">  
-                <!-- Campo Name -->  
-                <div>  
-                    <input placeholder="Name" name="name" [(ngModel)]="user.name" class="form-control my-2" #name="ngModel" required>  
-                    <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">  
-                        Name is required.  
-                    </div>  
+    <div class="card-header">  
+        <h5 class="card-title">{{(user.id > 0) ? 'Update' : 'Create'}} User</h5>  
+    </div>  
+    <div class="card-body">  
+        <form (ngSubmit)="onSubmit(userForm)" #userForm="ngForm">  
+            <!-- Campo Name -->  
+            <div>  
+                <input placeholder="Name" name="name" [(ngModel)]="user.name" class="form-control" #name="ngModel" required>  
+                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger">  
+                    Name is required.  
                 </div>  
+            </div>  
 
-                <!-- Campo Lastname -->  
-                <div>  
-                    <input placeholder="Lastname" name="lastname" [(ngModel)]="user.lastname" class="form-control my-2" #lastname="ngModel" required>  
-                    <div *ngIf="lastname.invalid && (lastname.dirty || lastname.touched)" class="text-danger">  
-                        Lastname is required.  
-                    </div>  
+            <!-- Campo Lastname -->  
+            <div>  
+                <input placeholder="Lastname" name="lastname" [(ngModel)]="user.lastname" class="form-control" #lastname="ngModel" required>  
+                <div *ngIf="lastname.invalid && (lastname.dirty || lastname.touched)" class="text-danger">  
+                    Lastname is required.  
                 </div>  
+            </div>  
 
-                <!-- Campo Email -->  
-                <div>  
-                    <input placeholder="Email" name="email" [(ngModel)]="user.email" class="form-control my-2" type="email" #email="ngModel" required>  
-                    <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger">  
-                        Valid email is required.  
-                    </div>  
+            <!-- Campo Email -->  
+            <div>  
+                <input placeholder="Email" name="email" [(ngModel)]="user.email" class="form-control" type="email" #email="ngModel" required>  
+                <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger">  
+                    Valid email is required.  
                 </div>  
+            </div>  
 
-                <!-- Campo Username -->  
-                <div>  
-                    <input placeholder="Username" name="username" [(ngModel)]="user.username" class="form-control my-2" #username="ngModel" required>  
-                    <div *ngIf="username.invalid && (username.dirty || username.touched)" class="text-danger">  
-                        Username is required.  
-                    </div>  
+            <!-- Campo Username -->  
+            <div>  
+                <input placeholder="Username" name="username" [(ngModel)]="user.username" class="form-control" #username="ngModel" required>  
+                <div *ngIf="username.invalid && (username.dirty || username.touched)" class="text-danger">  
+                    Username is required.  
                 </div>  
+            </div>  
 
-                <!-- Campo Password (solo en creación) -->  
-              
-                    <div>  
-                        <input placeholder="Password" name="password" type="password" [(ngModel)]="user.password" class="form-control my-2" #password="ngModel" required>  
-                        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-danger">  
-                            Password is required.  
-                        </div>  
-                    </div>  
-           
-
-                <!-- Campo Phone -->  
-                <div>  
-                    <input placeholder="Phone" name="phone" [(ngModel)]="user.phone" class="form-control my-2" #phone="ngModel" required>  
-                    <div *ngIf="phone.invalid && (phone.dirty || phone.touched)" class="text-danger">  
-                        Phone number is required.  
-                    </div>  
+            <!-- Campo Password (solo en creación) -->  
+            <div *ngIf="user.id === 0">  <!-- Solo mostrar en creación -->  
+                <input placeholder="Password" name="password" type="password" [(ngModel)]="user.password" class="form-control" #password="ngModel" required>  
+                <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-danger">  
+                    Password is required.  
                 </div>  
+            </div>  
 
-                <!-- Campo Cedula -->  
-                <div>  
-                    <input placeholder="Cedula" name="cedula" [(ngModel)]="user.cedula" class="form-control my-2" #cedula="ngModel" required>  
-                    <div *ngIf="cedula.invalid && (cedula.dirty || cedula.touched)" class="text-danger">  
-                        Cedula is required.  
-                    </div>  
+            <!-- Campo Phone -->  
+            <div>  
+                <input placeholder="Phone" name="phone" [(ngModel)]="user.phone" class="form-control" #phone="ngModel" required>  
+                <div *ngIf="phone.invalid && (phone.dirty || phone.touched)" class="text-danger">  
+                    Phone number is required.  
                 </div>  
+            </div>  
 
-                <!-- Campo Birthdate -->  
-                <div>  
-                    <input placeholder="Birthdate (YYYYMMDD)" name="birthdate" [(ngModel)]="user.birthdate" class="form-control my-2" #birthdate="ngModel" required>  
-                    <div *ngIf="birthdate.invalid && (birthdate.dirty || birthdate.touched)" class="text-danger">  
-                        Birthdate is required.  
-                    </div>  
+            <!-- Campo Cedula -->  
+            <div>  
+                <input placeholder="Cedula" name="cedula" [(ngModel)]="user.cedula" class="form-control" #cedula="ngModel" required>  
+                <div *ngIf="cedula.invalid && (cedula.dirty || cedula.touched)" class="text-danger">  
+                    Cedula is required.  
                 </div>  
+            </div>  
 
-                <!-- Botones de acción -->  
-                <div>  
-                    <button type="submit" class="btn btn-primary m-2" [disabled]="userForm.invalid">   
-                        {{(user.id > 0) ? 'Update' : 'Create'}}  
-                    </button>  
-                    <button type="button" class="btn btn-secondary my-2" (click)="onClear(userForm)">  
-                        Clear  
-                    </button>  
+            <!-- Campo Birthdate -->  
+            <div>  
+                <input placeholder="Birthdate (YYYYMMDD)" name="birthdate" [(ngModel)]="user.birthdate" class="form-control" #birthdate="ngModel" required>  
+                <div *ngIf="birthdate.invalid && (birthdate.dirty || birthdate.touched)" class="text-danger">  
+                    Birthdate is required.  
                 </div>  
-            </form>  
-        </div>  
+            </div>  
+
+            <!-- Botones de acción -->  
+            <div>  
+                <button type="submit" class="btn btn-primary m-2" [disabled]="userForm.invalid">  
+                    {{(user.id > 0) ? 'Update' : 'Create'}}  
+                </button>  
+                <button type="button" class="btn btn-secondary my-2" (click)="onClear(userForm)">  
+                    Clear  
+                </button>  
+            </div>  
+        </form>  
     </div>  
 </div>

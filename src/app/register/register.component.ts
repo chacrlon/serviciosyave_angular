@@ -11,8 +11,9 @@ import { CommonModule } from '@angular/common'; // Importar CommonModule
 @Component({  
   selector: 'app-register',  
   standalone: true,  
+  imports: [FormsModule, CommonModule] ,
   templateUrl: './register.component.html',  
-  imports: [FormsModule, CommonModule]  
+  styleUrls: ['./register.component.css'] // Este es el archivo CSS automáticamente asociado  
 })  
 export class RegisterComponent {  
   user: User;  

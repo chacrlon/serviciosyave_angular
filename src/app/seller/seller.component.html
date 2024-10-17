@@ -1,8 +1,10 @@
 <div class="container">  
-    <h1>Welcome, Seller!</h1>  
-    <button (click)="openModal('bankTransfer')">Bank Transfer</button>  
-    <button (click)="openModal('binance')">Binance</button>  
-    <button (click)="openModal('mobile')">Mobile</button>  
+    <h1>Bienvenido Servidor!</h1>  
+    <div class="button-group">  
+        <button (click)="openModal('bankTransfer')">Transferencia Bancaria</button>  
+        <button (click)="openModal('binance')">Binance</button>  
+        <button (click)="openModal('mobile')">Pago Movil</button>  
+    </div>  
 
     <!-- Mensaje de Notificación -->  
     <div *ngIf="notificationMessage" class="notification">  
@@ -11,92 +13,117 @@
 
     <!-- Formulario para registrar un servicio -->  
     <div class="service-form" *ngIf="!modalType">  
-        <h2>Register Service</h2>  
+        <h2>Registra tu servicio</h2>  
         <form (ngSubmit)="submitService()">  
             <label for="nombre">Nombre:</label>  
             <input type="text" id="nombre" [(ngModel)]="serviceData.nombre" name="nombre" required>  
-
+    
             <label for="descripcion">Descripción:</label>  
             <input type="text" id="descripcion" [(ngModel)]="serviceData.descripcion" name="descripcion" required>  
-
+    
             <label for="precio">Precio:</label>  
             <input type="number" id="precio" [(ngModel)]="serviceData.precio" name="precio" required>  
-
+    
             <label for="destacado">Destacado:</label>  
             <input type="checkbox" id="destacado" [(ngModel)]="serviceData.destacado" name="destacado">  
+    
+            <label for="categoria">Categoría:</label>  
+            <select id="categoria" [(ngModel)]="serviceData.categoria" name="categoria" (change)="onEstadoChange(serviceData.categoria)" required>  
+                <option *ngFor="let categoria of categoria" [value]="categoria.nombre">{{ categoria.nombre }}</option>  
+            </select>  
+            
+            <label for="subcategoria">Subcategoría:</label>  
+            <select id="subcategoria" [(ngModel)]="serviceData.subcategoria" name="subcategoria" required>  
+                <option *ngFor="let sub of subcategoria" [value]="sub">{{ sub }}</option>  
+            </select>
 
-            <button type="submit">Register Service</button>  
+            <label for="remoto">Servicio Remoto:</label>  
+            <input type="checkbox" id="remoto" [(ngModel)]="serviceData.remoto" name="remoto">  
+    
+            <label for="latitude">Latitud:</label>  
+            <input type="text" id="latitude" [(ngModel)]="serviceData.latitude" name="latitude" readonly>  
+
+            <label for="longitude">Longitud:</label>  
+            <input type="text" id="longitude" [(ngModel)]="serviceData.longitude" name="longitude" readonly>
+    
+            <button type="submit">{{ selectedServiceId !== null ? 'Actualizar servicio' : 'Registrar servicio' }}</button>  
+   
         </form>  
-    </div>  
-
+    </div>
     <!-- Tabla para visualizar servicios registrados -->  
     <div>  
-        <h2>Registered Services</h2>  
+        <h2>Tus servicios</h2>  
         <table>  
             <thead>  
                 <tr>  
-                    <th>ID</th>  
                     <th>Nombre</th>  
                     <th>Descripción</th>  
                     <th>Precio</th>  
                     <th>Destacado</th>  
+                    <th>Categoría</th>  
+                    <th>Subcategoría</th>  
+                    <th>Remoto</th>  
+                    <th>Acciones</th> <!-- Nueva columna para acciones -->  
                 </tr>  
             </thead>  
             <tbody>  
                 <tr *ngFor="let service of services">  
-                    <td>{{ service.id }}</td>  
                     <td>{{ service.nombre }}</td>  
                     <td>{{ service.descripcion }}</td>  
                     <td>{{ service.precio }}</td>  
                     <td>{{ service.destacado ? 'Sí' : 'No' }}</td>  
+                    <td>{{ service.categoria }}</td> <!-- Mostrar categoría -->  
+                    <td>{{ service.subcategoria }}</td> <!-- Mostrar subcategoría -->  
+                    <td>{{ service.remoto ? 'Sí' : 'No' }}</td> <!-- Mostrar si es remoto -->
+                    <button (click)="editService(service)">Editar</button>  
                 </tr>  
             </tbody>  
         </table>  
-    </div>  
+    </div>
 
     <!-- Otros Modales -->  
-    <div *ngIf="modalType === 'bankTransfer'">  
-        <h2>Bank Transfer Form</h2>  
+    <div *ngIf="modalType === 'bankTransfer'" class="modal-content">  
+        <h2>Registra tu banco</h2>  
         <form (ngSubmit)="submitBankTransfer()">  
-            <label for="accountNumber">Account Number:</label>  
+            <label for="accountNumber">Numero de cuenta:</label>  
             <input type="text" id="accountNumber" [(ngModel)]="bankTransferData.cuentaBancaria" name="cuentaBancaria" required>  
 
-            <label for="accountHolder">Account Holder's Name:</label>  
+            <label for="accountHolder">Banco:</label>  
             <input type="text" id="accountHolder" [(ngModel)]="bankTransferData.nombreTitular" name="nombreTitular" required>  
 
-            <label for="idNumber">ID Number / RIF:</label>  
+            <label for="idNumber">Cedula / RIF:</label>  
             <input type="text" id="idNumber" [(ngModel)]="bankTransferData.rif" name="rif" required>  
 
-            <button type="submit">Submit</button>  
-            <button type="button" (click)="closeModal()">Close</button>  
+            <button type="submit">Registrar datos bancarios</button>  
+            <button type="button" (click)="closeModal()">Cerrar</button>  
         </form>  
     </div>  
 
-    <div *ngIf="modalType === 'binance'">  
-        <h2>Binance Form</h2>  
+    <div *ngIf="modalType === 'binance'" class="modal-content">  
+        <h2>Registra tu Binance</h2>  
         <form (ngSubmit)="submitBinance()">  
-            <label for="binanceEmail">Email:</label>  
+            <label for="binanceEmail">Correo Email:</label>  
             <input type="email" id="binanceEmail" [(ngModel)]="binanceData.binanceEmail" name="binanceEmail" required>  
-
-            <button type="submit">Submit</button>  
-            <button type="button" (click)="closeModal()">Close</button>  
+            
+            <button type="submit">Registrar Binance</button>  
+            <button type="button" (click)="closeModal()">Cerrar</button>  
         </form>  
     </div>  
 
-    <div *ngIf="modalType === 'mobile'">  
-        <h2>Mobile Form</h2>  
+    <div *ngIf="modalType === 'mobile'" class="modal-content">  
+        <h2>Registra tu pago movil</h2>  
         <form (ngSubmit)="submitMobile()">  
-            <label for="idNumber">ID Number:</label>  
+            <label for="idNumber">Cedula:</label>  
             <input type="text" id="idNumber" [(ngModel)]="mobileData.cedula" name="cedula" required>  
 
-            <label for="phoneNumber">Phone Number:</label>  
+            <label for="phoneNumber">Numero de telefono:</label>  
             <input type="text" id="phoneNumber" [(ngModel)]="mobileData.numeroTelefono" name="numeroTelefono" required>  
 
-            <label for="bank">Bank:</label>  
+            <label for="bank">Banco:</label>  
             <input type="text" id="bank" [(ngModel)]="mobileData.banco" name="banco" required>  
 
-            <button type="submit">Submit</button>  
-            <button type="button" (click)="closeModal()">Close</button>  
+            <button type="submit">Registrar pago movil</button>  
+            <button type="button" (click)="closeModal()">Cerrar</button>  
         </form>  
     </div>  
 </div>

@@ -1,0 +1,41 @@
+/* Navbar Styles */  
+.navbar {  
+  background-color: #0056b3; /* Color azul profesional */  
+  padding: 10px 20px; /* Relleno adicional para el navbar */  
+}  
+
+/* Cambiar el color del texto de los enlaces en el navbar */  
+.navbar-brand,   
+.nav-link {  
+  color: white; /* Color de texto blanco */  
+}  
+
+/* Cambiar el color de los enlaces al pasar el mouse (hover) */  
+.nav-link:hover {  
+  color: rgba(231, 243, 254, 0.8); /* Un color azul claro en hover */  
+}  
+
+/* Estilo para el botón de login y logout */  
+.btn-outline-success {  
+  border-color: white; /* Color del borde */  
+  color: white; /* Color del texto del botón */  
+}  
+
+.btn-outline-success:hover {  
+  background-color: rgba(255, 255, 255, 0.2); /* Fondo claro en hover */  
+}  
+
+/* Cambiar el color del botón de sign in */  
+.btn-outline-primary {  
+  border-color: white; /* Color del borde */  
+  color: white; /* Color del texto del botón */  
+}  
+
+.btn-outline-primary:hover {  
+  background-color: rgba(255, 255, 255, 0.2); /* Fondo claro al pasar el mouse */  
+}  
+
+/* Espaciado adicional para los items del navbar */  
+.nav-item {  
+  margin: 0 15px; /* Espaciado horizontal para los items */  
+}
