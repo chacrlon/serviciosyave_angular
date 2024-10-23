@@ -1,21 +1,164 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<div class="exchange-rate">  
+  <h2>El valor del dólar BCV Hoy es:   
+    <span *ngIf="exchangeRate !== null; else loading">  
+      {{ exchangeRate | number:'1.2-2' }}   
+    </span>  
+    <ng-template #loading>  
+      Cargando...  
+    </ng-template>  
+  </h2>  
+</div>  
+
+<!-- El resto de tu HTML para los modales y otros elementos -->
+
 <h2>Servicios Disponibles</h2>  
-<table>  
-  <thead>  
-    <tr>  
-      <th>ID</th>  
-      <th>Nombre</th>  
-      <th>Descripción</th>  
-      <th>Precio</th>  
-      <th>Destacado</th>  
-    </tr>  
-  </thead>  
-  <tbody>  
-    <tr *ngFor="let service of services">  
-      <td>{{ service.id }}</td>  
-      <td>{{ service.nombre }}</td>  
-      <td>{{ service.descripcion }}</td>  
-      <td>{{ service.precio }}</td>  
-      <td>{{ service.destacado ? 'Sí' : 'No' }}</td>  
-    </tr>  
-  </tbody>  
-</table>
+<div class="services-container">  
+  <div class="service-card" *ngFor="let service of services" (click)="showModal(service)">  
+    <h3>{{ service.nombre }}</h3>  
+    <p>{{ service.descripcion }}</p>  
+    <p><strong>Precio:</strong> ${{ service.precio }}</p>  
+    <p><strong>Destacado:</strong> {{ service.destacado ? 'Sí' : 'No' }}</p>  
+    <p><strong>Categoría:</strong> {{ service.categoria }}</p>  
+    <p><strong>Subcategoría:</strong> {{ service.subcategoria }}</p>  
+    <p>  
+      <span class="highlight">{{ service.remoto ? 'El servicio es online' : 'El servicio es presencial' }}</span>  
+    </p>  
+  </div>  
+</div>  
+
+<!-- Modal para Contratar Servicio -->  
+<div class="modal" [ngClass]="{'is-active': modalVisible}">  
+  <div class="modal-background" (click)="closeModal()"></div>  
+  <div class="modal-content">  
+    <div class="box">  
+      <h3>{{ selectedService?.nombre }}</h3>  
+      <p>{{ selectedService?.descripcion }}</p>  
+      <p><strong>Precio en dolares:</strong> ${{ selectedService?.precio }}</p>   
+      <p><strong>Precio en bolívares:</strong>   
+        <ng-container *ngIf="selectedService?.precio && exchangeRate; else notAvailable">  
+            {{ (selectedService.precio * exchangeRate) | number:'1.2-2' }}  
+        </ng-container>  
+        <ng-template #notAvailable>N/A</ng-template>  
+    </p> 
+      <p><strong>Destacado:</strong> {{ selectedService?.destacado ? 'Sí' : 'No' }}</p>  
+      <p><strong>Categoría:</strong> {{ selectedService?.categoria }}</p>  
+      <p><strong>Subcategoría:</strong> {{ selectedService?.subcategoria }}</p>  
+      <p><span class="highlight">{{ selectedService?.remoto ? 'El servicio es online' : 'El servicio es presencial' }}</span></p>  
+
+      <div class="modal-buttons">  
+        <button (click)="openPaymentMethodModal()" class="button is-success">Contratar</button>  
+        <button (click)="closeModal()" class="button is-danger">Cancelar</button>  
+      </div>  
+    </div>  
+  </div>  
+  <button class="modal-close is-large" aria-label="close" (click)="closeModal()"></button>  
+</div>  
+
+<!-- Modal para Selección de Método de Pago -->  
+<div class="modal" [ngClass]="{'is-active': paymentMethodModalVisible}">  
+  <div class="modal-background" (click)="closePaymentMethodModal()"></div>  
+  <div class="modal-content">  
+    <div class="box">  
+      <h3>Selecciona un Método de Pago</h3>  
+      <button (click)="selectPaymentMethod('pagoMovil')" class="button pago-movil">  
+        <i class="fas fa-phone"></i> Pago Móvil  
+      </button>  
+      <button (click)="selectPaymentMethod('transferenciaBancaria')" class="button transferencia-bancaria">  
+        <i class="fas fa-desktop"></i> Transferencia Bancaria  
+      </button>  
+      <button (click)="selectPaymentMethod('binance')" class="button binance">  
+        <i class="fab fa-btc"></i> Binance  
+      </button>  
+      <div *ngIf="selectedPaymentMethod">  
+        <button (click)="openPaymentDetailsModal()" class="button is-success">Ya Pagué</button>  
+      </div>  
+    </div>  
+  </div>  
+  <button class="modal-close is-large" aria-label="close" (click)="closePaymentMethodModal()"></button>  
+</div>
+
+<!-- Modal para Detalles de Pago -->  
+<div class="modal" [ngClass]="{'is-active': paymentDetailsModalVisible}">  
+  <div class="modal-background" (click)="closePaymentDetailsModal()"></div>  
+  <div class="modal-content">  
+    <div class="box">  
+      <h3>Detalles de Pago</h3>  
+      <!-- Modal para PAGO MOVIL --> 
+      <div *ngIf="selectedPaymentMethod === 'pagoMovil'">  
+        <div class="form-row">  
+          <label>Banco:</label>  
+          <label>Bancamiga</label> 
+        </div>  
+        <div class="form-row">  
+          <label>Teléfono:</label>  
+          <label>04123705210</label> 
+        </div>  
+        <div class="form-row">  
+          <label>Cédula:</label>  
+          <label>24286418</label>   
+        </div>  
+        <div class="form-row">  
+          <label>Monto:</label>  
+          <label><ng-container *ngIf="selectedService?.precio && exchangeRate; else notAvailable">  
+            {{ (selectedService.precio * exchangeRate) | number:'1.2-2' }}  
+        </ng-container>  
+        <ng-template #notAvailable>N/A</ng-template> </label>  
+        </div>   
+      </div>  
+      <!-- Modal para TRANSFERENCIA BANCARIA --> 
+      <div *ngIf="selectedPaymentMethod === 'transferenciaBancaria'">  
+        <div class="form-row">  
+          <label>Banco:</label>  
+          <label>Bancamiga</label> 
+        </div>  
+        <div class="form-row">  
+          <label>Número de Cuenta:</label>  
+          <label>01720107701075174910</label> 
+        </div>  
+        <div class="form-row">  
+          <label>RIF:</label>  
+          <label>242864189</label>  
+        </div>  
+        <div class="form-row">  
+          <label>Monto:</label>  
+          <label><ng-container *ngIf="selectedService?.precio && exchangeRate; else notAvailable">  
+            {{ (selectedService.precio * exchangeRate) | number:'1.2-2' }}  
+        </ng-container>  
+        <ng-template #notAvailable>N/A</ng-template> </label>  
+        </div>  
+      </div>  
+      <!-- Modal para BINANCE --> 
+      <div *ngIf="selectedPaymentMethod === 'binance'">  
+        <div class="form-row">  
+          <label>Correo:</label>  
+          <label>chacrlonroman&#64;gmail.com</label>  
+        </div>  
+        <div class="form-row">  
+          <label>Monto:</label>  
+          <label><ng-container *ngIf="selectedService?.precio && exchangeRate; else notAvailable">  
+            {{ (selectedService.precio * exchangeRate) | number:'1.2-2' }}  
+        </ng-container>  
+        <ng-template #notAvailable>N/A</ng-template> </label>    
+        </div>  
+      </div>  
+      <button (click)="openReferenceModal()" class="button is-success">Ya Pagué</button>  
+    </div> 
+  </div>  
+  <button class="modal-close is-large" aria-label="close" (click)="closePaymentDetailsModal()"></button>  
+</div>
+
+<!-- Modal para Introducir Referencia -->  
+<div class="modal" [ngClass]="{'is-active': referenceModalVisible}">  
+  <div class="modal-background" (click)="closeReferenceModal()"></div>  
+  <div class="modal-content">  
+    <div class="box">  
+      <h3>Introduce la referencia de pago</h3>  
+      <label>Referencia:</label>  
+      <input type="text" [(ngModel)]="referenciaPago"/>  
+      <button (click)="confirmPayment()" class="button is-success">Confirmar</button>  
+    </div>  
+  </div>  
+  <button class="modal-close is-large" aria-label="close" (click)="closeReferenceModal()"></button>  
+</div>

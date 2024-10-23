@@ -1,0 +1,136 @@
+.services-container {  
+    display: flex;  
+    flex-wrap: wrap;  
+    gap: 20px; /* Espacio entre las tarjetas */  
+    justify-content: center; /* Centra las tarjetas en el contenedor */  
+  }  
+  
+  .service-card {  
+    border: 1px solid #ccc; /* Borde de la tarjeta */  
+    border-radius: 8px; /* Bordes redondeados */  
+    padding: 16px; /* Espaciado interno */  
+    width: 200px; /* Ancho fijo para las tarjetas */  
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */  
+    transition: transform 0.2s; /* Animación al pasar el ratón */  
+  }  
+  
+  .service-card:hover {  
+    transform: scale(1.05); /* Efecto de crecimiento al pasar el ratón */  
+  }
+
+  .highlight {  
+    font-weight: bold; /* Texto en negrita */  
+    font-size: 1.2em; /* Tamaño de fuente un poco más grande */  
+  }
+
+  .modal {  
+    display: none;  
+    position: fixed;  
+    z-index: 1000;  
+    top: 0;  
+    left: 0;  
+    width: 100%;  
+    height: 100%;  
+    overflow: auto;  
+    background-color: rgba(0, 0, 0, 0.7); /* Un negro más oscuro y más elegante */  
+}  
+
+.modal.is-active {  
+    display: block;  
+}  
+
+.modal-content {  
+    background: #fff;  
+    border-radius: 8px;  
+    width: 40%;  
+    margin: 10% auto;  
+    padding: 20px;  
+    position: relative;  
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */  
+    transition: all 0.3s ease; /* Añadir suavidad en la aparición del modal */  
+}  
+
+.box {  
+    border-radius: 8px;  
+    padding: 20px;  
+    background-color: #f7f7f7; /* Fondo para la caja del contenido */  
+}  
+
+.modal-buttons {  
+    display: flex;  
+    justify-content: space-between;  
+    margin-top: 20px;  
+}  
+
+.button.is-success {  
+    background-color: #28a745; /* Verde suave */  
+    color: white;  
+    border: none;  
+    padding: 10px 20px;  
+    border-radius: 5px;  
+    font-size: 1em;  
+    transition: background-color 0.3s; /* Suavizar el cambio de color */  
+}  
+
+.button.is-success:hover {  
+    background-color: #218838; /* Verde más oscuro al pasar el ratón */  
+}  
+
+.button.is-danger {  
+    background-color: #dc3545; /* Rojo suave */  
+    color: white;  
+    border: none;  
+    padding: 10px 20px;  
+    border-radius: 5px;  
+    font-size: 1em;  
+    transition: background-color 0.3s; /* Suavizar el cambio de color */  
+}  
+
+.button.is-danger:hover {  
+    background-color: #c82333; /* Rojo más oscuro al pasar el ratón */  
+}  
+
+.highlight {  
+    font-weight: bold;  
+    font-size: 1.2em;  
+}
+
+.pago-movil {  
+    background-color: #4da6ff; /* Azul claro */  
+    color: white;  
+    transition: background-color 0.3s; /* Suavizar el cambio de color */  
+}  
+
+.pago-movil:hover {  
+    background-color: #3399ff; /* Azul más oscuro al pasar el ratón */  
+}  
+
+.transferencia-bancaria {  
+    background-color: #003366; /* Azul oscuro */  
+    color: white;  
+    transition: background-color 0.3s; /* Suavizar el cambio de color */  
+}  
+
+.transferencia-bancaria:hover {  
+    background-color: #001f33; /* Azul más oscuro al pasar el ratón */  
+}  
+
+.binance {  
+    background-color: #f0b90b; /* Amarillo */  
+    color: black;  
+    transition: background-color 0.3s; /* Suavizar el cambio de color */  
+}  
+
+.binance:hover {  
+    background-color: #e6a600; /* Amarillo más oscuro al pasar el ratón */  
+}  
+
+.button {  
+    display: flex;  
+    align-items: center;  
+    justify-content: center;  
+}  
+
+.button i {  
+    margin-right: 8px; /* Espacio entre el icono y el texto */  
+}
