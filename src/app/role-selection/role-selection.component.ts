@@ -36,7 +36,8 @@ export class RoleSelectionComponent {
   navegarPorRol(role: string) {  
     if (role === 'buyer') {  
       this.router.navigate(['/buyer']);  
-    } else if (role === 'seller') {  
+    } 
+    else if (role === 'seller') {  
       this.router.navigate(['/seller']);  
     }  
   }  

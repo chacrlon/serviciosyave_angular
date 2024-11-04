@@ -8,9 +8,9 @@
         <div class="collapse navbar-collapse" id="navbarNav">  
             <ul class="navbar-nav">  
                 <li class="nav-item">  
-                    <a class="nav-link active" aria-current="page"   
-                    [routerLink]="['/users']"  
-                    [state]="{users, paginator}">Inicio</a>  
+                    <a class="nav-link active" aria-current="page"  
+                        [routerLink]="['/users']"  
+                        [state]="{users, paginator}">Inicio</a>  
                 </li>  
 
                 <li class="nav-item" *ngIf="!login.isAuth">  
@@ -20,6 +20,16 @@
                 <li class="nav-item" *ngIf="admin">  
                     <a class="nav-link" [routerLink]="['/users/create']">New User</a>  
                 </li>  
+
+                <!-- Enlace para acceder a Categorías -->  
+                <li class="nav-item" *ngIf="login.isAuth">  
+                    <a class="nav-link" [routerLink]="['/categories']">Categorías</a>  
+                </li> 
+                
+                <!-- Enlace para acceder a Categorías -->  
+                <li class="nav-item" *ngIf="login.isAuth">  
+                    <a class="nav-link" [routerLink]="['/payments']">Pagos</a>  
+                </li> 
             </ul>  
         </div>  
         <div class="collapse navbar-collapse justify-content-end" id="navbarNavAuth">  
@@ -27,12 +37,12 @@
                 <ng-container *ngIf="login.isAuth; else loggedOut">  
                     {{ login.user.username }}  
                     <button  
-                    (click)="handlerLogout()"  
-                    class="btn btn-outline-success">Salir</button>  
+                        (click)="handlerLogout()"  
+                        class="btn btn-outline-success">Salir</button>  
                 </ng-container>  
                 <ng-template #loggedOut>  
                     <a class="btn btn-outline-primary"  
-                    [routerLink]="['/login']">Inicia sesion</a>  
+                        [routerLink]="['/login']">Inicia sesión</a>  
                 </ng-template>  
             </span>  
         </div>  

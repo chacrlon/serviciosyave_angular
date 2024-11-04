@@ -19,6 +19,16 @@ export class BuyerComponent {
   referenceModalVisible: boolean = false;   
   selectedPaymentMethod: string | null = null;  
 
+  filter = {  
+    categoria: null,
+    subcategoria: null,
+    minPrecio: null,  
+    maxPrecio: null,  
+    destacado: null,
+    latitude: null,
+    longitude: null
+  };  
+
   // Variables para los detalles de pago  
   banco: string = '';  
   telefono: string = '';  
@@ -29,11 +39,14 @@ export class BuyerComponent {
   referenciaPago: string = '';  
 
   // Propiedad para almacenar el tipo de cambio del dólar  
-  exchangeRate: number | null = null;  
+  exchangeRate: number | null = null;
+  // Para almacena la ubicación  
+  location: { latitude: number; longitude: number } | null = null;  
 
   constructor(private http: HttpClient) {  
     this.loadServices();  
     this.loadExchangeRate(); // Llamar al método para cargar el tipo de cambio  
+    
   }  
 
   loadExchangeRate() {  
@@ -53,6 +66,17 @@ export class BuyerComponent {
         console.error('Error loading services:', error);  
       });  
   }  
+
+  applyFilters() {  
+    // Enviamos el objeto filter como cuerpo de la solicitud  
+    this.http.post<any[]>('http://localhost:8080/api/service/filter', this.filter)  
+      .subscribe(response => {  
+        this.services = response;  
+      }, error => {  
+        console.error('Error applying filters:', error);  
+      });  
+  }
+
 
   showModal(service: any) {  
     this.selectedService = service;  

@@ -1,0 +1,36 @@
+<div class="container"> <!-- Contenedor principal -->  
+    <h1>Lista de Pagos</h1> <!-- Título principal-->  
+    <div class="notification" *ngIf="payments.length === 0"> <!-- Notificación si no hay pagos -->  
+        No hay pagos registrados.  
+    </div>  
+    <table>  
+        <thead>  
+            <tr>  
+                <th>ID</th>  
+                <th>Monto</th>  
+                <th>Divisa</th>  
+                <th>Método de Pago</th>  
+                <th>Referencia</th>  
+                <th>Estatus</th>  
+                <th>Usuario</th>  
+                <th>Acciones</th>  
+            </tr>  
+        </thead>  
+        <tbody>  
+            <!-- Iteración sobre los pagos -->  
+            <tr *ngFor="let payment of payments">  
+                <td>{{ payment.id }}</td>  
+                <td>{{ payment.monto }}</td>  
+                <td>{{ payment.divisa }}</td>  
+                <td>{{ payment.metodo_pago }}</td>  
+                <td>{{ payment.referencia }}</td>  
+                <td>{{ payment.estatus }}</td>  
+                <td>{{ payment.username }}</td>  
+                <td>  
+                    <button (click)="approvePayment(payment.id)">Aprobar</button>  
+                    <button (click)="rejectPayment(payment.id)">Rechazar</button>  
+                </td>  
+            </tr>  
+        </tbody>  
+    </table>  
+</div>

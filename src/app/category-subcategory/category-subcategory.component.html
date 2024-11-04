@@ -1,0 +1,109 @@
+
+<div class="container">  
+  <h2>Categorías</h2>  
+  <div class="service-form">  
+    <ul>  
+      <li *ngFor="let category of categories">  
+        {{ category.name }}  
+        <button (click)="editCategory(category)">Editar</button>  
+        <button (click)="deleteCategory(category.id)">Eliminar</button>  
+
+         
+        <ul *ngIf="category.subcategories && category.subcategories.length > 0">  
+          <li *ngFor="let subcategory of category.subcategories">  
+            {{ subcategory.name }}  
+            <button (click)="editSubcategory(subcategory)">Editar</button>  
+            <button (click)="deleteSubcategory(subcategory.id)">Eliminar</button>  
+          </li>  
+        </ul>  
+      </li>  
+    </ul>  
+
+    <input [(ngModel)]="newCategory.name" placeholder="Nombre de nueva categoría" />  
+    <button (click)="addCategory()">Agregar Categoría</button>  
+  </div>  
+
+  <div *ngIf="updateCategoryData" class="service-form">  
+    <h3>Editar Categoría</h3>  
+    <input [(ngModel)]="updateCategoryData.name" placeholder="Editar nombre de categoría" />  
+    <button (click)="updateCategory()">Actualizar Categoría</button>  
+  </div>  
+
+  <h2>Subcategorías</h2>  
+  <div class="service-form">  
+    <label for="categorySelect">Selecciona Categoría:</label>  
+    <select id="categorySelect" [(ngModel)]="selectedCategoryId">  
+      <option value="" disabled>Selecciona una Categoría</option>  
+      <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>  
+    </select>  
+
+    <input [(ngModel)]="newSubcategory.name" placeholder="Nombre de nueva subcategoría" />  
+    <button (click)="addSubcategory()">Agregar Subcategoría</button>  
+  </div>  
+
+  <div *ngIf="updateSubcategoryData" class="service-form">  
+    <h3>Editar Subcategoría</h3>  
+    <input [(ngModel)]="updateSubcategoryData.name" placeholder="Editar nombre de subcategoría" />  
+    <button (click)="updateSubcategory()">Actualizar Subcategoría</button>  
+  </div>  
+
+  <div *ngIf="errorMessage" class="notification">  
+    {{ errorMessage }}  
+  </div>  
+</div>
+
+<!-- 
+<div class="container">  
+  <h2>Categorías</h2>  
+  <div class="service-form">  
+    <ul>  
+      <li *ngFor="let category of categories">  
+        {{ category.name }}  
+        <button (click)="editCategory(category)">Editar</button>  
+        <button (click)="deleteCategory(category.id)">Eliminar</button>  
+      </li>  
+    </ul>  
+
+    <input [(ngModel)]="newCategory.name" placeholder="Nombre de nueva categoría" />  
+    <button (click)="addCategory()">Agregar Categoría</button>  
+  </div>  
+
+  <div *ngIf="updateCategoryData" class="service-form">  
+    <h3>Editar Categoría</h3>  
+    <input [(ngModel)]="updateCategoryData.name" placeholder="Editar nombre de categoría" />  
+    <button (click)="updateCategory()">Actualizar Categoría</button>  
+  </div>  
+
+  <h2>Subcategorías</h2>  
+  <div class="service-form">  
+    <label for="categorySelect">Selecciona Categoría:</label>  
+    <select id="categorySelect" [(ngModel)]="selectedCategoryId">  
+      <option value="" disabled>Selecciona una Categoría</option>  
+      <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>  
+    </select>  
+
+    <input [(ngModel)]="newSubcategory.name" placeholder="Nombre de nueva subcategoría" />  
+    <button (click)="addSubcategory()">Agregar Subcategoría</button>  
+  </div>  
+
+  <div *ngIf="updateSubcategoryData" class="service-form">  
+    <h3>Editar Subcategoría</h3>  
+    <input [(ngModel)]="updateSubcategoryData.name" placeholder="Editar nombre de subcategoría" />  
+    <button (click)="updateSubcategory()">Actualizar Subcategoría</button>  
+  </div>  
+
+  <div *ngIf="errorMessage" class="notification">  
+      {{ errorMessage }}  
+  </div>  
+
+  <h3>Todas las Subcategorías</h3>  
+  <ul>  
+    <li *ngFor="let subcategory of subcategories">  
+      {{ subcategory.name }}  
+      <button (click)="editSubcategory(subcategory)">Editar</button>  
+      <button (click)="deleteSubcategory(subcategory.id)">Eliminar</button>  
+    </li>  
+  </ul>  
+</div>
+
+-->  

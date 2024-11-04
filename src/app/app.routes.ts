@@ -9,7 +9,9 @@ import { RoleSelectionComponent } from './role-selection/role-selection.componen
 import { RegisterServiceComponent } from './register-service/register-service.component';  
 import { SellerComponent } from './seller/seller.component';
 import { BuyerComponent } from './buyer/buyer.component';
-  
+import { CategorySubcategoryComponent } from './category-subcategory/category-subcategory.component';
+import { PaymentComponent } from './payment-component/payment-component.component'; // Asegúrate de usar la ruta correcta  
+
 
 export const routes: Routes = [
     
@@ -64,6 +66,18 @@ export const routes: Routes = [
     { 
         path: 'register-service', 
         component: RegisterServiceComponent 
-    }
+    },
+    // Nueva ruta para el componente de categorías y subcategorías  
+    {  
+        path: 'categories',  
+        component: CategorySubcategoryComponent,  
+        canActivate: [authGuard] // Si deseas proteger esta ruta  
+    },
+    // Nueva ruta para el componente de pagos  
+    {  
+        path: 'payments',  // Puedes ajustar la ruta como necesites  
+        component: PaymentComponent,  // Asegúrate de que el nombre sea correcto  
+        canActivate: [authGuard] // Agregar guardia si es necesario  
+    }  
 
 ];
