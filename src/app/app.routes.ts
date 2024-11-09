@@ -11,13 +11,17 @@ import { SellerComponent } from './seller/seller.component';
 import { BuyerComponent } from './buyer/buyer.component';
 import { CategorySubcategoryComponent } from './category-subcategory/category-subcategory.component';
 import { PaymentComponent } from './payment-component/payment-component.component'; // Asegúrate de usar la ruta correcta  
-
+import { NotificationsComponent } from './notifications/notifications.component'; // Asegúrate de que la ruta sea correcta 
 
 export const routes: Routes = [
     
     {
         path: 'users/page/0',
         component: UserComponent 
+    },
+    {  
+        path: 'notifications',  // Nueva ruta para el componente de notificaciones  
+        component: NotificationsComponent,
     },
     {
         path: 'role-selection',
