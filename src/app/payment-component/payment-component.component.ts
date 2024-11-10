@@ -4,6 +4,7 @@ import { PaymentDTO } from '../models/PaymentDTO';
 import { CommonModule } from '@angular/common'; // Importa CommonModule aquí  
 import { FormsModule } from '@angular/forms';   
 
+
 @Component({  
   selector: 'app-payment',  
   standalone: true,   

@@ -17,7 +17,7 @@ export class WebsocketService {
   }  
 
   initConnenctionSocket() {  
-    const url = '//localhost:8080/chat-socket';  
+    const url = 'http://localhost:8080/chat-socket';  
     const socket = new SockJS(url);  
     this.stompClient = Stomp.over(socket);  
 
@@ -29,12 +29,13 @@ export class WebsocketService {
   private subscribeToNotifications() {  
     const userId = 1; // Reemplaza con el ID del usuario autenticado  
     this.stompClient.subscribe(`/topic/user-${userId}`, (message: any) => {  
-      if (message.body) {  
-        console.log('Notificación recibida: ' + message.body);  
-        this.notificationsSubject.next(message.body);  
-      }  
+        if (message.body) {  
+            const chatMessage: ChatMessage = JSON.parse(message.body); // Parsear como ChatMessage  
+            console.log('Notificación recibida: ', chatMessage);  
+            this.notificationsSubject.next(chatMessage.message); // Enviar solo el mensaje  
+        }  
     });  
-  }  
+} 
 
   public getNotifications(): Observable<string> {  
     return this.notificationsSubject.asObservable();  

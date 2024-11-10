@@ -23,9 +23,11 @@ export class AuthService {
     return this.http.post<any>(this.url, { username, password });
   }
 
-  set user(user: any) {
-    this._user = user;
-    sessionStorage.setItem('login', JSON.stringify(user));
+  set user(user: any) {  
+    this._user = user;  
+    sessionStorage.setItem('login', JSON.stringify(user));  
+    // Guarda el ID del usuario en sessionStorage  
+    sessionStorage.setItem('userId', user.id); // Guardar el ID  
   }
 
   get user() {
@@ -36,6 +38,10 @@ export class AuthService {
       return this._user;
     }
     return this._user;
+  }
+  
+  get userId() {  
+    return this._user.user ? this._user.user.id : sessionStorage.getItem('userId');  
   }
 
   set token(token: string) {

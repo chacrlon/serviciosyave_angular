@@ -1,17 +1,35 @@
-import { Component } from '@angular/core';  
-import { Router } from '@angular/router';  
+import { Component, OnInit } from '@angular/core';  
+import { Router, ActivatedRoute } from '@angular/router';  
 import { HttpClient } from '@angular/common/http';  
-import { LocationService } from '../services/location.service'; // Asegúrate de importar el servicio  
+import { LocationService } from '../services/location.service';   
+import { NotificationsSSEComponent } from '../notifications-sse/notifications-sse.component';  
 
 @Component({  
   selector: 'app-role-selection',  
   standalone: true,  
+  imports: [NotificationsSSEComponent],  
   templateUrl: './role-selection.component.html',  
   styleUrls: ['./role-selection.component.css']  
 })  
-export class RoleSelectionComponent {  
-  constructor(private router: Router, private http: HttpClient, private locationService: LocationService) {}  
+export class RoleSelectionComponent implements OnInit {   
 
+  userId: number | undefined;  // Propiedad para almacenar el ID del usuario  
+
+  constructor(  
+    private router: Router,   
+    private http: HttpClient,   
+    private locationService: LocationService,  
+    private route: ActivatedRoute  // Inyección de ActivatedRoute  
+  ) {}  
+
+  ngOnInit(): void {  
+    // Obtener el ID del usuario de los parámetros de la ruta  
+    this.route.paramMap.subscribe(params => {  
+      this.userId = +params.get('id')!;  // Convertir el ID a número y almacenarlo  
+      console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId);  
+    });  
+  }  
+  
   selectRole(role: string) {  
     this.obtenerUbicacion(role);  
   }  
@@ -36,7 +54,7 @@ export class RoleSelectionComponent {
   navegarPorRol(role: string) {  
     if (role === 'buyer') {  
       this.router.navigate(['/buyer']);  
-    } 
+    }   
     else if (role === 'seller') {  
       this.router.navigate(['/seller']);  
     }  

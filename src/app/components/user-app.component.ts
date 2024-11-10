@@ -34,37 +34,42 @@ export class UserAppComponent implements OnInit {
     this.handlerLogin();
   }
 
-  handlerLogin() {
-    this.sharingData.handlerLoginEventEmitter.subscribe(({ username, password }) => {
-      console.log(username + ' ' + password);
+  handlerLogin() {  
+    this.sharingData.handlerLoginEventEmitter.subscribe(({ username, password }) => {  
+        console.log(username + ' ' + password);  
 
-      this.authService.loginUser({ username, password }).subscribe({
-        next: response => {
-          const token = response.token;
-          console.log(token);
-          const payload = this.authService.getPayload(token);
+        this.authService.loginUser({ username, password }).subscribe({  
+            next: response => {  
+                const token = response.token;  
+                const userId = response.userDetails.userId;  // Accede al userId desde userDetails  
+                console.log(token);  
+                console.log(userId);  
+                const payload = this.authService.getPayload(token);  
 
-          const user = { username: payload.sub };
-          const login = {
-            user,
-            isAuth: true,
-            isAdmin: payload.isAdmin
-          };
-          
-          this.authService.token = token;
-          this.authService.user = login;
-          this.router.navigate(['/role-selection']);
-        },
-        error: error => {
-          if (error.status == 401) {
-            Swal.fire('Error en el Login', error.error.message, 'error')
-          } else {
-            throw error;
-          }
-        }
-      })
-    })
-  }
+                const user = { username: payload.sub, id: userId }; // Agregas el id al objeto user  
+                const login = {  
+                    user,  
+                    isAuth: true,  
+                    isAdmin: payload.isAdmin  
+                };  
+                
+                this.authService.token = token;  
+                this.authService.user = login;  
+
+                // Navegar a RoleSelectionComponent pasando el userId como parámetro  
+                this.router.navigate(['/role-selection', { id: userId }]);  
+
+            },  
+            error: error => {  
+                if (error.status == 401) {  
+                    Swal.fire('Error en el Login', error.error.message, 'error');  
+                } else {  
+                    throw error;  
+                }  
+            }  
+        });  
+    });  
+}
 
   pageUsersEvent() {
     this.sharingData.pageUsersEventEmitter.subscribe(pageable => {
