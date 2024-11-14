@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,9 @@ export class AuthService {
     isAdmin: false,
     user: undefined
   }
+
+  private authStatusSubject = new BehaviorSubject<boolean>(false);  
+  authStatus$ = this.authStatusSubject.asObservable();  
 
   constructor(private http: HttpClient) { }
 
@@ -74,15 +78,16 @@ export class AuthService {
     return this.user.isAuth;
   }
 
-  logout() {
-    this._token = undefined;
-    this._user = {
-      isAuth: false,
-      isAdmin: false,
-      user: undefined
-    };
-    sessionStorage.removeItem('login');
-    sessionStorage.removeItem('token');
-  }
+  logout() {  
+    this._token = undefined;  
+    this._user = {  
+        isAuth: false,  
+        isAdmin: false,  
+        user: undefined  
+    };  
+    sessionStorage.removeItem('login');  
+    sessionStorage.removeItem('token');  
+    this.authStatusSubject.next(false); // Notifica a los suscriptores que el usuario ha cerrado sesión  
+}  
 
 }

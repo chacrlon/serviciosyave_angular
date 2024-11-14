@@ -2,12 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';  
 import { HttpClient } from '@angular/common/http';  
 import { LocationService } from '../services/location.service';   
-import { NotificationsSSEComponent } from '../notifications-sse/notifications-sse.component';  
+import { MatDialog } from '@angular/material/dialog';  
+import { NotificationsseService } from '../notifications-sse/notificationsse.service';  
+import { Notification } from '../models/Notification';  
+import { NotificationModalComponent } from '../notifications-sse/notification-modal/notification-modal.component'; // Asegúrate de que esta ruta sea correcta  
+import { NotificationsSSEComponent } from '../notifications-sse/notifications-sse.component'; // Asegúrate de importar el componente  
+
 
 @Component({  
   selector: 'app-role-selection',  
   standalone: true,  
-  imports: [NotificationsSSEComponent],  
+  imports: [NotificationsSSEComponent], // Asegúrate de incluir el componente aquí  
   templateUrl: './role-selection.component.html',  
   styleUrls: ['./role-selection.component.css']  
 })  
@@ -19,7 +24,9 @@ export class RoleSelectionComponent implements OnInit {
     private router: Router,   
     private http: HttpClient,   
     private locationService: LocationService,  
-    private route: ActivatedRoute  // Inyección de ActivatedRoute  
+    private route: ActivatedRoute,  // Inyección de ActivatedRoute  
+    private dialog: MatDialog, // Inyección de MatDialog para abrir el modal  
+    private notificationsService: NotificationsseService // Inyección del servicio de notificaciones  
   ) {}  
 
   ngOnInit(): void {  
@@ -28,8 +35,46 @@ export class RoleSelectionComponent implements OnInit {
       this.userId = +params.get('id')!;  // Convertir el ID a número y almacenarlo  
       console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId);  
     });  
+
+    // Inicializar la conexión para recibir notificaciones  
+    this.initializeEventSource();  
   }  
   
+  initializeEventSource(): void {  
+    const eventSource = new EventSource('http://localhost:8080/notifications');  
+    
+    eventSource.onmessage = (event) => {  
+      const message: string = event.data;  
+      const newNotification: Notification = {  
+        id: Date.now(),  
+        userId: this.userId!, // Asegúrate de que userId esté definido  
+        message: message,  
+        read: false  
+      };  
+      this.openNotificationModal(newNotification); // Mostrar el modal con la nueva notificación  
+    };
+    eventSource.onerror = (error) => {  
+      console.error('Error en EventSource:', error);  
+      eventSource.close(); // Cerrar la conexión si hay un error  
+  };   
+  }  
+
+  openNotificationModal(notification: Notification): void {  
+    const dialogRef = this.dialog.open(NotificationModalComponent, {  
+      data: notification // Pasar la notificación al modal  
+    });  
+
+    dialogRef.afterClosed().subscribe(() => {  
+      this.markAsRead(notification.id); // Marcar como leída al cerrar el modal  
+    });  
+  }  
+
+  markAsRead(notificationId: number): void {  
+    this.notificationsService.markAsRead(notificationId).subscribe(() => {  
+      // Aquí puedes manejar la lógica después de marcar como leída  
+    });  
+  }  
+
   selectRole(role: string) {  
     this.obtenerUbicacion(role);  
   }  
