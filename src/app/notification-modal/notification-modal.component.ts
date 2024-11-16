@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';  
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';  
-import { Notification } from '../../models/Notification'; // Importación correcta  
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';    
+import { Notification } from '../models/Notification';  
 
 @Component({  
   selector: 'app-notification-modal',  
@@ -16,5 +16,5 @@ export class NotificationModalComponent {
 
   onClose(): void {  
     this.dialogRef.close();  
-  }  
+  }   
 }

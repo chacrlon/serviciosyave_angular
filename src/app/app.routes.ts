@@ -12,7 +12,7 @@ import { BuyerComponent } from './buyer/buyer.component';
 import { CategorySubcategoryComponent } from './category-subcategory/category-subcategory.component';
 import { PaymentComponent } from './payment-component/payment-component.component'; // Asegúrate de usar la ruta correcta  
 import { NotificationsComponent } from './notifications/notifications.component'; // Asegúrate de que la ruta sea correcta 
-import { NotificationsSSEComponent } from './notifications-sse/notifications-sse.component'; // Asegúrate de que la ruta sea correcta 
+import { NotificationModalComponent } from './notification-modal/notification-modal.component'; // Asegúrate de que la ruta sea correcta 
 
 export const routes: Routes = [
     
@@ -26,8 +26,8 @@ export const routes: Routes = [
         component: NotificationsComponent,  
     },*/
     {  
-        path: 'notifications-sse',  
-        component: NotificationsSSEComponent,  
+        path: 'notification-modal',  
+        component: NotificationModalComponent,  
     },
     {
         path: 'role-selection',

@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core'; 
+import { Injectable } from '@angular/core';   
 import { HttpClient } from '@angular/common/http';  
 import { Observable } from 'rxjs';  
-import { Notification } from '../models/Notification'; // Asegúrate de crear un modelo para Notification  
+import { Notification } from '../models/Notification';  
 
-@Injectable({
-  providedIn: 'root'
-})
-export class NotificationsseService {
-  private baseUrl = 'http://localhost:8080/api/notifications'; 
+@Injectable({  
+  providedIn: 'root'  
+})  
+export class NotificationsseService {  
+  private baseUrl = 'http://localhost:8080/api/notifications';   
 
   constructor(private http: HttpClient) {}  
 
@@ -20,4 +20,4 @@ export class NotificationsseService {
   markAsRead(notificationId: number): Observable<void> {  
     return this.http.put<void>(`${this.baseUrl}/read/${notificationId}`, {});  
   }  
-}  
+}

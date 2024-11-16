@@ -1,0 +1,50 @@
+/* notification-modal.component.css */  
+.modal {  
+    display: block; /* Asegúrate de que el modal esté visible */  
+    position: fixed; /* Mantener en su lugar */  
+    z-index: 1; /* Estar encima de otros elementos */  
+    left: 0;  
+    top: 0;  
+    width: 100%; /* Ancho completo */  
+    height: 100%; /* Altura completa */  
+    overflow: auto; /* Habilitar desplazamiento si es necesario */  
+    background-color: rgba(0, 0, 0, 0.4); /* Fondo negro con opacidad */  
+  }  
+  
+  .modal-content {  
+    background-color: #ffffff; /* Fondo blanco para el contenido del modal */  
+    margin: 15% auto; /* Centrado vertical y horizontal */  
+    padding: 20px; /* Espaciado interno */  
+    border: 1px solid #888; /* Borde gris claro */  
+    width: 80%; /* Ancho del modal */  
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra para el modal */  
+    border-radius: 8px; /* Bordes redondeados */  
+  }  
+  
+  .modal-header {  
+    background-color: #0056b3; /* Color de fondo azul */  
+    color: white; /* Color del texto */  
+    padding: 10px; /* Espaciado interno */  
+    border-radius: 5px 5px 0 0; /* Bordes redondeados en la parte superior */  
+  }  
+  
+  .modal-footer {  
+    padding: 10px; /* Espaciado interno */  
+    text-align: right; /* Alinear el contenido a la derecha */  
+  }  
+  
+  button {  
+    padding: 10px 15px; /* Espaciado interno del botón */  
+    margin: 5px; /* Margen alrededor del botón */  
+    background-color: #0056b3; /* Color de fondo azul */  
+    color: white; /* Color del texto */  
+    border: none; /* Sin borde */  
+    border-radius: 5px; /* Bordes redondeados */  
+    cursor: pointer; /* Cambiar cursor al pasar el mouse */  
+    transition: background-color 0.3s, transform 0.3s; /* Transiciones suaves */  
+  }  
+  
+  button:hover {  
+    background-color: #004494; /* Color más oscuro al pasar el mouse */  
+    transform: translateY(-2px); /* Efecto de elevación al pasar el mouse */  
+  }
