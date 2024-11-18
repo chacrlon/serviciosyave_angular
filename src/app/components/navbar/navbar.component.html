@@ -24,12 +24,17 @@
                 <!-- Enlace para acceder a Categorías -->  
                 <li class="nav-item" *ngIf="login.isAuth">  
                     <a class="nav-link" [routerLink]="['/categories']">Categorías</a>  
-                </li> 
+                </li>   
                 
-                <!-- Enlace para acceder a Categorías -->  
+                <!-- Enlace para acceder a Pagos -->  
                 <li class="nav-item" *ngIf="login.isAuth">  
                     <a class="nav-link" [routerLink]="['/payments']">Pagos</a>  
-                </li> 
+                </li>   
+
+                <!-- Enlace para acceder a Notificaciones -->  
+                <li class="nav-item" *ngIf="login.isAuth">  
+                    <a class="nav-link" [routerLink]="['/notification-caller']">Notificaciones</a>  
+                </li>   
             </ul>  
         </div>  
         <div class="collapse navbar-collapse justify-content-end" id="navbarNavAuth">  

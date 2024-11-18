@@ -1,0 +1,10 @@
+<!-- notification-caller.component.html -->  
+<div>  
+    <h2>Notificaciones</h2>  
+    <button (click)="isModalOpen = true">Ver Notificaciones</button>  
+  
+    <app-notification-real-time-modal *ngIf="isModalOpen"   
+      [notifications]="notifications"   
+      (close)="closeModal()">  
+    </app-notification-real-time-modal>  
+</div>

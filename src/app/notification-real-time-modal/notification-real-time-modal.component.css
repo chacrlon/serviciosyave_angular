@@ -1,0 +1,20 @@
+/* notification-modal.component.css */  
+.fixed {  
+    position: fixed;  
+  }  
+  
+  .bg-white {  
+    background-color: white;  
+  }  
+  
+  .rounded-lg {  
+    border-radius: 0.5rem;  
+  }  
+  
+  .p-4 {  
+    padding: 1rem;  
+  }  
+  
+  .mt-4 {  
+    margin-top: 1rem;  
+  }

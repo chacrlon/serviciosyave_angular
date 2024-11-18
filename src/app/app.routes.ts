@@ -11,8 +11,9 @@ import { SellerComponent } from './seller/seller.component';
 import { BuyerComponent } from './buyer/buyer.component';
 import { CategorySubcategoryComponent } from './category-subcategory/category-subcategory.component';
 import { PaymentComponent } from './payment-component/payment-component.component'; // Asegúrate de usar la ruta correcta  
-import { NotificationsComponent } from './notifications/notifications.component'; // Asegúrate de que la ruta sea correcta 
+import { NotificationRealTimeModalComponent } from './notification-real-time-modal/notification-real-time-modal.component'; // Asegúrate de que la ruta sea correcta  
 import { NotificationModalComponent } from './notification-modal/notification-modal.component'; // Asegúrate de que la ruta sea correcta 
+import { NotificationCallerComponent } from './notification-caller/notification-caller.component'; // Asegúrate de que la ruta sea correcta  
 
 export const routes: Routes = [
     
@@ -20,11 +21,14 @@ export const routes: Routes = [
         path: 'users/page/0',
         component: UserComponent 
     },   
-    /*
     {  
-        path: 'notifications',  
-        component: NotificationsComponent,  
-    },*/
+        path: 'notification-caller',  // Nueva ruta para el componente NotificationCaller  
+        component: NotificationCallerComponent,  
+    }, 
+    {  
+        path: 'notification-modal',  
+        component: NotificationRealTimeModalComponent, // Cambia aquí a NotificationRealTimeModalComponent  
+    },  
     {  
         path: 'notification-modal',  
         component: NotificationModalComponent,  
