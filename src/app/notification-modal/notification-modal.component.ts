@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';  
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';    
 import { Notification } from '../models/Notification';  
+import { Router } from '@angular/router';  
 
 @Component({  
   selector: 'app-notification-modal',  
@@ -12,17 +13,20 @@ export class NotificationModalComponent {
 
   constructor(  
     public dialogRef: MatDialogRef<NotificationModalComponent>,  
-    @Inject(MAT_DIALOG_DATA) public data: Notification  
-) {  
-    console.log('Datos de NotificationModalComponent:', this.data); // Verifica que data tenga el mensaje  
-    if (this.data) {  
-        console.log('Mensaje de NotificationModalComponent:', this.data.message); // Verifica el mensaje  
-    } else {  
-        console.error('No se recibieron datos en el modal');  
-    }  
-}
+    @Inject(MAT_DIALOG_DATA) public data: Notification,  
+    private router: Router  
+  ) {  
+    console.log('Datos de NotificationModalComponent:', this.data);   
+  }  
 
   onClose(): void {  
     this.dialogRef.close();  
-  }   
+  }  
+
+  contactUser(): void {  
+    const receiverId = this.data.userId2;  
+    // Navegar correctamente con los parámetros como segmentos de la URL  
+    this.router.navigate(['/chat', this.data.userId, receiverId]);  
+    this.dialogRef.close();   
+  }  
 }

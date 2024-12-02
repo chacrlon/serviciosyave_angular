@@ -57,6 +57,30 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
     this.notificationsseService.connectToSSE();  
   }  
 
+  ngAfterViewInit() { 
+
+    this.subscriptions.push(  
+      this.route.paramMap.subscribe(params => {  
+        this.userId = +params.get('id')!;  
+        console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId);  
+        this.loadNotifications();  
+      })  
+    );  
+  
+    this.subscriptions.push(  
+      this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
+        if (notification && notification.userId === this.userId) {  
+          console.log('Nueva notificación recibida:', notification);  
+          this.notifications.push(notification);  
+          this.cdr.detectChanges();  
+        }  
+      })  
+    );  
+
+    this.notificationsseService.connectToSSE();  
+    }  
+
+
   loadNotifications(): void {  
     if (!this.userId) {  
       console.warn('No se puede cargar notificaciones: userId no definido');  
