@@ -40,7 +40,7 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
       this.route.paramMap.subscribe(params => {  
         this.userId = +params.get('id')!;  
         console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId);  
-        this.loadNotifications();  
+        this.loadNotifications();
       })  
     );  
   
@@ -54,7 +54,11 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
       })  
     );  
 
-    this.notificationsseService.connectToSSE();  
+    this.notificationsseService.connectToSSE().subscribe(
+      success => {
+        this.loadNotifications();
+      }
+    );  
   }  
 
   ngAfterViewInit() { 
@@ -63,7 +67,6 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
       this.route.paramMap.subscribe(params => {  
         this.userId = +params.get('id')!;  
         console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId);  
-        this.loadNotifications();  
       })  
     );  
   
@@ -76,8 +79,6 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
         }  
       })  
     );  
-
-    this.notificationsseService.connectToSSE();  
     }  
 
 
@@ -94,7 +95,8 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
           const unreadNotifications = notifications.filter(n => !n.read);  
           if (unreadNotifications.length > 0) {  
             const newNotification = unreadNotifications[0];  
-            console.log('Mostrando notificación no leída:', newNotification);  
+            console.log('Mostrando notificación no leída:', newNotification);
+            this.notifications.push(newNotification);
             this.openNotificationModal(newNotification);  
           } else {  
             console.log('No hay notificaciones no leídas');  
