@@ -25,6 +25,7 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
   userId: number | undefined;  
   notifications: Notification[] = [];  
   private subscriptions: Subscription[] = [];  
+  private isModalOpen = false; // Variable para rastrear el estado del modal
 
   constructor(  
     private cdr: ChangeDetectorRef,  
@@ -82,43 +83,50 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
     }  
 
 
-  loadNotifications(): void {  
-    if (!this.userId) {  
-      console.warn('No se puede cargar notificaciones: userId no definido');  
-      return;  
-    }  
-
-    this.subscriptions.push(  
-      this.notificationsseService.getUserNotifications(this.userId).subscribe({  
-        next: (notifications: Notification[]) => {  
-          console.log('Notificaciones recuperadas:', notifications);  
-          const unreadNotifications = notifications.filter(n => !n.read);  
-          if (unreadNotifications.length > 0) {  
-            const newNotification = unreadNotifications[0];  
-            console.log('Mostrando notificación no leída:', newNotification);
-            this.notifications.push(newNotification);
-            this.openNotificationModal(newNotification);  
-          } else {  
-            console.log('No hay notificaciones no leídas');  
+    loadNotifications(): void {  
+      if (!this.userId) {  
+        console.warn('No se puede cargar notificaciones: userId no definido');  
+        return;  
+      }  
+    
+      this.subscriptions.push(  
+        this.notificationsseService.getUserNotifications(this.userId).subscribe({  
+          next: (notifications: Notification[]) => {  
+            console.log('Notificaciones recuperadas:', notifications);  
+            
+            // Filtrar y obtener solo la primera notificación no leída  
+            const unreadNotifications = notifications.filter(n => !n.read);  
+            
+            if (unreadNotifications.length > 0) {  
+              const newNotification = unreadNotifications[0];  
+              console.log('Mostrando notificación no leída:', newNotification);  
+              this.notifications.push(newNotification);  
+              this.openNotificationModal(newNotification);  
+            } else {  
+              console.log('No hay notificaciones no leídas');  
+            }  
+          },  
+          error: (error: Error) => {  
+            console.error('Error al cargar las notificaciones:', error);  
           }  
-        },  
-        error: (error: Error) => {  
-          console.error('Error al cargar las notificaciones:', error);  
-        }  
-      })  
-    );  
-  }  
+        })  
+      );  
+    }
 
   openNotificationModal(notification: Notification): void {  
+    if (this.isModalOpen) return; // Si ya está abierto, no hacer nada  
+  
+    this.isModalOpen = true; // Marcar el modal como abierto  
     console.log('Abriendo modal con la notificación:', notification);  
     const dialogRef = this.dialog.open(NotificationModalComponent, {  
       data: notification,  
       width: '400px',  
       disableClose: true  
     });  
-
+  
     this.subscriptions.push(  
       dialogRef.afterClosed().subscribe(() => {  
+        this.isModalOpen = false; // Marcar el modal como cerrado al cerrarse el diálogo  
         if (notification.id) {  
           console.log('Modal cerrado. Marcando notificación como leída:', notification.id);  
           this.markAsRead(notification.id);  
@@ -140,14 +148,7 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
     );  
   }  
 
-  markNotificationAsRead(notification: Notification): void {  
-  if (notification.id) { // Verifica que el ID no sea undefined  
-    this.markAsRead(notification.id); // Marca la notificación como leída  
-    this.notifications = this.notifications.filter(n => n.id !== notification.id); // Elimina la notificación de la lista  
-  } else {  
-    console.error('No se puede marcar la notificación como leída: ID es undefined', notification);  
-  }  
-} 
+ 
 
   ngOnDestroy(): void {  
     console.log('Limpiando recursos del componente');  

@@ -12,15 +12,12 @@ export class NotificationsseService {
   private notificationSubject = new Subject<Notification>();  
   private connectionStatus = new BehaviorSubject<boolean>(false);  
 
-  constructor(
-    private http: HttpClient,
-    private ngZone: NgZone
-  ) {}
+  constructor(private http: HttpClient, private ngZone: NgZone) {}  
 
   // Getters para los observables  
-  get notifications$(): Observable<Notification> {
+  get notifications$(): Observable<Notification> {  
     return this.notificationSubject.asObservable();  
-  }
+  }  
 
   get connectionStatus$(): Observable<boolean> {  
     return this.connectionStatus.asObservable();  
@@ -29,30 +26,52 @@ export class NotificationsseService {
   // Métodos para SSE  
   connectToSSE(): Observable<any> {  
     if (this.eventSource) {  
-      this.disconnectSSE();
+      this.disconnectSSE();  
     }  
-    
-    return new Observable((observer) => {
-      const eventSource = new EventSource(`${this.baseUrl}/notifications`);
-      // Escuchar mensajes del servidor
-      eventSource.onmessage = (event) => {
-        this.ngZone.run(() => {
-          this.notificationSubject.next(event.data);  
-          observer.next(JSON.parse(event.data));
-        });
-      };
 
-      // Manejar errores
-      eventSource.onerror = (error) => {
-        this.ngZone.run(() => {
-          observer.error(error);
-        });
-      };
+    return new Observable((observer) => {  
+      this.eventSource = new EventSource(`${this.baseUrl}/notifications`);  
+      
+      this.eventSource.onopen = () => {  
+        console.log('Conexión SSE establecida');  
+        this.connectionStatus.next(true);  
+      };  
 
-      // Cerrar conexión al cancelar la suscripción
-      return () => {
-        eventSource.close();
-      };
+      this.eventSource.onmessage = (event) => {  
+        this.ngZone.run(() => {  
+          try {  
+            const data = JSON.parse(event.data);  
+            console.log('Notificación SSE recibida:', data);  
+            this.notificationSubject.next(data);  
+            observer.next(data); // Emitir la notificación al observer  
+          } catch (error) {  
+            console.error('Error al procesar notificación SSE:', error);  
+            observer.error(error); // Pasar el error al observer  
+          }  
+        });  
+      };  
+
+      this.eventSource.onerror = (error) => {  
+        console.error('Error en conexión SSE:', error);  
+        this.connectionStatus.next(false);  
+        this.eventSource?.close();  
+
+        // Pasar el error al observer  
+        this.ngZone.run(() => {  
+          observer.error(error);  
+        });  
+
+        // Reintentar conexión después de 5 segundos  
+        setTimeout(() => {  
+          console.log('Reintentando conexión SSE...');  
+          this.connectToSSE().subscribe(observer); // Manejar reconexión  
+        }, 5000);  
+      };  
+
+      // Cerrar conexión al cancelar la suscripción  
+      return () => {  
+        this.eventSource?.close();  
+      };  
     });  
   }  
 

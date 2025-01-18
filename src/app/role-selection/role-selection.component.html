@@ -8,20 +8,5 @@
       <img src="assets/proveedor.jpg" alt="Seller" class="small-image"/>  
     </button>  
   </div>  
-
-  <!-- Sección para mostrar las notificaciones en tiempo real -->  
-  <div class="mt-4 w-full">  
-    <h3 class="text-lg font-bold">Notificaciones en Tiempo Real</h3>  
-    <div *ngIf="notifications.length > 0; else noNotifications">  
-      <ul>  
-        <li *ngFor="let notification of notifications" class="border-b py-2 flex justify-between items-center">  
-          <span>{{ notification.message }} (ID: {{ notification.id }})</span>  
-          <button mat-button (click)="markNotificationAsRead(notification)">Cerrar</button>  
-        </li>  
-      </ul>  
-    </div>  
-    <ng-template #noNotifications>  
-      <p>No hay notificaciones nuevas.</p>  
-    </ng-template>  
-  </div>  
+  
 </div>

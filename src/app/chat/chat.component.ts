@@ -24,28 +24,26 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {  
     this.userId = this.route.snapshot.params["userId"];  
-    this.receiverId = this.route.snapshot.params["receiverId"]; // Asegúrate de que esto coincida con tu ruta  
-    const roomId = [this.userId, this.receiverId].sort().join('-'); // Genera el Room ID  
-    this.chatService.joinRoom(roomId); // Usa el Room ID generado  
-    this.listenerMessage();  
-    console.log("El userId es : " + this.userId);  
-    console.log("El receiverId es : " + this.receiverId); 
-    console.log("El roomId es: " + roomId);  
-    console.log("El chatService es: " + this.chatService);  
+    this.receiverId = this.route.snapshot.params["receiverId"];
+    const roomId = [this.userId, this.receiverId].sort().join('-');
+    this.chatService.joinRoom(roomId);
+    this.listenerMessage();   
   }  
 
   sendMessage() {  
-    const chatMessage: ChatMessage = {  
-        message: this.messageInput,  
-        sender: this.userId,  
-        receiver: this.receiverId, // Cambia esto por el ID real del receptor  
-        user: this.userId // O el ID del usuario que envía el mensaje  
-    };  
-    
-    const roomId = [this.userId, this.receiverId].sort().join('-'); // Genera el Room ID  
-    this.chatService.sendMessage(roomId, chatMessage); // Usa el Room ID generado  
-    this.messageInput = '';  
-  }  
+    if (this.messageInput.trim()) {  
+        const chatMessage: ChatMessage = {  
+            message: this.messageInput,  
+            sender: this.userId,  
+            receiver: this.receiverId,  
+            user: this.userId   
+        };  
+
+        const roomId = [this.userId, this.receiverId].sort().join('-');  
+        this.chatService.sendMessage(roomId, chatMessage);  
+        this.messageInput = '';  
+    }  
+} 
 
   listenerMessage() {  
     this.chatService.getMessageSubject().subscribe((messages: any) => {  

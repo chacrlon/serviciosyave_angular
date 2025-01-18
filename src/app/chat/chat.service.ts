@@ -28,22 +28,29 @@ export class ChatService {
     });  
 }
 
-  joinRoom(roomId: string) {
-    this.stompClient.connect({}, ()=>{
-      this.stompClient.subscribe(`/topic/${roomId}`, (messages: any) => {
-        const messageContent = JSON.parse(messages.body);
-        const currentMessage = this.messageSubject.getValue();
-        currentMessage.push(messageContent);
+joinRoom(roomId: string) {  
+  this.stompClient.connect({}, (frame: any) => {  
+    console.log('Connected: ' + frame);  
+    
+    // Hacer la suscripción aquí  
+    this.stompClient.subscribe(`/topic/${roomId}`, (message: any) => {  
+      const messageContent = JSON.parse(message.body);  
+      const currentMessage = this.messageSubject.getValue();  
+      currentMessage.push(messageContent);  
+      this.messageSubject.next(currentMessage);  
+    });  
+  }, (error: any) => {  
+    console.error('Error de conexión:', error);  
+  });  
+}
 
-        this.messageSubject.next(currentMessage);
-
-      })
-    })
-  }
-
-  sendMessage(roomId: string, chatMessage: ChatMessage) {
-    this.stompClient.send(`/app/chat/${roomId}`, {}, JSON.stringify(chatMessage))
-  }
+sendMessage(roomId: string, chatMessage: ChatMessage) {  
+  if (this.stompClient && this.stompClient.connected) {  
+      this.stompClient.send(`/app/chat/${roomId}`, {}, JSON.stringify(chatMessage));  
+  } else {  
+      console.error('Error: STOMP client is not connected.');  
+  }  
+}
 
   getMessageSubject(){
     return this.messageSubject.asObservable();
