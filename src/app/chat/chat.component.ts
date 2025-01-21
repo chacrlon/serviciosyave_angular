@@ -37,7 +37,7 @@ export class ChatComponent implements OnInit {
             console.log('Usuario autenticado:', response);  
             // Aquí puedes establecer el usuario autenticado si es necesario  
             // Por ejemplo, almacena el userId desde la respuesta  
-            this.userId = response.userId; // Ajusta según tu modelo de respuesta  
+            this.userId = response.id; // Ajusta según tu modelo de respuesta  
             this.initializeChat(); // Llamar a la inicialización del chat después de autenticarse  
           },  
           error: error => {  

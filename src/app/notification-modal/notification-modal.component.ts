@@ -54,7 +54,7 @@ export class NotificationModalComponent {
                 this.http.post('http://localhost:8080/api/email/send', emailRequest)  
                     .subscribe(response => {  
                         console.log('Correo enviado:', response);  
-                        this.router.navigate(['/chat', this.data.userId, receiverId]);  
+                        this.router.navigate(['chat', this.data.userId, receiverId]);  
                         this.dialogRef.close();  
                     }, error => {  
                         console.error('Error al enviar el correo:', error);  

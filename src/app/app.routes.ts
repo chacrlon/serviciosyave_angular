@@ -24,6 +24,10 @@ export const routes: Routes = [
         path: 'chat/:userId/:receiverId', // Asegúrate de que esto coincida con la forma en que estás pasando los parámetros  
         component: ChatComponent   
     },
+    {   
+        path: 'chat/invite',
+        component: ChatComponent
+    },
     {  
         path: 'notification-modal',  
         component: NotificationModalComponent,  
