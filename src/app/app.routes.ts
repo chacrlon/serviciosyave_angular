@@ -13,6 +13,7 @@ import { CategorySubcategoryComponent } from './category-subcategory/category-su
 import { PaymentComponent } from './payment-component/payment-component.component'; // Asegúrate de usar la ruta correcta  
 import { NotificationModalComponent } from './notification-modal/notification-modal.component'; // Asegúrate de que la ruta sea correcta 
 import { ChatComponent } from './chat/chat.component'; // Asegúrate de importar el componente  
+import { ChatContactComponent } from './chat-contact/chat-contact.component';
 
 export const routes: Routes = [
     
@@ -26,7 +27,7 @@ export const routes: Routes = [
     },
     {   
         path: 'chat/invite',
-        component: ChatComponent
+        component: ChatContactComponent
     },
     {  
         path: 'notification-modal',  

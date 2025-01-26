@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
@@ -27,8 +27,13 @@ export class AuthService {
     return this.http.post<any>(this.url, { username, password });
   }
 
-  loginWithToken(token: string): Observable<any> {  
-    return this.http.post('http://localhost:8080/api/email/auth/token', { token });  
+  loginWithToken(token: string): Observable<any> {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` });
+
+    let options = { headers: headers };
+    return this.http.post('http://localhost:8080/api/email/auth/token', { token }, options);  
   }
 
   set user(user: any) {  

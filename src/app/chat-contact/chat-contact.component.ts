@@ -1,46 +1,49 @@
 import { Component, inject, OnInit } from '@angular/core';  
 import { ActivatedRoute, Router } from '@angular/router';  
 import { ChatMessage } from '../models/chat-message';  
-import { ChatService } from '../chat/chat.service';  
+import { ChatContactService } from '../chat-contact/chat-contact.service';  
 import { AuthService } from '../services/auth.service';  
 import { CommonModule } from '@angular/common';  
 import { FormsModule } from '@angular/forms';   
 
 @Component({  
-  selector: 'app-chat',  
+  selector: 'app-chat-contact',  
   standalone: true,  
-  imports: [CommonModule, FormsModule],  
-  templateUrl: './chat.component.html',  
-  styleUrls: ['./chat.component.css']  
-})  
-export class ChatComponent implements OnInit {  
+  templateUrl: './chat-contact.component.html',  
+  styleUrls: ['./chat-contact.component.css'],  
+  imports: [CommonModule, FormsModule]
+})
+export class ChatContactComponent implements OnInit {  
   
-  messageInput: string = '';  
-  userId: string = "";  
+  messageInput: string = '';
+  userId: string = "";
   receiverId: string = "";  
   messageList: any[] = [];  
-  private token = inject(AuthService).token;
-  
 
   constructor(  
-    private chatService: ChatService,  
-    private route: ActivatedRoute,  
+    private chatService: ChatContactService,  
+    private route: ActivatedRoute,
     private authService: AuthService,  
     private router: Router  
   ) {}  
 
   ngOnInit(): void {  
     // Obtener el token de la URL al cargar el componente  
-    this.route.queryParams.subscribe(params => {  
-      const token = this.token;
-      if (token) {  
+    // this.userId = this.route.snapshot.params["userId"]; // Ajusta según tu modelo de respuesta
+    // this.receiverId = this.route.snapshot.params["receiverId"];    
+    this.route.queryParams.subscribe(params => {
+      const token = params['token'];
+      this.userId = params['userId'];
+      this.receiverId = params['receiverId'];
+      sessionStorage.setItem('token', token);
+      console.log("token", token);
+      
+      if (token) {
         this.authService.loginWithToken(token).subscribe({  
           next: response => {
-            this.userId = this.authService.userId; // Ajusta según tu modelo de respuesta
-            this.receiverId = this.route.snapshot.params["receiverId"];    
             this.chatService.initConnenctionSocket(this.userId, this.receiverId);
             this.listenerMessage();
-          },  
+          },
           error: error => {  
             console.error('Error al autenticar con token:', error);  
             // Redirigir o manejar el error según lo necesites  
