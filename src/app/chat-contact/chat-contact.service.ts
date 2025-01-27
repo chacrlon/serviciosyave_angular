@@ -7,12 +7,13 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService {
+export class ChatContactService {
   private stompClient: any
   private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
   private isConnected: boolean = false;
 
-  constructor() { }
+  constructor() {}
+
 
   initConnenctionSocket(userId: string, receiverId: string) {  
     const url = `http://localhost:8080/chat-socket`;  
