@@ -10,19 +10,33 @@ import { RegisterServiceComponent } from './register-service/register-service.co
 import { SellerComponent } from './seller/seller.component';
 import { BuyerComponent } from './buyer/buyer.component';
 import { CategorySubcategoryComponent } from './category-subcategory/category-subcategory.component';
-import { PaymentComponent } from './payment-component/payment-component.component'; // Asegúrate de usar la ruta correcta  
-import { NotificationModalComponent } from './notification-modal/notification-modal.component'; // Asegúrate de que la ruta sea correcta 
-import { ChatComponent } from './chat/chat.component'; // Asegúrate de importar el componente  
+import { PaymentComponent } from './payment-component/payment-component.component';
+import { NotificationModalComponent } from './notification-modal/notification-modal.component';
+import { ChatComponent } from './chat/chat.component';
+import { NecesitoComponent } from './necesito/necesito.component';
+import { MoneyNowComponent } from './money-now/money-now.component';
+import { ChatContactComponent } from './chat-contact/chat-contact.component';
 
 export const routes: Routes = [
-    
     {
         path: 'users/page/0',
         component: UserComponent 
+    },
+    { 
+        path: 'moneynow', 
+        component: MoneyNowComponent 
+    },
+    {
+        path: 'necesito',
+        component: NecesitoComponent
     },  
     {   
-        path: 'chat/:userId/:receiverId', // Asegúrate de que esto coincida con la forma en que estás pasando los parámetros  
+        path: 'chat/:userId/:receiverId', 
         component: ChatComponent   
+    },
+    {   
+        path: 'chat/invite',
+        component: ChatContactComponent
     },
     {  
         path: 'notification-modal',  
@@ -70,22 +84,20 @@ export const routes: Routes = [
     {  
         path: 'seller',  
         component: SellerComponent,
-        canActivate: [authGuard] // Protegiendo la ruta  
+        canActivate: [authGuard]
     },  
     { 
         path: 'register-service', 
         component: RegisterServiceComponent 
     },
-    // Nueva ruta para el componente de categorías y subcategorías  
     {  
         path: 'categories',  
         component: CategorySubcategoryComponent,  
-        canActivate: [authGuard] // Si deseas proteger esta ruta  
+        canActivate: [authGuard]
     },
-    // Nueva ruta para el componente de pagos  
     {  
-        path: 'payments',  // Puedes ajustar la ruta como necesites  
-        component: PaymentComponent,  // Asegúrate de que el nombre sea correcto  
+        path: 'payments',
+        component: PaymentComponent,
         canActivate: [authGuard] // Agregar guardia si es necesario  
     }  
 

@@ -1,7 +1,14 @@
-import { Component } from '@angular/core';  
+import { Component, OnInit } from '@angular/core';  
 import { CommonModule } from '@angular/common';  
 import { HttpClient } from '@angular/common/http';  
 import { FormsModule } from '@angular/forms';   
+import { Router, ActivatedRoute } from '@angular/router'; 
+import { LocationService } from '../services/location.service'; 
+
+interface GeolocationError {  
+  code: number;  
+  message: string;  
+} 
 
 @Component({  
   selector: 'app-buyer',  
@@ -10,7 +17,8 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './buyer.component.html',  
   styleUrls: ['./buyer.component.css']  
 })  
-export class BuyerComponent {  
+export class BuyerComponent implements OnInit{  
+  userId: number | undefined;  
   services: any[] = [];   
   selectedService: any;   
   modalVisible: boolean = false;   
@@ -43,11 +51,52 @@ export class BuyerComponent {
   // Para almacena la ubicación  
   location: { latitude: number; longitude: number } | null = null;  
 
-  constructor(private http: HttpClient) {  
+  constructor(private http: HttpClient, private locationService: LocationService, private router: Router, private route: ActivatedRoute) {  
+    // No es necesario llamar a loadServices aquí  
+  }  
+
+  ngOnInit(): void { // Implementar ngOnInit  
+    this.route.queryParams.subscribe(params => {  
+      this.userId = +params['id']; // Obtener el userId de los parámetros de consulta  
+      console.log('User ID recibido en BuyerComponent:', this.userId);  
+    });  
+
     this.loadServices();  
     this.loadExchangeRate(); // Llamar al método para cargar el tipo de cambio  
+  } 
+// Acceder a la interfaz para publicar una necesidad y ofertar un monto, esto es para rol de buyer  
+  publicarNecesidad(): void {  
+    console.log('Publicando necesidad...');  
+    // Puedes abrir un modal aquí o redirigir a otra página  
+    this.router.navigate(['/necesito'], { queryParams: { id: this.userId } });   // Asegúrate de que esta ruta esté definida en tu enrutador  
+  }
+
+  obtenerUbicacion(role: string): void {  
+    console.log('Obteniendo ubicación para el rol:', role);  
     
+    if (!navigator.geolocation) {  
+      console.warn('La geolocalización no está soportada. Navegando por rol:', role);   
+      return;  
+    }  
+
+    navigator.geolocation.getCurrentPosition(  
+      (position: GeolocationPosition) => {  
+        const { latitude: lat, longitude: lon } = position.coords;  
+        console.log(`Ubicación obtenida - Latitud: ${lat}, Longitud: ${lon}`);  
+        this.locationService.setLocation(lat, lon);  
+      },  
+      (error: GeolocationError) => {  
+        console.error('Error al obtener la ubicación:', error);   
+      },  
+      {  
+        enableHighAccuracy: true,  
+        timeout: 5000,  
+        maximumAge: 0  
+      }  
+    );  
   }  
+// ---------------------------------------------------------------------------------------
+
 
   loadExchangeRate() {  
     this.http.get<number>('http://localhost:8080/api/currency/dolar')  

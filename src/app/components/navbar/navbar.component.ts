@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';  // Importa CommonModule
   standalone: true,  
   imports: [RouterModule, CommonModule],  
   templateUrl: './navbar.component.html',  
-  styleUrls: ['./navbar.component.css'] // Este es el archivo CSS automáticamente asociado  
+  styleUrls: ['./navbar.component.css'] 
 })  
 export class NavbarComponent implements OnInit {  // Implementa OnInit  
 

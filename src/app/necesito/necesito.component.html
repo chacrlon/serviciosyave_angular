@@ -1,0 +1,55 @@
+<form (ngSubmit)="enviarNecesidad()" #necesidadForm="ngForm">  
+  <h2>Publicar Necesidad</h2>  
+
+  <div>  
+    <label for="titulo">Título de la necesidad:</label>  
+    <input type="text" id="titulo" [(ngModel)]="titulo" name="titulo" required placeholder="Ej. Reparación de grifo" />  
+  </div>  
+
+  <div>  
+    <label for="descripcion">Descripción detallada:</label>  
+    <textarea id="descripcion" [(ngModel)]="descripcion" name="descripcion" required placeholder="Describe tu necesidad aquí..."></textarea>  
+  </div>  
+
+  <div>  
+    <label for="categoria">Categoría de la necesidad:</label>  
+    <select id="categoria" [(ngModel)]="selectedCategory" name="categoria" (change)="onCategoryChange()" required>  
+      <option value="" disabled selected>Seleccione una categoría</option>  
+      <option *ngFor="let category of categories" [ngValue]="category">{{ category.name }}</option>  
+    </select>  
+  </div>  
+
+  <div *ngIf="subcategories.length > 0">  
+    <label for="subcategoria">Subcategoría de la necesidad:</label>  
+    <select id="subcategoria" [(ngModel)]="selectedSubcategory" name="subcategoria" required>  
+      <option value="" disabled selected>Seleccione una subcategoría</option>  
+      <option *ngFor="let subcategory of subcategories" [ngValue]="subcategory">{{ subcategory.name }}</option>  
+    </select>  
+  </div>  
+
+  <div>  
+    <label for="ubicacion">Ubicación del servicio:</label>  
+    <input type="text" id="ubicacion" [(ngModel)]="ubicacion" name="ubicacion" required placeholder="Dirección o zona" />  
+    <button type="button" (click)="obtenerUbicacion()">Obtener mi ubicación</button>  
+  </div>  
+
+  <div>  
+    <label for="fechaHora">Fecha y hora preferidas:</label>  
+    <input type="datetime-local" id="fechaHora" [(ngModel)]="fechaHora" name="fechaHora" required />  
+  </div>  
+
+  <div>  
+    <label for="presupuesto">Presupuesto aproximado (€):</label>  
+    <input type="number" id="presupuesto" [(ngModel)]="presupuesto" name="presupuesto" placeholder="Ejemplo: 200" />  
+  </div>   
+
+  <div>  
+    <label for="archivos">Adjuntar archivos (opcional):</label>  
+    <input type="file" id="archivos" (change)="onFileChange($event)" multiple />  
+  </div>  
+
+  <button type="submit" [disabled]="necesidadForm.invalid">Publicar Necesidad</button>  
+
+  <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>  
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+</form>

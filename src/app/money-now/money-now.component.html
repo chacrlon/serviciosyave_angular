@@ -1,0 +1,29 @@
+<div class="card-container">  
+  <div class="card" *ngFor="let necesidad of necesidades">  
+    <h3>{{ necesidad.titulo }}</h3>  
+    <p>{{ necesidad.descripcion }}</p>  
+    <p><strong>Ubicación:</strong> {{ necesidad.ubicacion }}</p>  
+    <p><strong>Fecha y Hora:</strong> {{ necesidad.fechaHora | date:'medium' }}</p>  
+    <p><strong>Presupuesto:</strong> ${{ necesidad.presupuesto }}</p>  
+    <p><strong>Categoria:</strong> {{ necesidad.category?.name || 'Sin categoría' }}</p>  
+    <p><strong>Subcategoria:</strong> {{ necesidad.subcategory?.name || 'Sin subcategoría' }}</p>  
+    <hr />  
+    <button (click)="aceptarOferta(necesidad)">Aceptar Oferta</button>  
+    <button (click)="abrirNegociacion(necesidad)">Negociar</button>  
+  </div>  
+
+  <!-- Modal o formulario para negociar -->  
+  <div *ngIf="negotiating" class="negotiation-form">  
+    <h4>Negociar oferta para {{ negotiationDetails.currentNeccesity?.titulo }}</h4>  
+    <div>  
+      <label for="amount">Nuevo Monto:</label>  
+      <input type="text" id="amount" [(ngModel)]="negotiationDetails.amount" />  
+    </div>  
+    <div>  
+      <label for="justification">Justificación:</label>  
+      <input type="text" id="justification" [(ngModel)]="negotiationDetails.justification" />  
+    </div>  
+    <button (click)="enviarNegociacion()">Enviar Propuesta</button>  
+    <button (click)="negotiating = false">Cancelar</button>  
+  </div>  
+</div>

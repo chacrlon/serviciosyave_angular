@@ -36,8 +36,12 @@
 </div> 
 
 
-
-
+<!-- Botón para publicar un requerimiento -->   
+<div class="flex space-x-4">  
+  <button (click)="publicarNecesidad()" class="p-1 border rounded hover:bg-gray-25">  
+    <img src="assets/cliente.jpg" alt="Buyer" class="small-image"/>  
+  </button>   
+</div>
 
 
 
@@ -178,8 +182,8 @@
         </div>  
         <div class="form-row">  
           <label>Monto:</label>  
-          <label><ng-container *ngIf="selectedService?.precio && exchangeRate; else notAvailable">  
-            {{ (selectedService.precio * exchangeRate) | number:'1.2-2' }}  
+          <label><ng-container *ngIf="selectedService?.precio ; else notAvailable">  
+            {{ (selectedService.precio ) | number:'1.2-2' }}  
         </ng-container>  
         <ng-template #notAvailable>N/A</ng-template> </label>    
         </div>  

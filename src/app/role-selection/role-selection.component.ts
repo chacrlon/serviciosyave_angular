@@ -7,7 +7,8 @@ import { NotificationsseService } from '../notification-modal/notificationsse.se
 import { NotificationModalComponent } from '../notification-modal/notification-modal.component';  
 import { Subscription } from 'rxjs';  
 import { CommonModule } from '@angular/common';  
-import { ChangeDetectorRef } from '@angular/core';  
+import { ChangeDetectorRef } from '@angular/core';   
+import { AcceptOfferRequest } from '../models/AcceptOfferRequest'; 
 
 interface GeolocationError {  
   code: number;  
@@ -60,7 +61,29 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
         this.loadNotifications();
       }
     );  
-  }  
+  } 
+  
+  acceptOffer(notification: Notification): void {  
+    if (!notification || !notification.userId2) {  
+      console.warn('No se puede aceptar la oferta: notificación o userId2 no definidos');  
+      return;  
+    }  
+
+    const request: AcceptOfferRequest = {  
+      necesidadId: notification.id, // Asegúrate de que este sea el ID correcto  
+      professionalUserId: notification.userId2 // ID del profesional que acepta la oferta  
+    };  
+
+    this.notificationsseService.acceptOffer(request).subscribe({  
+      next: (response) => {  
+        console.log('Oferta aceptada con éxito:', response);  
+        // Aquí puedes manejar la respuesta, como mostrar un mensaje de éxito  
+      },  
+      error: (error) => {  
+        console.error('Error al aceptar la oferta:', error);  
+      }  
+    });  
+  } 
 
   ngAfterViewInit() { 
 
@@ -158,13 +181,13 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
 
   navegarPorRol(role: string): void {  
     console.log(`Navegando por rol: ${role}`);  
-    this.router.navigate([`/${role}`]);  
-  }  
+    this.router.navigate([`/${role}`], { queryParams: { id: this.userId } });  
+  } 
 
   selectRole(role: string): void {  
     console.log(`Rol seleccionado: ${role}`);  
     this.obtenerUbicacion(role);  
-  }  
+  }
 
   obtenerUbicacion(role: string): void {  
     console.log('Obteniendo ubicación para el rol:', role);  

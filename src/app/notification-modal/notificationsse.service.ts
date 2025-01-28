@@ -2,6 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';  
 import { Observable, Subject, BehaviorSubject } from 'rxjs';  
 import { Notification } from '../models/Notification';  
+import { AcceptOfferRequest } from '../models/AcceptOfferRequest'; // Asegúrate de que la ruta sea correcta
 
 @Injectable({  
   providedIn: 'root'  
@@ -21,6 +22,11 @@ export class NotificationsseService {
 
   get connectionStatus$(): Observable<boolean> {  
     return this.connectionStatus.asObservable();  
+  }  
+
+   // Método para aceptar una oferta  
+   acceptOffer(request: AcceptOfferRequest): Observable<any> {  
+    return this.http.post(`${this.baseUrl}/api/ineeds/aceptar`, request);  
   }  
 
   // Métodos para SSE  
