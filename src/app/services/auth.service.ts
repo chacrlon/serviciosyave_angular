@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -24,7 +24,11 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   loginUser({ username, password }: any): Observable<any>{
-    return this.http.post<any>(this.url, { username, password });
+    return this.http.post<any>(this.url, { username, password }).pipe(
+      map(mp => {
+        if("userDetails" in mp) { if("userId" in mp.userDetails) { sessionStorage.setItem('userId', mp.userDetails.userId) } } return mp;
+      })
+    );
   }
 
   loginWithToken(token: string): Observable<any> {
@@ -36,11 +40,13 @@ export class AuthService {
     return this.http.post('http://localhost:8080/api/email/auth/token', { token }, options);  
   }
 
-  set user(user: any) {  
-    this._user = user;  
-    sessionStorage.setItem('login', JSON.stringify(user));  
-    // Guarda el ID del usuario en sessionStorage  
-    sessionStorage.setItem('userId', user.id); // Guardar el ID  
+  set user(user: any) {
+    this._user = user;
+    let { id } = user.user;
+
+    sessionStorage.setItem('login', JSON.stringify(user));
+    // Guarda el ID del usuario en sessionStorage
+    sessionStorage.setItem('userId', id); // Guardar el ID
   }
 
   get user() {
@@ -94,8 +100,9 @@ export class AuthService {
         isAdmin: false,  
         user: undefined  
     };  
-    sessionStorage.removeItem('login');  
-    sessionStorage.removeItem('token');  
+    sessionStorage.removeItem('login');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('userId');
     this.authStatusSubject.next(false); // Notifica a los suscriptores que el usuario ha cerrado sesión  
 }  
 
