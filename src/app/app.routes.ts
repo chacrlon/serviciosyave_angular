@@ -16,6 +16,7 @@ import { ChatComponent } from './chat/chat.component';
 import { NecesitoComponent } from './necesito/necesito.component';
 import { MoneyNowComponent } from './money-now/money-now.component';
 import { ChatContactComponent } from './chat-contact/chat-contact.component';
+import { FaqComponent } from './faq/faq.component';
 
 export const routes: Routes = [
     {
@@ -99,6 +100,10 @@ export const routes: Routes = [
         path: 'payments',
         component: PaymentComponent,
         canActivate: [authGuard] // Agregar guardia si es necesario  
+    },  
+    {  
+        path: 'faq',
+        component: FaqComponent,
     }  
 
 ];

@@ -18,7 +18,8 @@ export class NotificationModalComponent {
     private router: Router ,
     private http: HttpClient  // Inyección de HttpClient 
   ) {  
-    console.log('Datos de NotificationModalComponent:', this.data);   
+    console.log('Datos de NotificationModalComponent:', this.data);  
+    console.log('Tipo de usuario: ', this.data.userType);   
   }  
 
   onClose(): void {  

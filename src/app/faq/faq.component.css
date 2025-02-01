@@ -1,0 +1,33 @@
+.faq-container {  
+    max-width: 800px;  
+    margin: 20px auto; /* Margen superior para separación */  
+    padding: 20px;  
+    font-family: Arial, sans-serif;  
+    background-color: #f8f9fa; /* Color de fondo claro para el contenedor */  
+    border-radius: 8px; /* Bordes redondeados */  
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */  
+  }  
+  
+  h1 {  
+    text-align: center;  
+    color: #0056b3; /* Mismo color que el navbar */  
+    margin-bottom: 20px; /* Espacio inferior */  
+  }  
+  
+  .faq-item {  
+    border: 1px solid #ccc;  
+    border-radius: 5px;  
+    margin-bottom: 15px;  
+    padding: 15px;  
+    background-color: white; /* Fondo blanco para los ítems */  
+  }  
+  
+  .faq-item h2 {  
+    color: #0056b3; /* Color del encabezado igual que el navbar */  
+    margin: 0;  
+  }  
+  
+  .faq-item p {  
+    color: #555;  
+    line-height: 1.5;  
+  }

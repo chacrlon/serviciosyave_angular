@@ -4,6 +4,13 @@
   padding: 10px 20px; /* Relleno adicional para el navbar */  
 }  
 
+/* Estilo para el logo en el navbar */  
+.navbar-logo {  
+  width: 40px; /* Ajusta el tamaño del logo según sea necesario */  
+  height: auto; /* Mantiene la proporción del logo */  
+  margin-right: 10px; /* Espacio entre el logo y el texto */  
+}  
+
 /* Cambiar el color del texto de los enlaces en el navbar */  
 .navbar-brand,   
 .nav-link {  
