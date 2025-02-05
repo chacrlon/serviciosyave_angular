@@ -1,0 +1,25 @@
+
+.footer {  
+    background-color: #0056b3; /* Color azul profesional */  
+    padding: 20px 0; /* Relleno arriba y abajo */  
+    text-align: center; /* Centrar el texto */  
+  }  
+  
+  .footer p {  
+    margin: 0; /* Elimina margen por defecto */  
+    color: white; /* Color del texto */  
+  }  
+  
+  .footer-link {  
+    color: rgba(231, 243, 254, 0.8); /* Color de los enlaces en el footer */  
+    text-decoration: none; /* Sin subrayado */  
+  }  
+  
+  .footer-link:hover {  
+    color: white; /* Cambia color en hover */  
+  }
+  .footer {
+    display: block;
+  }
+  
+  

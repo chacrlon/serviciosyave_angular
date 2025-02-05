@@ -5,4 +5,5 @@ export interface Notification {
   read: boolean;  
   userId2: number; 
   userType: string;
+  vendorServiceId: number;
 }

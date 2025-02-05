@@ -17,6 +17,8 @@ import { NecesitoComponent } from './necesito/necesito.component';
 import { MoneyNowComponent } from './money-now/money-now.component';
 import { ChatContactComponent } from './chat-contact/chat-contact.component';
 import { FaqComponent } from './faq/faq.component';
+import { FooterComponent } from './footer/footer.component';
+import { CodeVerifyComponent } from './register/code-verify/code-verify.component';
 
 export const routes: Routes = [
     {
@@ -104,6 +106,15 @@ export const routes: Routes = [
     {  
         path: 'faq',
         component: FaqComponent,
-    }  
+    },
+    {  
+        path: 'footer',
+        component: FooterComponent,
+    },
+    {  
+        path: 'app-code-verify',
+        component: CodeVerifyComponent,
+    },
+    
 
 ];

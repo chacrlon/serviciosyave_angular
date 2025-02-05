@@ -1,0 +1,92 @@
+/* Estilos para el cuerpo y contenedores */  
+body {  
+    font-family: 'Arial', sans-serif;  
+    margin: 0;  
+    padding: 0;  
+    background-color: #f4f4f4;  
+    color: #333;  
+}  
+
+.card {  
+    max-width: 600px; /* Ancho moderado para el formulario */  
+    margin: 30px auto; /* Centrar la tarjeta */  
+    padding: 20px;  
+    background: rgba(255, 255, 255, 0.9);  
+    border-radius: 8px;  
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);  
+}  
+
+.card-header {  
+    text-align: center;  
+    margin-bottom: 20px; /* Espaciado inferior */  
+}  
+
+.card-title {  
+    color: #0056b3; /* Color principal para el título */  
+}  
+
+/* Estilos para el formulario */  
+.form-control {  
+    width: calc(100% - 20px);  
+    padding: 10px;  
+    margin-bottom: 15px;  
+    border: 1px solid #ccc;  
+    border-radius: 5px;  
+    transition: border 0.3s;  
+}  
+
+.form-control:focus {  
+    border: 1px solid #0056b3;  
+    outline: none;  
+}  
+
+/* Estilos para los botones */  
+.btn {  
+    padding: 10px 15px;  
+    background-color: #0056b3; /* Color de fondo azul */  
+    color: white; /* Texto blanco */  
+    border: none;  
+    border-radius: 5px;  
+    cursor: pointer;  
+    transition: background-color 0.3s, transform 0.3s;  
+}  
+
+.btn:hover {  
+    background-color: #004494; /* Color más oscuro en hover */  
+    transform: translateY(-2px); /* Efecto de elevación */  
+}  
+
+.btn.secondary {  
+    background-color: #6c757d; /* Color del botón secundario */  
+}  
+
+/* Estilos para los mensajes de error */  
+.text-danger {  
+    color: red; /* Color rojo para mensajes de error */  
+}  
+
+/* Espaciado y alineación */  
+.m-2 {  
+    margin: 0.5rem; /* Margen de 8px */  
+}  
+
+.my-2 {  
+    margin-top: 0.5rem;  
+    margin-bottom: 0.5rem;  
+}  
+
+/* Nuevos estilos para el input y el botón dentro de la tarjeta */  
+.card-body p {  
+    margin-bottom: 20px; /* Espaciado para el párrafo de instrucciones */  
+    font-size: 16px; /* Tamaño de texto legible */  
+    color: #555; /* Color para el texto de instrucciones */  
+}  
+
+button:disabled {  
+    background-color: #c0c0c0; /* Color claro cuando el botón está deshabilitado */  
+    cursor: not-allowed; /* Cambia el cursor para indicar que no se puede hacer clic */  
+}  
+
+button:disabled:hover {  
+    background-color: #c0c0c0; /* Mantiene el color cuando está deshabilitado */  
+}

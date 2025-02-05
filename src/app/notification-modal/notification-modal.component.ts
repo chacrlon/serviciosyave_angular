@@ -19,7 +19,8 @@ export class NotificationModalComponent {
     private http: HttpClient  // Inyección de HttpClient 
   ) {  
     console.log('Datos de NotificationModalComponent:', this.data);  
-    console.log('Tipo de usuario: ', this.data.userType);   
+    console.log('Tipo de usuario:', this.data.userType);
+    console.log('Id del servicio:', this.data.vendorServiceId);   
   }  
 
   onClose(): void {  
@@ -29,7 +30,7 @@ export class NotificationModalComponent {
   contactUser(): void {  
     const receiverId = this.data.userId2;  
     const roomId = [this.data.userId, receiverId].sort().join('-'); // Crear roomId  
-    
+
     // Obtener el correo del usuario usando el receiverId  
     this.http.get<{ email: string }>(`http://localhost:8080/api/users/${receiverId}/email`)  
         .subscribe(  
@@ -37,17 +38,18 @@ export class NotificationModalComponent {
                 console.log("Correo del usuario:", userEmailResponse.email);  
 
                 // Crear el enlace para unirse al chat  
-                const chatLink = `http://localhost:4200/chat/${this.data.userId}/${receiverId}`; // Asegúrate de que el puerto sea el correcto  
+                const chatLink = `http://localhost:4200/chat/${this.data.userId}/${receiverId}`;  
 
                 const emailRequest = {  
                     toEmail: userEmailResponse.email,  
                     subject: 'Invitación a chat',  
-                    text: `Hola, tienes un nuevo mensaje de ${this.data.userId}. Haz clic en el siguiente enlace para unirte al chat: ${chatLink}`  
+                    text: `Hola, tienes un nuevo mensaje de ${this.data.userId}. Haz clic en el siguiente enlace para unirte al chat: ${chatLink}`,  
+                    userType: this.data.userType, vendorServiceId: this.data.vendorServiceId // Incluir userType  
                 };  
 
                 // Validar antes de enviar  
-                if (!emailRequest.toEmail || !emailRequest.subject || !emailRequest.text) {  
-                    console.error('Los campos toEmail, subject y text son requeridos.');  
+                if (!emailRequest.toEmail || !emailRequest.subject || !emailRequest.text || !emailRequest.userType || !emailRequest.vendorServiceId) {  
+                    console.error('Los campos toEmail, subject, text y userType son requeridos.');  
                     return;  
                 }  
 
@@ -55,7 +57,8 @@ export class NotificationModalComponent {
                 this.http.post('http://localhost:8080/api/email/send', emailRequest)  
                     .subscribe(response => {  
                         console.log('Correo enviado:', response);  
-                        this.router.navigate(['chat', this.data.userId, receiverId]);  
+                        // Navegar al chat y pasar userType como parámetro de consulta  
+                        this.router.navigate(['chat', this.data.userId, receiverId], { queryParams: { userType: this.data.userType, vendorServiceId: this.data.vendorServiceId } });  
                         this.dialogRef.close();  
                     }, error => {  
                         console.error('Error al enviar el correo:', error);  
@@ -66,5 +69,4 @@ export class NotificationModalComponent {
             }  
         );  
 }
-
 }

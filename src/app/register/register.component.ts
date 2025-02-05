@@ -26,7 +26,7 @@ export class RegisterComponent {
     this.registerService.register(this.user).subscribe({  
       next: (response) => {  
         Swal.fire('Éxito', 'Usuario registrado correctamente. Verifica tu correo para completar el registro.', 'success');  
-        this.router.navigate(['/login']);  
+        this.router.navigate(['/app-code-verify', { id: response.id }]);  
       },  
       error: (err) => {  
         Swal.fire('Error', 'No se pudo registrar. Inténtalo de nuevo. ' + JSON.stringify(err.error), 'error');  
@@ -35,16 +35,7 @@ export class RegisterComponent {
   }  
 
   // Método ejemplar para verificar al usuario  
-  verifyUser(id: number, verificationCode: string): void {  
-    this.registerService.verifyUser(id, verificationCode).subscribe({  
-      next: (response) => {  
-        Swal.fire('Éxito', response, 'success');  
-      },  
-      error: (err) => {  
-        Swal.fire('Error', 'No se pudo verificar el usuario. ' + JSON.stringify(err.error), 'error');  
-      }  
-    });  
-  }  
+
 
   onClear(form: NgForm): void {  
     form.reset();  

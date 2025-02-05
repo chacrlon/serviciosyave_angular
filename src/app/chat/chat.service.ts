@@ -3,6 +3,7 @@ import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ChatMessage } from '../models/chat-message';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';  
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,8 @@ export class ChatService {
   private stompClient: any
   private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
   private isConnected: boolean = false;
-
-  constructor() { }
+  private apiUrl = 'http://localhost:8080/api/service'; // URL base de la API 
+  constructor(private http: HttpClient) { }
 
   initConnenctionSocket(userId: string, receiverId: string) {  
     const url = `http://localhost:8080/chat-socket`;  
@@ -49,6 +50,14 @@ joinRoom(userId: string, receiverId: string) {
     console.error('Error al suscribirse al canal:', error);
   });
 }
+
+approveServiceByProvider(serviceId: number) {  
+  return this.http.put(`${this.apiUrl}/approve/provider/${serviceId}`, {});  
+}  
+
+approveServiceByClient(serviceId: number) {  
+  return this.http.put(`${this.apiUrl}/approve/client/${serviceId}`, {});  
+}  
 
 sendMessage(roomId: string, chatMessage: ChatMessage) {  
   if (this.stompClient && this.stompClient.connected) {  
