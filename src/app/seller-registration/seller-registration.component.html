@@ -1,0 +1,21 @@
+<h2>Registro de Vendedor</h2>  
+<form (ngSubmit)="onSubmit()">  
+  <div>  
+    <label>Foto de Perfil:</label>  
+    <input type="file" (change)="onFileChange($event, 'profile')" required />  
+  </div>  
+  <div>  
+    <label>Años de Experiencia:</label>  
+    <input type="number" [(ngModel)]="yearsOfExperience" required />  
+  </div>  
+  <div>  
+    <label>Descripción del Servicio:</label>  
+    <textarea [(ngModel)]="serviceDescription" required></textarea>  
+  </div>  
+  <div>  
+    <label>Título o Certificado profesiomal (opcional):</label>  
+    <input type="file" (change)="onFileChange($event, 'certification')" />  
+  </div>  
+  <button type="submit">Registrar</button>  
+  <button type="button" (click)="onCancel()">Atrás</button>
+</form>

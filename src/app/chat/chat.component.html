@@ -28,26 +28,24 @@
         <div class="icon"></div>  
         <div class="text">Send</div>  
     </div>  
-    <div *ngIf="userType === 'Seller'" class="user-type-button" (click)="confirmAction('enableNegotiation')">  
+    <div *ngIf="userType === 'Buyer'" class="user-type-button" (click)="confirmAction('enableNegotiation')">  
       Habilitar negociación  
-    </div>  
-    
-    <div *ngIf="userType === 'Buyer'" class="user-type-button" (click)="confirmAction('cancelNegotiation')">  
+  </div>  
+  
+  <div *ngIf="userType === 'Seller'" class="user-type-button" (click)="confirmAction('cancelNegotiation')">  
       Cancelar negociación  
-    </div>  
-    
-    <div *ngIf="isNegotiationEnabled && userType === 'Buyer'" class="user-type-button" (click)="confirmAction('approveServiceByProvider')">  
-      Ya realice el servicio  
-    </div>  
-    
-    <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" (click)="confirmAction('approveServiceByClient')">  
-      Ya recibí el servicio  
-    </div>  
-    
-    <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" (click)="confirmAction('cancelNegotiation')">  
-      Cancelar negociación  
-    </div>
+  </div>  
+  
+  <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" (click)="confirmAction('approveServiceByProvider')">  
+    Ya realice el servicio  
+</div>  
 
-</div> 
+<div *ngIf="isNegotiationEnabled && userType === 'Buyer' && isServiceApprovedByProvider" class="user-type-button" (click)="confirmAction('approveServiceByClient')">  
+    Ya recibí el servicio  
+</div>
+  
+  <div *ngIf="isNegotiationEnabled && userType === 'Buyer'" class="user-type-button" (click)="confirmAction('cancelNegotiation')">  
+      Cancelar negociación  
+  </div>
 
   </div>  

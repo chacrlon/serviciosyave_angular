@@ -172,16 +172,23 @@ export class BuyerComponent implements OnInit{
 
   // En BuyerComponent  
   confirmPayment() {
-    const paymentPayload = {
+    const paymentPayload: any = {
       monto: this.calculatePrice(),
       divisa: this.currency(),
-      metodo_pago: this.selectedPaymentMethod,
+      metodoPago: this.selectedPaymentMethod,
       vendorServiceId: this.selectedService.id,
       referencia: this.referenciaPago,
       estatus: 'procesando'
     };
   
-    console.log('Pago procesado exitosamente:', paymentPayload);
+    // Agregar campos específicos según el método de pago
+    if (this.selectedPaymentMethod === 'pagoMovil') {
+      paymentPayload.telefono = this.telefono;
+    } else if (this.selectedPaymentMethod === 'transferenciaBancaria') {
+      paymentPayload.numeroCuenta = this.numeroCuenta;
+    } else if (this.selectedPaymentMethod === 'binance') {
+      paymentPayload.emailBinance = this.correoBinance;
+    }
   
     this.http.post('http://localhost:8080/api/payment/create', paymentPayload)
       .subscribe(response => {

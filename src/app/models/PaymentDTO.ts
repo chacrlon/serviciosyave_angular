@@ -2,7 +2,7 @@ export interface PaymentDTO {
     id: number;  
     monto: number;  
     divisa: string;  
-    metodo_pago: string;  
+    metodoPago: string;  
     referencia: string;  
     estatus: string;  
     username: string;  

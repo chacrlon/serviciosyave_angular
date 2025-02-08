@@ -200,10 +200,27 @@
   <div class="modal-content">  
     <div class="box">  
       <h3>Introduce la referencia de pago</h3>  
-      <label>Referencia:</label>  
-      <input type="text" [(ngModel)]="referenciaPago"/>  
+      <ng-container *ngIf="selectedPaymentMethod === 'pagoMovil'">  
+        <label>Referencia:</label>  
+        <input type="text" [(ngModel)]="referenciaPago" placeholder="Introduce la referencia de pago" />  
+        <label>Teléfono:</label>  
+        <input type="text" [(ngModel)]="telefono" placeholder="Introduce tu teléfono" />  
+      </ng-container>  
+      <ng-container *ngIf="selectedPaymentMethod === 'transferenciaBancaria'">  
+        <label>Referencia:</label>  
+        <input type="text" [(ngModel)]="referenciaPago" placeholder="Introduce la referencia de pago" />  
+        <label>Número de Cuenta:</label>  
+        <input type="text" [(ngModel)]="numeroCuenta" placeholder="Introduce tu número de cuenta" />  
+      </ng-container>  
+      <ng-container *ngIf="selectedPaymentMethod === 'binance'">  
+        <label>Referencia:</label>  
+        <input type="text" [(ngModel)]="referenciaPago" placeholder="Introduce la referencia de pago" />  
+        <label>Correo de Binance:</label>  
+        <input type="email" [(ngModel)]="correoBinance" placeholder="Introduce tu correo de Binance" />  
+      </ng-container>  
       <button (click)="confirmPayment()" class="button is-success">Confirmar</button>  
     </div>  
   </div>  
   <button class="modal-close is-large" aria-label="close" (click)="closeReferenceModal()"></button>  
+  
 </div>

@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';  
 import { ChangeDetectorRef } from '@angular/core';   
 import { AcceptOfferRequest } from '../models/AcceptOfferRequest'; 
+import { SellerRegistrationComponent } from '../seller-registration/seller-registration.component';
 
 interface GeolocationError {  
   code: number;  
@@ -27,6 +28,7 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
   notifications: Notification[] = [];  
   private subscriptions: Subscription[] = [];  
   private isModalOpen = false; // Variable para rastrear el estado del modal
+  private hasSelectedSeller = false; 
 
   constructor(  
     private cdr: ChangeDetectorRef,  
@@ -182,13 +184,33 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
   navegarPorRol(role: string): void {  
     console.log(`Navegando por rol: ${role}`);  
     this.router.navigate([`/${role}`], { queryParams: { id: this.userId } });  
-  } 
+  }   
 
   selectRole(role: string): void {  
     console.log(`Rol seleccionado: ${role}`);  
-    this.obtenerUbicacion(role);  
-  }
+    if (role === 'seller' && !this.hasSelectedSeller) {  
+      this.openSellerRegistrationModal();  
+      this.hasSelectedSeller = true; // Marcar como si se ha seleccionado el rol de vendedor  
+    } else {  
+      this.obtenerUbicacion(role);  
+    }  
+  }  
 
+  openSellerRegistrationModal(): void {  
+    if (this.isModalOpen) return; // Si ya está abierto, no hacer nada  
+    this.isModalOpen = true; // Marcar el modal como abierto  
+  
+    const dialogRef = this.dialog.open(SellerRegistrationComponent, {  
+      width: '400px',  
+      disableClose: true  
+    });  
+  
+    this.subscriptions.push(  
+      dialogRef.afterClosed().subscribe(() => {  
+        this.isModalOpen = false; // Marcar el modal como cerrado  
+      })  
+    );  
+  }  
   obtenerUbicacion(role: string): void {  
     console.log('Obteniendo ubicación para el rol:', role);  
     

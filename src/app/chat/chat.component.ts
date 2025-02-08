@@ -22,6 +22,7 @@ export class ChatComponent implements OnInit {
   userType: string = ""; // Agregamos una variable para almacenar el userType 
   isNegotiationEnabled: boolean = false; // Nueva variable para manejar el estado de la negociación  
   vendorServiceId: number | null = null; // Agrega esta propiedad para almacenar el ID del servicio 
+  isServiceApprovedByProvider: boolean = false;
 
   private token = inject(AuthService).token;
 
@@ -32,43 +33,53 @@ export class ChatComponent implements OnInit {
     private router: Router  
   ) {}   
 
-
-  handleUserType(type: string): void {  
-    // Aquí puedes definir lo que quieres que ocurra cuando se hace clic en un botón  
-    console.log(`Botón clickeado: ${type}`); 
-    
-    if (type === 'Seller') {  
-      this.isNegotiationEnabled = true; // Habilita la negociación  
-      this.sendNegotiationEnabledMessage(); // Envia el mensaje al Seller  
+handleUserType(type: string): void {  
+  console.log(`Botón clickeado: ${type}`);   
+  
+  // Invertimos la lógica según el tipo de usuario  
+  if (type === 'Buyer') {  
+      this.isNegotiationEnabled = true; // Habilita la negociación desde el Buyer  
+      this.sendNegotiationEnabledMessage(); // Envío de mensaje al Buyer  
   }  
-    // Por ejemplo, podrías enviar un mensaje, cambiar el estado, etc.  
-    const chatMessage: ChatMessage = {  
-        message: `Es HORA de realizar el SERVICIO!`, // Mensaje de ejemplo  
-        sender: this.userId,  
-        receiver: this.receiverId,  
-        user: this.userId  
-    };  
-    
-    const roomId = [this.userId, this.receiverId].sort().join('-');  
-    this.chatService.sendMessage(roomId, chatMessage);  
-}
+
+  const chatMessage: ChatMessage = {  
+      message: `Es HORA de realizar el SERVICIO!`, // Mensaje de ejemplo  
+      sender: this.userId,  
+      receiver: this.receiverId,  
+      user: this.userId  
+  };  
+  
+  const roomId = [this.userId, this.receiverId].sort().join('-');  
+  this.chatService.sendMessage(roomId, chatMessage);  
+}  
 
 approveServiceByProvider() {  
   if (this.vendorServiceId === null) {  
-    console.error("Error: vendorServiceId no puede ser nulo.");  
-    return; // Salir si no hay un ID válido  
+      console.error("Error: vendorServiceId no puede ser nulo.");  
+      return;  
   }  
-  
-  this.chatService.approveServiceByProvider(this.vendorServiceId).subscribe({  
-    next: (response) => {  
-      console.log("Servicio aprobado por el proveedor:", response);  
-    },  
-    error: (error) => {  
-      console.error("Error al aprobar el servicio por el proveedor:", error);  
-    }  
-  });  
-}  
 
+  this.chatService.approveServiceByProvider(this.vendorServiceId).subscribe({  
+      next: (response) => {  
+          console.log("Servicio aprobado por el proveedor:", response);  
+          this.isServiceApprovedByProvider = true; // Actualiza la variable para mostrar el botón  
+
+          // Enviar un mensaje al otro usuario  
+          const roomId = [this.userId, this.receiverId].sort().join('-');  
+          const approvalMessage: ChatMessage = {  
+              message: 'El servicio ha sido aprobado por el proveedor', // Mensaje indicando aprobación  
+              sender: this.userId,  
+              receiver: this.receiverId,  
+              user: this.userId  
+          };  
+          this.chatService.sendMessage(roomId, approvalMessage); // Notificar al otro usuario  
+      },  
+      error: (error) => {  
+          console.error("Error al aprobar el servicio por el proveedor:", error);  
+      }  
+  });  
+}
+  
 approveServiceByClient() {  
   if (this.vendorServiceId === null) {  
     console.error("Error: vendorServiceId no puede ser nulo.");  
@@ -150,33 +161,40 @@ listenerMessage() {
           message_side: item.user == this.userId ? 'sender' : 'receiver'  
       }));  
       
-      // Escucha los mensajes de negociación habilitada  
+      // Escuchar los mensajes de aprobación del servicio  
+      const approvalMessage = messages.find((msg: any) => msg.message === 'El servicio ha sido aprobado por el proveedor');  
+      if (approvalMessage && approvalMessage.user !== this.userId) {  
+          // Solo actualiza si el mensaje no es del propio usuario  
+          this.isServiceApprovedByProvider = true; // Esto habilita el botón "Ya recibí el servicio" para el Buyer  
+      }  
+
+      // Escuchar los mensajes de negociación habilitada  
       const negotiationMessage = messages.find((msg: any) => msg.message === 'Negociación habilitada');  
-      if (negotiationMessage && negotiationMessage.user !== this.userId) { // Solo si el mensaje no es de este usuario  
-          this.isNegotiationEnabled = true; // Habilita el botón para Seller  
+      if (negotiationMessage && negotiationMessage.user !== this.userId) {   
+          this.isNegotiationEnabled = true; // Habilita la negociación para ambos  
       }  
   });  
-} 
+}
 
 confirmAction(action: string) {  
   const confirmation = confirm('¿Estás seguro de realizar esta acción?');  
   if (confirmation) {  
-    switch (action) {  
-      case 'enableNegotiation':  
-        this.handleUserType('Seller');  
-        break;  
-      case 'cancelNegotiation':  
-        this.handleUserType('Buyer');  
-        break;  
-      case 'approveServiceByProvider':  
-        this.approveServiceByProvider();  
-        break;  
-      case 'approveServiceByClient':  
-        this.approveServiceByClient();  
-        break;  
-      default:  
-        break;  
-    }   
+      switch (action) {  
+          case 'enableNegotiation':  
+              this.handleUserType('Buyer');  
+              break;  
+          case 'cancelNegotiation':  
+              this.handleUserType('Seller');  
+              break;  
+          case 'approveServiceByProvider':  
+              this.approveServiceByProvider(); // Ajustado para el Seller  
+              break;  
+          case 'approveServiceByClient':  
+              this.approveServiceByClient(); // Ajustado para el Buyer  
+              break;  
+          default:  
+              break;  
+      }   
   }  
-}  
+}
 }
