@@ -58,7 +58,12 @@ export class NotificationModalComponent {
                     .subscribe(response => {  
                         console.log('Correo enviado:', response);  
                         // Navegar al chat y pasar userType como parámetro de consulta  
-                        this.router.navigate(['chat', this.data.userId, receiverId], { queryParams: { userType: this.data.userType, vendorServiceId: this.data.vendorServiceId } });  
+                        this.router.navigate(['chat', this.data.userId, receiverId], 
+                          { queryParams: 
+                            { userType: this.data.userType, 
+                              vendorServiceId: this.data.vendorServiceId,
+                              notificationId: this.data.id,
+                            } });  
                         this.dialogRef.close();  
                     }, error => {  
                         console.error('Error al enviar el correo:', error);  

@@ -12,7 +12,8 @@ export class ChatService {
   private stompClient: any
   private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
   private isConnected: boolean = false;
-  private apiUrl = 'http://localhost:8080/api/service'; // URL base de la API 
+  private apiUrl = 'http://localhost:8080/api/service'; 
+  private notificacionUrl = 'http://localhost:8080/api/notifications'; 
   constructor(private http: HttpClient) { }
 
   initConnenctionSocket(userId: string, receiverId: string) {  
@@ -51,13 +52,23 @@ joinRoom(userId: string, receiverId: string) {
   });
 }
 
-approveServiceByProvider(serviceId: number) {  
-  return this.http.put(`${this.apiUrl}/approve/provider/${serviceId}`, {});  
-}  
+  // Métodos para aprobar y rechazar servicios  
+  approveServiceByProvider(notificationId: number) {  
+    return this.http.put(`${this.notificacionUrl}/approve/provider/${notificationId}`, {});  
+  }  
 
-approveServiceByClient(serviceId: number) {  
-  return this.http.put(`${this.apiUrl}/approve/client/${serviceId}`, {});  
-}  
+  approveServiceByClient(notificationId: number) {  
+    return this.http.put(`${this.notificacionUrl}/approve/client/${notificationId}`, {});  
+  }  
+
+  rejectServiceByProvider(notificationId: number) {  
+    return this.http.put(`${this.notificacionUrl}/reject/provider/${notificationId}`, {});  
+  }  
+
+  rejectServiceByClient(notificationId: number) {  
+    return this.http.put(`${this.notificacionUrl}/reject/client/${notificationId}`, {});  
+  }  
+
 
 sendMessage(roomId: string, chatMessage: ChatMessage) {  
   if (this.stompClient && this.stompClient.connected) {  
