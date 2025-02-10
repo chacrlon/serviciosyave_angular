@@ -63,6 +63,9 @@ export class NotificationModalComponent {
                             { userType: this.data.userType, 
                               vendorServiceId: this.data.vendorServiceId,
                               notificationId: this.data.id,
+                              notificationId2: this.data.id2,
+                              userId2: this.data.userId2,
+
                             } });  
                         this.dialogRef.close();  
                     }, error => {  

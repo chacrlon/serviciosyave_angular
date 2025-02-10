@@ -14,6 +14,7 @@ export class ChatService {
   private isConnected: boolean = false;
   private apiUrl = 'http://localhost:8080/api/service'; 
   private notificacionUrl = 'http://localhost:8080/api/notifications'; 
+  private userUrl = 'http://localhost:8080/api/users'; 
   constructor(private http: HttpClient) { }
 
   initConnenctionSocket(userId: string, receiverId: string) {  
@@ -52,21 +53,30 @@ joinRoom(userId: string, receiverId: string) {
   });
 }
 
+  // ChatService  
+  updateUserStatusToOccupied(userId2: number) {  
+    return this.http.put(`${this.userUrl}/${userId2}/status/ocupado`, {});  
+  }
+
+  updateUserStatusToNoOccupied(userId2: number) {  
+    return this.http.put(`${this.userUrl}/${userId2}/status/no-ocupado`, {});  
+  }
+
   // Métodos para aprobar y rechazar servicios  
-  approveServiceByProvider(notificationId: number) {  
-    return this.http.put(`${this.notificacionUrl}/approve/provider/${notificationId}`, {});  
+  approveServiceByProvider(notificationId: number, notificationId2: number) {  
+    return this.http.put(`${this.notificacionUrl}/approve/provider/${notificationId}/${notificationId2}`, {});  
+  }  
+  
+  approveServiceByClient(notificationId: number, notificationId2: number) {  
+    return this.http.put(`${this.notificacionUrl}/approve/client/${notificationId}/${notificationId2}`, {});  
+  }
+
+  rejectServiceByProvider(notificationId: number, notificationId2: number) {  
+    return this.http.put(`${this.notificacionUrl}/reject/provider/${notificationId}/${notificationId2}`, {});  
   }  
 
-  approveServiceByClient(notificationId: number) {  
-    return this.http.put(`${this.notificacionUrl}/approve/client/${notificationId}`, {});  
-  }  
-
-  rejectServiceByProvider(notificationId: number) {  
-    return this.http.put(`${this.notificacionUrl}/reject/provider/${notificationId}`, {});  
-  }  
-
-  rejectServiceByClient(notificationId: number) {  
-    return this.http.put(`${this.notificacionUrl}/reject/client/${notificationId}`, {});  
+  rejectServiceByClient(notificationId: number, notificationId2: number) {  
+    return this.http.put(`${this.notificacionUrl}/reject/client/${notificationId}/${notificationId2}`, {});  
   }  
 
 

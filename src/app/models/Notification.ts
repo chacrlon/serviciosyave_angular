@@ -6,4 +6,5 @@ export interface Notification {
   userId2: number; 
   userType: string;
   vendorServiceId: number;
+  id2: number; 
 }

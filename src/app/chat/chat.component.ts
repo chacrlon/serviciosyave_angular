@@ -22,7 +22,9 @@ export class ChatComponent implements OnInit {
   userType: string = "";
   isNegotiationEnabled: boolean = false;
   notificationId: number | null = null; 
+  notificationId2: number | null = null; 
   vendorServiceId: number | null = null;
+  userId2: number | null = null;
   isServiceApprovedByProvider: boolean = false;
 
   private token = inject(AuthService).token;
@@ -37,13 +39,18 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {  
     // Obtener el token de la URL al cargar el componente  
     this.route.queryParams.subscribe(params => { 
-      this.userType = params['userType']; // Capturamos userType de los query params
+      this.userType = params['userType']; 
       console.log('Tipo de usuario:', this.userType); 
-      this.vendorServiceId = +params['vendorServiceId']; // Convertir a número  
+      this.vendorServiceId = +params['vendorServiceId']; 
       console.log('ID del servicio:', this.vendorServiceId); 
-      // Este es el cambio importante:   
-    this.notificationId = +params['notificationId']; // Asegúrate de asignar el valor a this.notificationId  
-    console.log('ID de la notificación:', this.notificationId); // Para depuración  
+
+    this.notificationId = +params['notificationId']; 
+    console.log('ID de la notificación:', this.notificationId); 
+    this.notificationId2 = +params['notificationId2']; 
+    console.log('ID de la notificación2:', this.notificationId2); 
+
+    this.userId2 = +params['userId2']; 
+    console.log('ID de la userId2:', this.userId2); 
       const token = this.token;
       if (token) {  
         this.authService.loginWithToken(token).subscribe({  
@@ -63,6 +70,44 @@ export class ChatComponent implements OnInit {
         console.error('No se proporcionó un token');  
         // Manejar caso de no tener token, podrías redirigir a login  
         this.router.navigate(['/login']);  
+      }  
+    });  
+  }  
+
+  // Método que actualiza el estado del usuario  
+  updateUserStatusOccupied() {  
+    if (this.userId2 === null) {  
+      console.error("Error: userId2 no puede ser nulo.");  
+      return;  
+    }  
+
+    this.chatService.updateUserStatusToOccupied(this.userId2).subscribe({  
+      next: (response) => {  
+        console.log("Estado del usuario actualizado a 'ocupado':", response);  
+        // Aquí puedes realizar otras acciones dependiendo de tu lógica,  
+        // como notificar al usuario o actualizar la vista.  
+      },  
+      error: (error) => {  
+        console.error("Error al actualizar el estado del usuario:", error);  
+      }  
+    });  
+  }  
+
+
+  updateUserStatusNoOccupied() {  
+    if (this.userId2 === null) {  
+      console.error("Error: userId2 no puede ser nulo.");  
+      return;  
+    }  
+
+    this.chatService.updateUserStatusToNoOccupied(this.userId2).subscribe({  
+      next: (response) => {  
+        console.log("Estado del usuario actualizado a 'No ocupado':", response);  
+        // Aquí puedes realizar otras acciones dependiendo de tu lógica,  
+        // como notificar al usuario o actualizar la vista.  
+      },  
+      error: (error) => {  
+        console.error("Error al actualizar el estado del usuario:", error);  
       }  
     });  
   }  
@@ -88,63 +133,89 @@ export class ChatComponent implements OnInit {
   }  
   
   approveServiceByProvider() {  
-    if (this.notificationId === null) {  
-        console.error("Error: notificationId no puede ser nulo.");  
-        return;  
+    if (this.notificationId === null || this.notificationId2 === null) {  
+      console.error("Error: notificationId o notificationId2 no pueden ser nulos.");  
+      return;  
     }  
-  
-    this.chatService.approveServiceByProvider(this.notificationId).subscribe({  
-        next: (response) => {  
-            console.log("Servicio aprobado por el proveedor:", response);  
-            this.isServiceApprovedByProvider = true;  
-  
-            // Enviar un mensaje al otro usuario  
-            const roomId = [this.userId, this.receiverId].sort().join('-');  
-            const approvalMessage: ChatMessage = {  
-                message: 'El servicio ha sido aprobado por el proveedor',  
-                sender: this.userId,  
-                receiver: this.receiverId,  
-                user: this.userId  
-            };  
-            this.chatService.sendMessage(roomId, approvalMessage);  
-        },  
-        error: (error) => {  
-            console.error("Error al aprobar el servicio por el proveedor:", error);  
-        }  
+    
+    this.chatService.approveServiceByProvider(this.notificationId, this.notificationId2).subscribe({  
+      next: (response) => {  
+        console.log("Servicio aprobado por el proveedor:", response);  
+        this.isServiceApprovedByProvider = true;  
+    
+        // Enviar un mensaje al otro usuario  
+        const roomId = [this.userId, this.receiverId].sort().join('-');  
+        const approvalMessage: ChatMessage = {  
+          message: 'El servicio ha sido aprobado por el proveedor',  
+          sender: this.userId,  
+          receiver: this.receiverId,  
+          user: this.userId  
+        };  
+        this.chatService.sendMessage(roomId, approvalMessage);  
+      },  
+      error: (error) => {  
+        console.error("Error al aprobar el servicio por el proveedor:", error);  
+      }  
     });  
+  }
+
+  countdown: number = 300; // 5 minutos en segundos  
+  intervalId: any; // Para almacenar el ID del interval  
+  
+  callMethodsAfterDelay() {  
+    this.countdown = 300; // Reinicia el contador a 300 segundos  
+  
+    // Actualiza el contador cada segundo  
+    this.intervalId = setInterval(() => {  
+      this.countdown--;  
+  
+      // Verifica si el tiempo se ha agotado  
+      if (this.countdown <= 0) {  
+        clearInterval(this.intervalId); // Detenemos el contador  
+        this.approveServiceByClient();  
+        this.updateUserStatusNoOccupied();  
+      }  
+    }, 1000); // Actualiza cada segundo  
   }  
+  
+  // Limpieza en ngOnDestroy  
+  ngOnDestroy() {  
+    if (this.intervalId) {  
+      clearInterval(this.intervalId); // Limpia el intervalo si el componente se destruye  
+    }  
+  }
   
   rejectServiceByProvider() {  
-    if (this.notificationId === null) {  
-        console.error("Error: vendorServiceId no puede ser nulo.");  
-        return;  
+    if (this.notificationId === null || this.notificationId2 === null) {  
+      console.error("Error: notificationId o notificationId2 no pueden ser nulos.");  
+      return;  
     }  
-  
-    this.chatService.rejectServiceByProvider(this.notificationId).subscribe({  
-        next: (response) => {  
-            console.log("Servicio rechazado por el proveedor:", response);  
-            const roomId = [this.userId, this.receiverId].sort().join('-');  
-            const rejectionMessage: ChatMessage = {  
-                message: 'El servicio ha sido rechazado por el proveedor',  
-                sender: this.userId,  
-                receiver: this.receiverId,  
-                user: this.userId  
-            };  
-            this.chatService.sendMessage(roomId, rejectionMessage);  
-        },  
-        error: (error) => {  
-            console.error("Error al rechazar el servicio por el proveedor:", error);  
-        }  
+    
+    this.chatService.rejectServiceByProvider(this.notificationId, this.notificationId2).subscribe({  
+      next: (response) => {  
+        console.log("Servicio rechazado por el proveedor:", response);  
+        const roomId = [this.userId, this.receiverId].sort().join('-');  
+        const rejectionMessage: ChatMessage = {  
+          message: 'El servicio ha sido rechazado por el proveedor',  
+          sender: this.userId,  
+          receiver: this.receiverId,  
+          user: this.userId  
+        };  
+        this.chatService.sendMessage(roomId, rejectionMessage);  
+      },  
+      error: (error) => {  
+        console.error("Error al rechazar el servicio por el proveedor:", error);  
+      }  
     });  
-  }  
+  }
     
   approveServiceByClient() {  
-    if (this.notificationId === null) {  
-      console.error("Error: vendorServiceId no puede ser nulo.");  
-      return;
+    if (this.notificationId === null || this.notificationId2 === null) {  
+      console.error("Error: notificationId o notificationId2 no pueden ser nulos.");  
+      return;  
     }  
-  
-    this.chatService.approveServiceByClient(this.notificationId).subscribe({  
+    
+    this.chatService.approveServiceByClient(this.notificationId, this.notificationId2).subscribe({  
       next: (response) => {  
         console.log("Servicio aprobado por el cliente:", response);  
       },  
@@ -152,31 +223,31 @@ export class ChatComponent implements OnInit {
         console.error("Error al aprobar el servicio por el cliente:", error);  
       }  
     });  
-  }  
+  }
   
   rejectServiceByClient() {  
-    if (this.notificationId === null) {  
-        console.error("Error: vendorServiceId no puede ser nulo.");  
-        return;  
+    if (this.notificationId === null || this.notificationId2 === null) {  
+      console.error("Error: notificationId o notificationId2 no pueden ser nulos.");  
+      return;  
     }  
-  
-    this.chatService.rejectServiceByClient(this.notificationId).subscribe({  
-        next: (response) => {  
-            console.log("Servicio rechazado por el cliente:", response);  
-            const roomId = [this.userId, this.receiverId].sort().join('-');  
-            const rejectionMessage: ChatMessage = {  
-                message: 'El servicio ha sido rechazado por el cliente',  
-                sender: this.userId,  
-                receiver: this.receiverId,  
-                user: this.userId  
-            };  
-            this.chatService.sendMessage(roomId, rejectionMessage);  
-        },  
-        error: (error) => {  
-            console.error("Error al rechazar el servicio por el cliente:", error);  
-        }  
+    
+    this.chatService.rejectServiceByClient(this.notificationId, this.notificationId2).subscribe({  
+      next: (response) => {  
+        console.log("Servicio rechazado por el cliente:", response);  
+        const roomId = [this.userId, this.receiverId].sort().join('-');  
+        const rejectionMessage: ChatMessage = {  
+          message: 'El servicio ha sido rechazado por el cliente',  
+          sender: this.userId,  
+          receiver: this.receiverId,  
+          user: this.userId  
+        };  
+        this.chatService.sendMessage(roomId, rejectionMessage);  
+      },  
+      error: (error) => {  
+        console.error("Error al rechazar el servicio por el cliente:", error);  
+      }  
     });  
-  }  
+  } 
 
   sendMessage() {  
     if (this.messageInput.trim()) {  
@@ -246,18 +317,24 @@ confirmAction(action: string) {
       switch (action) {  
           case 'enableNegotiation':  
               this.handleUserType('Buyer');  
+              this.updateUserStatusOccupied();
               break;  
           case 'cancelNegotiationByProvider':  
-              this.rejectServiceByProvider();  
+              this.rejectServiceByProvider(); 
+              this.updateUserStatusNoOccupied(); 
               break; 
           case 'cancelNegotiationByClient':  
               this.rejectServiceByClient();  
+              this.updateUserStatusNoOccupied();
               break;  
           case 'approveServiceByProvider':  
               this.approveServiceByProvider(); // Ajustado para el Seller  
+              this.callMethodsAfterDelay();
               break;  
           case 'approveServiceByClient':  
               this.approveServiceByClient(); // Ajustado para el Buyer  
+              this.updateUserStatusNoOccupied();
+              this.ngOnDestroy();
               break;  
           default:  
               break;  
