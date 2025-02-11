@@ -44,24 +44,24 @@
     </div>  
   </div>  
 
-    <div *ngIf="userType === 'Buyer'" class="user-type-button" (click)="confirmAction('enableNegotiation')">  
-      Habilitar negociación  
-    </div>  
-
-    <div *ngIf="userType === 'Seller'" class="user-type-button" (click)="confirmAction('cancelNegotiationByProvider')">  
-      Cancelar negociación  
-    </div>  
-
-    <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" (click)="confirmAction('approveServiceByProvider')">  
-      Ya realicé el servicio  
-    </div>  
-
-    <div *ngIf="isNegotiationEnabled && userType === 'Buyer' && isServiceApprovedByProvider" class="user-type-button" (click)="confirmAction('approveServiceByClient')">  
-      Ya recibí el servicio  
-    </div>  
-
-    <div *ngIf="userType === 'Buyer'" class="user-type-button" (click)="confirmAction('cancelNegotiationByClient')">  
-      Cancelar negociación  
-    </div>   
+  <div *ngIf="userType === 'Buyer'" class="user-type-button" [class.disabled]="negotiationEnabled" (click)="confirmAction('enableNegotiation')">  
+    Habilitar negociación  
+  </div>  
+  
+  <div *ngIf="userType === 'Seller'" class="user-type-button" [class.disabled]="negotiationCancelledByProvider" (click)="confirmAction('cancelNegotiationByProvider')">  
+    Cancelar negociación  
+  </div>  
+  
+  <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" [class.disabled]="serviceApprovedByProvider" (click)="confirmAction('approveServiceByProvider')">  
+    Ya realicé el servicio  
+  </div>  
+  
+  <div *ngIf="isNegotiationEnabled && userType === 'Buyer' && isServiceApprovedByProvider" class="user-type-button" [class.disabled]="serviceApprovedByClient" (click)="confirmAction('approveServiceByClient')">  
+    Ya recibí el servicio  
+  </div>  
+  
+  <div *ngIf="userType === 'Buyer'" class="user-type-button" [class.disabled]="negotiationCancelledByClient" (click)="confirmAction('cancelNegotiationByClient')">  
+    Cancelar negociación  
+  </div> 
   </div>  
 </div>

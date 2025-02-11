@@ -20,12 +20,21 @@ export class ChatComponent implements OnInit {
   receiverId: string = "";  
   messageList: any[] = []; 
   userType: string = "";
+  countdown: number = 300; // 5 minutos en segundos  
+  intervalId: any; // Para almacenar el ID del interval  
+
   isNegotiationEnabled: boolean = false;
   notificationId: number | null = null; 
   notificationId2: number | null = null; 
   vendorServiceId: number | null = null;
   userId2: number | null = null;
   isServiceApprovedByProvider: boolean = false;
+
+  negotiationEnabled: boolean = false;  
+  negotiationCancelledByProvider: boolean = false;  
+  negotiationCancelledByClient: boolean = false;  
+  serviceApprovedByProvider: boolean = false;  
+  serviceApprovedByClient: boolean = false;  
 
   private token = inject(AuthService).token;
 
@@ -59,6 +68,7 @@ export class ChatComponent implements OnInit {
             this.receiverId = this.route.snapshot.params["receiverId"];    
             this.chatService.initConnenctionSocket(this.userId, this.receiverId);
             this.listenerMessage();
+            this.listenerCountdown(); // Escuchar actualizaciones del contador
           },  
           error: error => {  
             console.error('Error al autenticar con token:', error);  
@@ -95,21 +105,19 @@ export class ChatComponent implements OnInit {
 
 
   updateUserStatusNoOccupied() {  
-    if (this.userId2 === null) {  
+    if (this.userId === null) {  
       console.error("Error: userId2 no puede ser nulo.");  
       return;  
     }  
 
-    this.chatService.updateUserStatusToNoOccupied(this.userId2).subscribe({  
+    this.chatService.updateUserStatusToNoOccupied(Number(this.userId)).subscribe({  
       next: (response) => {  
-        console.log("Estado del usuario actualizado a 'No ocupado':", response);  
-        // Aquí puedes realizar otras acciones dependiendo de tu lógica,  
-        // como notificar al usuario o actualizar la vista.  
+          console.log("Estado del usuario actualizado a 'No ocupado':", response);  
       },  
       error: (error) => {  
-        console.error("Error al actualizar el estado del usuario:", error);  
+          console.error("Error al actualizar el estado del usuario:", error);  
       }  
-    });  
+  }); 
   }  
  
   handleUserType(type: string): void {  
@@ -159,31 +167,41 @@ export class ChatComponent implements OnInit {
     });  
   }
 
-  countdown: number = 300; // 5 minutos en segundos  
-  intervalId: any; // Para almacenar el ID del interval  
-  
+  // Método para iniciar el contador y enviar actualizaciones
   callMethodsAfterDelay() {  
-    this.countdown = 300; // Reinicia el contador a 300 segundos  
-  
-    // Actualiza el contador cada segundo  
+    this.countdown = 5; // Reinicia el contador a 300 segundos  
+    this.chatService.sendCountdown(this.countdown); // Enviar el estado inicial del contador
+
     this.intervalId = setInterval(() => {  
       this.countdown--;  
-  
-      // Verifica si el tiempo se ha agotado  
+      this.chatService.sendCountdown(this.countdown); // Enviar actualizaciones del contador
+
       if (this.countdown <= 0) {  
-        clearInterval(this.intervalId); // Detenemos el contador  
+        clearInterval(this.intervalId);  
         this.approveServiceByClient();  
         this.updateUserStatusNoOccupied();  
       }  
-    }, 1000); // Actualiza cada segundo  
+    }, 1000);  
   }  
-  
-  // Limpieza en ngOnDestroy  
+
+  // Escuchar actualizaciones del contador desde el servidor
+  listenerCountdown() {
+    this.chatService.getCountdownSubject().subscribe((countdown) => {
+      this.countdown = countdown;
+
+      if (this.countdown <= 0 && this.intervalId) {
+        clearInterval(this.intervalId);
+      }
+    });
+  }
+
   ngOnDestroy() {  
     if (this.intervalId) {  
-      clearInterval(this.intervalId); // Limpia el intervalo si el componente se destruye  
+      clearInterval(this.intervalId);  
     }  
   }
+
+
   
   rejectServiceByProvider() {  
     if (this.notificationId === null || this.notificationId2 === null) {  
@@ -314,31 +332,36 @@ listenerMessage() {
 confirmAction(action: string) {  
   const confirmation = confirm('¿Estás seguro de realizar esta acción?');  
   if (confirmation) {  
-      switch (action) {  
-          case 'enableNegotiation':  
-              this.handleUserType('Buyer');  
-              this.updateUserStatusOccupied();
-              break;  
-          case 'cancelNegotiationByProvider':  
-              this.rejectServiceByProvider(); 
-              this.updateUserStatusNoOccupied(); 
-              break; 
-          case 'cancelNegotiationByClient':  
-              this.rejectServiceByClient();  
-              this.updateUserStatusNoOccupied();
-              break;  
-          case 'approveServiceByProvider':  
-              this.approveServiceByProvider(); // Ajustado para el Seller  
-              this.callMethodsAfterDelay();
-              break;  
-          case 'approveServiceByClient':  
-              this.approveServiceByClient(); // Ajustado para el Buyer  
-              this.updateUserStatusNoOccupied();
-              this.ngOnDestroy();
-              break;  
-          default:  
-              break;  
-      }   
+    switch (action) {  
+      case 'enableNegotiation':  
+        this.negotiationEnabled = true;  
+        this.handleUserType('Buyer');  
+        this.updateUserStatusOccupied();  
+        break;  
+      case 'cancelNegotiationByProvider':  
+        this.negotiationCancelledByProvider = true;  
+        this.rejectServiceByProvider();  
+        this.updateUserStatusNoOccupied();  
+        break;  
+      case 'cancelNegotiationByClient':  
+        this.negotiationCancelledByClient = true;  
+        this.rejectServiceByClient();  
+        this.updateUserStatusNoOccupied();  
+        break;  
+      case 'approveServiceByProvider':  
+        this.serviceApprovedByProvider = true;  
+        this.approveServiceByProvider(); // Ajustado para el Seller  
+        this.callMethodsAfterDelay();  
+        break;  
+      case 'approveServiceByClient':  
+        this.serviceApprovedByClient = true;  
+        this.approveServiceByClient(); // Ajustado para el Buyer  
+        this.updateUserStatusNoOccupied();  
+        this.ngOnDestroy();  
+        break;  
+      default:  
+        break;  
+    }  
   }  
-}
+}  
 }

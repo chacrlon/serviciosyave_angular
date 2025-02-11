@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 export class ChatService {
   private stompClient: any
   private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
+  private countdownSubject: BehaviorSubject<number> = new BehaviorSubject<number>(5); // Inicializamos con 300 segundos
   private isConnected: boolean = false;
   private apiUrl = 'http://localhost:8080/api/service'; 
   private notificacionUrl = 'http://localhost:8080/api/notifications'; 
@@ -27,11 +28,15 @@ export class ChatService {
         this.isConnected = true;
         this.joinRoom(userId, receiverId);
 
-        // Aquí puedes manejar la suscripción a la sala de chat  
+      // Suscribirse al tema del contador
+      this.stompClient.subscribe('/topic/countdown', (message: any) => {
+        const countdownMessage = JSON.parse(message.body);
+        this.countdownSubject.next(countdownMessage.countdown); // Actualizamos el contador
+      });
     }, (error: any) => {  
-        console.error('Error de conexión:', error);
+      console.error('Error de conexión:', error);
     });
-}
+  }
 
 joinRoom(userId: string, receiverId: string) {  
   if (!this.isConnected) {
@@ -87,8 +92,23 @@ sendMessage(roomId: string, chatMessage: ChatMessage) {
       console.error('Error: STOMP client is not connected.');
   }  
 }
+getMessageSubject(){
+  return this.messageSubject.asObservable();
+}
 
-  getMessageSubject(){
-    return this.messageSubject.asObservable();
+ // Método para enviar actualizaciones del contador
+ sendCountdown(countdown: number) {
+  if (this.stompClient && this.stompClient.connected) {
+    this.stompClient.send('/app/countdown', {}, JSON.stringify({ countdown }));
+  } else {
+    console.error('Error: STOMP client is not connected.');
   }
+}
+
+// Obtener el BehaviorSubject del contador
+getCountdownSubject() {
+  return this.countdownSubject.asObservable();
+}
+
+
 }
