@@ -1,0 +1,64 @@
+.home-container {  
+    position: relative;  
+    padding: 0; /* Para eliminar márgenes */  
+    margin: 0;  /* Para eliminar márgenes */  
+    overflow: hidden; /* Para evitar que los videos sobresalgan */  
+}  
+
+.video-carrusel {  
+    position: relative;  
+    width: 100%;  
+    height: 500px; /* Altura del video */  
+}  
+
+video {  
+    width: 100%; /* Para que se ajuste al contenedor */  
+    height: 100%; /* Para que se ajuste al contenedor */  
+    object-fit: cover; /* Para asegurar que el video cubra completamente el área */  
+}  
+
+button {  
+    position: absolute;  
+    top: 50%; /* Centrar verticalmente */  
+    transform: translateY(-50%);  
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */  
+    color: white; /* Color del texto */  
+    border: none; /* Sin borde */  
+    cursor: pointer; /* Cursor tipo puntero */  
+    padding: 10px; /* Espaciado interno */  
+}  
+
+.prev {  
+    left: 10px; /* Posición izquierda */  
+}  
+
+.next {  
+    right: 10px; /* Posición derecha */  
+}  
+
+.modal-image {  
+    display: block; /* Esto puede ayudar a posicionar correctamente la imagen */  
+    margin: 20px auto; /* Centra la imagen horizontalmente */  
+    max-width: 100%; /* Se asegura de que la imagen no exceda el ancho del contenedor */  
+    height: auto; /* Mantiene la proporción de aspecto */  
+}  
+
+.desc-image {  
+    display: block; /* Esto puede ayudar a posicionar correctamente la imagen */  
+    margin: 20px auto; /* Centra la imagen horizontalmente */  
+    max-width: 100%; /* Se asegura de que la imagen no exceda el ancho del contenedor */  
+    height: auto;  
+}  
+
+.description-text {  
+    color: rgb(72, 111, 240); /* Color azul para el texto */  
+    text-align: center; /* Centra el texto */  
+    margin: 20px; /* Espaciado alrededor del texto */  
+    font-size: 16px; /* Ajusta el tamaño de la fuente según sea necesario */  
+}
+.reg-image{
+    display: block; 
+    margin: 20px auto; /* Centra la imagen horizontalmente */  
+    max-width: 100%; 
+    height: auto; 
+}

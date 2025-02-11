@@ -19,6 +19,7 @@ import { ChatContactComponent } from './chat-contact/chat-contact.component';
 import { FaqComponent } from './faq/faq.component';
 import { FooterComponent } from './footer/footer.component';
 import { CodeVerifyComponent } from './register/code-verify/code-verify.component';
+import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
     {
@@ -115,6 +116,15 @@ export const routes: Routes = [
         path: 'app-code-verify',
         component: CodeVerifyComponent,
     },
+    {  
+        path: 'home',
+        component: HomeComponent,
+    },
+    {  
+        path: '',
+        component: HomeComponent,
+    },
+    
     
 
 ];

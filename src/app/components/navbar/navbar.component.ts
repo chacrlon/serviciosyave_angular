@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';  
-import { Router, RouterModule } from '@angular/router';  
+import { Router, RouterLink, RouterModule } from '@angular/router';  
 import { User } from '../../models/user';  
 import { AuthService } from '../../services/auth.service';   
 import { CommonModule } from '@angular/common';  // Importa CommonModule   
@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';  // Importa CommonModule
 @Component({  
   selector: 'navbar',  
   standalone: true,  
-  imports: [RouterModule, CommonModule],  
+  imports: [RouterModule, CommonModule, RouterLink],  
   templateUrl: './navbar.component.html',  
   styleUrls: ['./navbar.component.css'] 
 })  

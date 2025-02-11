@@ -1,6 +1,6 @@
 /* Navbar Styles */  
 .navbar {  
-  background-color: #0056b3; /* Color azul profesional */  
+  background-color: #ffffff; /* Color azul profesional */  
   padding: 10px 20px; /* Relleno adicional para el navbar */  
 }  
 
@@ -14,18 +14,18 @@
 /* Cambiar el color del texto de los enlaces en el navbar */  
 .navbar-brand,   
 .nav-link {  
-  color: white; /* Color de texto blanco */  
+  color: rgb(0, 0, 0); /* Color de texto blanco */  
 }  
 
 /* Cambiar el color de los enlaces al pasar el mouse (hover) */  
 .nav-link:hover {  
-  color: rgba(231, 243, 254, 0.8); /* Un color azul claro en hover */  
+  color: rgba(30, 129, 221, 0.8); /* Un color azul claro en hover */  
 }  
 
 /* Estilo para el botón de login y logout */  
 .btn-outline-success {  
-  border-color: white; /* Color del borde */  
-  color: white; /* Color del texto del botón */  
+  border-color: rgb(226, 40, 40); /* Color del borde */  
+  color: rgb(233, 42, 42); /* Color del texto del botón */  
 }  
 
 .btn-outline-success:hover {  
@@ -34,8 +34,8 @@
 
 /* Cambiar el color del botón de sign in */  
 .btn-outline-primary {  
-  border-color: white; /* Color del borde */  
-  color: white; /* Color del texto del botón */  
+  border-color: rgb(24, 0, 129); /* Color del borde */  
+  color: rgb(24, 0, 129); /* Color del texto del botón */  
 }  
 
 .btn-outline-primary:hover {  
@@ -45,4 +45,18 @@
 /* Espaciado adicional para los items del navbar */  
 .nav-item {  
   margin: 0 15px; /* Espaciado horizontal para los items */  
+}
+.social-icons {  
+  display: flex; /* Usar flexbox para alinear los iconos horizontalmente */  
+  align-items: center; /* Centrar verticalmente los iconos */  
+  margin-left: auto; /* Empujar los iconos hacia el lado derecho */  
+}  
+
+.social-icon {  
+  margin-left: 15px; /* Espaciado entre los íconos */  
+}  
+
+.social-icon img {  
+  width: 24px; /* Ajusta el tamaño de los íconos según sea necesario */  
+  height: auto; /* Mantener la proporción de aspecto */  
 }

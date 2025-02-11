@@ -1,0 +1,16 @@
+<div class="home-container">  
+    <div class="video-carrusel">  
+        <video [src]="videos[currentVideoIndex]" autoplay loop>  
+            Tu navegador no soporta video.  
+        </video>  
+        <button class="prev" (click)="changeVideo(-1)">&#10094;</button>  
+        <button class="next" (click)="changeVideo(1)">&#10095;</button>  
+    </div>   
+    <img src="assets/modal.jpg" class="modal-image">   
+    <img src="assets/desc.jpg" class="desc-image">  
+    <p class="description-text">  
+        Nuestra plataforma te conecta con una amplia variedad de proveedores verificados y clientes potenciales, permitiéndote explorar, comparar y elegir lo que mejor se adapte a tus necesidades.  
+        ¡Disfruta de la comodidad de solicitar servicios de manera directa, negociar precios en un entorno seguro y realizar pagos de forma sencilla!  
+    </p> 
+    <img src="assets/reg.jpg" class="reg-image"> 
+</div>
