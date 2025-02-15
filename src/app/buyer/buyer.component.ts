@@ -108,7 +108,7 @@ export class BuyerComponent implements OnInit{
   }  
 
   loadServices() {  
-    this.http.get<any[]>('http://localhost:8080/api/service/')  
+    this.http.get<any[]>('http://localhost:8080/api/service/available')  
       .subscribe(response => {  
         this.services = response;  
       }, error => {  

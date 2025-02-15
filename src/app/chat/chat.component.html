@@ -10,6 +10,7 @@
       WhatsApp  
     </div>  
   </div>  
+
   <ul class="messages">  
     <li class="message right" *ngFor="let item of messageList"  
     [ngClass]="{'left': item.message_side === 'receiver', 'right': item.message_side === 'sender'}">  
@@ -19,6 +20,9 @@
       </div>  
     </li>  
   </ul>  
+
+
+
   <div class="bottom_wrapper clearfix">  
     <div class="message_input_wrapper">  
         <input class="message_input" placeholder="Message..." [(ngModel)]="messageInput"   
@@ -28,24 +32,36 @@
         <div class="icon"></div>  
         <div class="text">Send</div>  
     </div>  
-    <div *ngIf="userType === 'Buyer'" class="user-type-button" (click)="confirmAction('enableNegotiation')">  
-      Habilitar negociación  
-  </div>  
-  
-  <div *ngIf="userType === 'Seller'" class="user-type-button" (click)="confirmAction('cancelNegotiationByProvider')">  
-      Cancelar negociación  
-  </div>  
-  
-  <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" (click)="confirmAction('approveServiceByProvider')">  
-    Ya realice el servicio  
-</div>  
 
-<div *ngIf="isNegotiationEnabled && userType === 'Buyer' && isServiceApprovedByProvider" class="user-type-button" (click)="confirmAction('approveServiceByClient')">  
+      <!-- Sección para mostrar el tiempo restante -->  
+  <div class="time_remaining">  
+    <div *ngIf="countdown > 0">  
+      <p>Tiempo restante: {{ countdown }} segundos</p>  
+    </div>  
+
+    <div *ngIf="countdown <= 0">  
+      <p>¡El tiempo se ha agotado y las acciones se han ejecutado!</p>  
+    </div>  
+  </div>  
+
+  <div *ngIf="userType === 'Buyer'" class="user-type-button" [class.disabled]="negotiationEnabled" (click)="confirmAction('enableNegotiation')">  
+    Habilitar negociación  
+  </div>  
+  
+  <div *ngIf="userType === 'Seller'" class="user-type-button" [class.disabled]="negotiationCancelledByProvider" (click)="confirmAction('cancelNegotiationByProvider')">  
+    Cancelar negociación  
+  </div>  
+  
+  <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" [class.disabled]="serviceApprovedByProvider" (click)="confirmAction('approveServiceByProvider')">  
+    Ya realicé el servicio  
+  </div>  
+  
+  <div *ngIf="isNegotiationEnabled && userType === 'Buyer' && isServiceApprovedByProvider" class="user-type-button" [class.disabled]="serviceApprovedByClient" (click)="confirmAction('approveServiceByClient')">  
     Ya recibí el servicio  
-</div>
-  
-  <div *ngIf="isNegotiationEnabled && userType === 'Buyer'" class="user-type-button" (click)="confirmAction('cancelNegotiationByClient')">  
-      Cancelar negociación  
-  </div>
-
   </div>  
+  
+  <div *ngIf="userType === 'Buyer'" class="user-type-button" [class.disabled]="negotiationCancelledByClient" (click)="confirmAction('cancelNegotiationByClient')">  
+    Cancelar negociación  
+  </div> 
+  </div>  
+</div>
