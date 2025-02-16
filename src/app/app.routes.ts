@@ -19,7 +19,11 @@ import { ChatContactComponent } from './chat-contact/chat-contact.component';
 import { FaqComponent } from './faq/faq.component';
 import { FooterComponent } from './footer/footer.component';
 import { CodeVerifyComponent } from './register/code-verify/code-verify.component';
+<<<<<<< HEAD
 import { UsuariosPruebaComponent } from './usuarios-prueba/usuarios-prueba.component';
+=======
+import { HomeComponent } from './home/home.component';
+>>>>>>> aee239079cf933dff031d24ec28b4fed48cca422
 
 export const routes: Routes = [
     {
@@ -117,10 +121,21 @@ export const routes: Routes = [
         component: CodeVerifyComponent,
     },
     {  
+<<<<<<< HEAD
         path: 'app-usuarios-prueba',
         component: UsuariosPruebaComponent,
     },
 
+=======
+        path: 'home',
+        component: HomeComponent,
+    },
+    {  
+        path: '',
+        component: HomeComponent,
+    },
+    
+>>>>>>> aee239079cf933dff031d24ec28b4fed48cca422
     
 
 ];
