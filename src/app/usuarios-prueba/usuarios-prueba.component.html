@@ -1,0 +1,43 @@
+<div class="usuarios-container">  
+    <h2>Formulario de Usuarios</h2>  
+    <form (ngSubmit)="onSubmit()" #usuarioForm="ngForm">  
+        <div class="form-group">  
+            <label for="nombre">Nombre:</label>  
+            <input type="text" id="nombre" [(ngModel)]="usuario.nombre" name="nombre" required>  
+        </div>  
+
+        <div class="form-group">  
+            <label for="apellido">Apellido:</label>  
+            <input type="text" id="apellido" [(ngModel)]="usuario.apellido" name="apellido" required>  
+        </div>  
+
+        <div class="form-group">  
+            <label for="edad">Edad:</label>  
+            <input type="number" id="edad" [(ngModel)]="usuario.edad" name="edad" required>  
+        </div>  
+
+        <div class="form-group">  
+            <label for="genero">Género:</label>  
+            <select id="genero" [(ngModel)]="usuario.genero" name="genero" required>  
+                <option value="" disabled selected>Seleccione...</option>  
+                <option value="Masculino">Masculino</option>  
+                <option value="Femenino">Femenino</option>  
+                <option value="Otro">Otro</option>  
+            </select>  
+        </div>  
+
+        <button type="button" (click)="crearUsuario()" class="btn btn-crear">Crear</button>  
+        <button type="button" (click)="actualizarUsuario()" class="btn btn-actualizar">Actualizar</button>  
+        <button type="button" (click)="mostrarUsuarios()" class="btn btn-mostrar">Mostrar</button>  
+        <button type="button" (click)="eliminarUsuario()" class="btn btn-eliminar">Eliminar</button>  
+    </form>  
+
+    <div class="usuarios-list">  
+        <h3>Usuarios Registrados</h3>  
+        <ul>  
+            <li *ngFor="let usr of usuarios">  
+                {{ usr.nombre }} {{ usr.apellido }} - {{ usr.edad }} - {{ usr.genero }}  
+            </li>  
+        </ul>  
+    </div>  
+</div>

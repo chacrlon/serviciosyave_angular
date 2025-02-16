@@ -1,0 +1,61 @@
+.usuarios-container {  
+    background-color: #f8d3e5; /* Fondo suave en rosa */  
+    padding: 20px;  
+    border-radius: 8px;  
+    max-width: 600px;  
+    margin: auto;  
+}  
+
+h2, h3 {  
+    color: #90266e; /* Tono más oscuro */  
+    text-align: center;  
+}  
+
+.form-group {  
+    margin-bottom: 15px;  
+}  
+
+label {  
+    display: block;  
+    margin-bottom: 5px;  
+    font-weight: bold;  
+}  
+
+input, select {  
+    width: 100%;  
+    padding: 10px;  
+    border: 1px solid #90266e;  
+    border-radius: 4px;  
+}  
+
+.btn {  
+    background-color: #f68c9f; /* Botón rosa */  
+    color: white;  
+    border: none;  
+    padding: 10px 15px;  
+    text-align: center;  
+    margin: 5px;  
+    cursor: pointer;  
+    border-radius: 4px;  
+}  
+
+.btn:hover {  
+    background-color: #e67e91; /* Tono más oscuro en hover */  
+}  
+
+.usuarios-list {  
+    margin-top: 20px;  
+    padding: 10px;  
+    background-color: #fff; /* Fondo blanco para la lista */  
+    border-radius: 4px;  
+}  
+
+.usuarios-list ul {  
+    list-style-type: none;  
+    padding: 0;  
+}  
+
+.usuarios-list li {  
+    border-bottom: 1px solid #90266e; /* Línea de separación entre usuarios */  
+    padding: 5px 0;  
+}

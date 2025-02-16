@@ -189,13 +189,13 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
   selectRole(role: string): void {  
     console.log(`Rol seleccionado: ${role}`);  
     if (role === 'seller' && !this.hasSelectedSeller) {  
-      this.openSellerRegistrationModal();  
+    //  this.openSellerRegistrationModal();  
       this.hasSelectedSeller = true; // Marcar como si se ha seleccionado el rol de vendedor  
     } else {  
       this.obtenerUbicacion(role);  
     }  
   }  
-
+/*
   openSellerRegistrationModal(): void {  
     if (this.isModalOpen) return; // Si ya está abierto, no hacer nada  
     this.isModalOpen = true; // Marcar el modal como abierto  
@@ -210,7 +210,8 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
         this.isModalOpen = false; // Marcar el modal como cerrado  
       })  
     );  
-  }  
+  }  */
+
   obtenerUbicacion(role: string): void {  
     console.log('Obteniendo ubicación para el rol:', role);  
     

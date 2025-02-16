@@ -48,9 +48,14 @@
     Habilitar negociación  
   </div>  
   
-  <div *ngIf="userType === 'Seller'" class="user-type-button" [class.disabled]="negotiationCancelledByProvider" (click)="confirmAction('cancelNegotiationByProvider')">  
-    Cancelar negociación  
-  </div>  
+<!-- Botón Cancelar (Proveedor) -->
+<div *ngIf="userType === 'Seller' && !serviceConfirmed && !isNegotiationEnabled" 
+     class="user-type-button" 
+     [class.disabled]="negotiationCancelledByProvider" 
+     (click)="confirmAction('cancelNegotiationByProvider')">  
+  Cancelar negociación  
+</div>  
+   
   
   <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" [class.disabled]="serviceApprovedByProvider" (click)="confirmAction('approveServiceByProvider')">  
     Ya realicé el servicio  
@@ -60,8 +65,13 @@
     Ya recibí el servicio  
   </div>  
   
-  <div *ngIf="userType === 'Buyer'" class="user-type-button" [class.disabled]="negotiationCancelledByClient" (click)="confirmAction('cancelNegotiationByClient')">  
-    Cancelar negociación  
-  </div> 
+<!-- Botón Cancelar (Cliente) -->
+<div *ngIf="userType === 'Buyer' && !serviceConfirmed && !isNegotiationEnabled" 
+     class="user-type-button" 
+     [class.disabled]="negotiationCancelledByClient" 
+     (click)="confirmAction('cancelNegotiationByClient')">  
+  Cancelar negociación  
+</div> 
+
   </div>  
 </div>

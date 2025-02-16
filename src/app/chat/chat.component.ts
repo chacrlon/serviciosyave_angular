@@ -35,7 +35,7 @@ export class ChatComponent implements OnInit {
   negotiationCancelledByClient: boolean = false;  
   serviceApprovedByProvider: boolean = false;  
   serviceApprovedByClient: boolean = false;  
-
+  serviceConfirmed: boolean = false;
   private token = inject(AuthService).token;
 
   constructor(  
@@ -119,26 +119,23 @@ export class ChatComponent implements OnInit {
       }  
   }); 
   }  
- 
+
   handleUserType(type: string): void {  
-    console.log(`Botón clickeado: ${type}`);   
-    
-    // Invertimos la lógica según el tipo de usuario  
     if (type === 'Buyer') {  
-        this.isNegotiationEnabled = true; // Habilita la negociación desde el Buyer  
-        this.sendNegotiationEnabledMessage(); // Envío de mensaje al Buyer  
-    }  
-  
-    const chatMessage: ChatMessage = {  
-        message: `Es HORA de realizar el SERVICIO!`, // Mensaje de ejemplo  
+      this.isNegotiationEnabled = true;  
+      this.sendNegotiationEnabledMessage();  
+      // Envía un mensaje adicional para bloquear cancelaciones
+      const roomId = [this.userId, this.receiverId].sort().join('-');  
+      const lockMessage: ChatMessage = {  
+        message: 'LOCK_NEGOTIATION',  
         sender: this.userId,  
         receiver: this.receiverId,  
         user: this.userId  
-    };  
-    
-    const roomId = [this.userId, this.receiverId].sort().join('-');  
-    this.chatService.sendMessage(roomId, chatMessage);  
-  }  
+      };  
+      this.chatService.sendMessage(roomId, lockMessage); 
+    }  
+    // Resto del código...
+  }
   
   approveServiceByProvider() {  
     if (this.notificationId === null || this.notificationId2 === null) {  
@@ -150,6 +147,7 @@ export class ChatComponent implements OnInit {
       next: (response) => {  
         console.log("Servicio aprobado por el proveedor:", response);  
         this.isServiceApprovedByProvider = true;  
+        this.serviceConfirmed = true; // 👈 Esta linea es para deshabilitar esta funcion cuando el servicio sea realizado
     
         // Enviar un mensaje al otro usuario  
         const roomId = [this.userId, this.receiverId].sort().join('-');  
@@ -303,16 +301,16 @@ listenerMessage() {
 
       // Controlar mensajes de aprobación y rechazo  
       const approvalMessage = messages.find((msg: any) => msg.message === 'El servicio ha sido aprobado por el proveedor');  
-      if (approvalMessage && approvalMessage.user !== this.userId) {  
-          this.isServiceApprovedByProvider = true;  
-      }
+      if (approvalMessage) {  
+        this.serviceConfirmed = true; // 👈 Oculta botones en ambos lados
+        this.isServiceApprovedByProvider = approvalMessage.user !== this.userId;  
+      } 
 
       // Escuchar los mensajes de negociación habilitada  
       const negotiationMessage = messages.find((msg: any) => msg.message === 'Negociación habilitada');  
-      if (negotiationMessage && negotiationMessage.user !== this.userId) {   
-         this.isNegotiationEnabled = true; // Habilita la negociación para ambos  
+      if (negotiationMessage) {  
+        this.isNegotiationEnabled = true; 
       } 
-
       const rejectionMessageProvider = messages.find((msg: any) => msg.message === 'El servicio ha sido rechazado por el proveedor');  
       const rejectionMessageClient = messages.find((msg: any) => msg.message === 'El servicio ha sido rechazado por el cliente');  
 
