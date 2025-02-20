@@ -79,4 +79,22 @@ export class ChatComponent implements OnInit {
       }));
     });
   }
+
+
+  public claim() {
+    let payload: Object = {
+      userId: this.userId,
+      receiverId: this.receiverId,
+      roomId: [this.userId, this.receiverId].sort().join('-')
+    };
+
+    console.log("claim/>", payload);
+
+    this.chatService.createClaim(payload).subscribe(
+      next => () => {},
+      error => () => {}
+    );    
+    // this.router.navigate(['/login']);  
+
+  }
 }

@@ -68,7 +68,7 @@
     list-style: none;
     padding: 20px 10px 0 10px;
     margin: 0;
-    height: 330px;
+    height: 308px;
     overflow: scroll;
   }
   
@@ -225,3 +225,33 @@
   .message_template {
     display: none;
   }
+
+.buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0.2em;
+  justify-content: center;
+}
+
+.suggestion-button {
+  padding: 10px 20px;
+  background-color: #7b7b7b;
+  border: 1px solid #000000;
+  color: #ffffff;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.suggestion-button:hover {
+  background-color: #ff1100;
+  color: white;
+  border-color: #007bff;
+}
+
+.suggestion-button:active {
+  transform: scale(0.95);
+}

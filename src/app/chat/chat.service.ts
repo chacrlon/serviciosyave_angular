@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ChatMessage } from '../models/chat-message';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,9 @@ export class ChatService {
   private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
   private isConnected: boolean = false;
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
   initConnenctionSocket(userId: string, receiverId: string) {  
     const url = `http://localhost:8080/chat-socket`;  
@@ -60,5 +63,9 @@ sendMessage(roomId: string, chatMessage: ChatMessage) {
 
   getMessageSubject(){
     return this.messageSubject.asObservable();
+  }
+
+  public createClaim(payload: any): Observable<any> {
+    return this.http.post("http://localhost:8080/api/claims/create", payload);
   }
 }
