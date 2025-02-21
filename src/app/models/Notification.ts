@@ -4,4 +4,5 @@ export interface Notification {
   message: string;  
   read: boolean;  
   userId2: number; 
+  vendorServiceId?: number;
 }

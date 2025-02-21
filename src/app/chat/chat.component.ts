@@ -17,7 +17,8 @@ export class ChatComponent implements OnInit {
   
   messageInput: string = '';  
   userId: string = "";  
-  receiverId: string = "";  
+  receiverId: string = "";
+  vendorServiceId: string = "";  
   messageList: any[] = [];  
   private token = inject(AuthService).token;
   
@@ -26,7 +27,7 @@ export class ChatComponent implements OnInit {
     private chatService: ChatService,  
     private route: ActivatedRoute,  
     private authService: AuthService,  
-    private router: Router  
+    private router: Router
   ) {}  
 
   ngOnInit(): void {  
@@ -37,7 +38,9 @@ export class ChatComponent implements OnInit {
         this.authService.loginWithToken(token).subscribe({  
           next: response => {
             this.userId = this.authService.userId; // Ajusta según tu modelo de respuesta
-            this.receiverId = this.route.snapshot.params["receiverId"];    
+            this.receiverId = this.route.snapshot.params["receiverId"];
+            this.vendorServiceId = this.route.snapshot.params["vendorServiceId"];  
+
             this.chatService.initConnenctionSocket(this.userId, this.receiverId);
             this.listenerMessage();
           },  
@@ -85,16 +88,17 @@ export class ChatComponent implements OnInit {
     let payload: Object = {
       userId: this.userId,
       receiverId: this.receiverId,
-      roomId: [this.userId, this.receiverId].sort().join('-')
+      roomId: [this.userId, this.receiverId].sort().join('-'),
+      vendorServiceId: this.vendorServiceId
     };
 
-    console.log("claim/>", payload);
-
-    this.chatService.createClaim(payload).subscribe(
-      next => () => {},
-      error => () => {}
-    );    
-    // this.router.navigate(['/login']);  
+    this.chatService.createClaim(payload).subscribe({
+      next: (resp) => {
+        this.router.navigate(['claims', resp.id]);
+      },
+      error: () => { alert("Ha ocurrido un error inesperado")}
+  });
+    // this.router.navigate(['/login']);
 
   }
 }

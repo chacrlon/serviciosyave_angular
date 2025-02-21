@@ -16,6 +16,7 @@ import { ChatComponent } from './chat/chat.component';
 import { NecesitoComponent } from './necesito/necesito.component';
 import { MoneyNowComponent } from './money-now/money-now.component';
 import { ChatContactComponent } from './chat-contact/chat-contact.component';
+import { ClaimsComponent } from './claims/claims.component';
 
 export const routes: Routes = [
     {
@@ -31,12 +32,16 @@ export const routes: Routes = [
         component: NecesitoComponent
     },  
     {   
-        path: 'chat/:userId/:receiverId', 
+        path: 'chat/:userId/:receiverId/:vendorServiceId', 
         component: ChatComponent   
     },
     {   
         path: 'chat/invite',
         component: ChatContactComponent
+    },
+    {   
+        path: 'claims/:claimsId',
+        component: ClaimsComponent
     },
     {  
         path: 'notification-modal',  
