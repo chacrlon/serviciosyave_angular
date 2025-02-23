@@ -1,18 +1,87 @@
 <div class="container">  
 
-  <form>  
-      <div class="flex flex-col items-center">  
+  <form>
+      <div class="flex flex-col items-center">
         <h2 class="text-lg font-bold">Disputa en curso #{{padStart(claimsId)}}</h2>
         <div class="flex space-x-4">
+
         <div class="row">
-          <label for="nombre">Servicio:</label>  
-          <input type="text" id="nombre" name="nombre" required>  
+          <span>
+            <b>Nombre del servicio:</b>
+            {{upperCase(claimData.vendor.nombre)}}
+          </span>
         </div>
 
         <div class="row">
-          <label for="paymentMethod">Metodo de pago:</label>  
-          <input type="text" id="paymentMethod" name="paymentMethod" required>  
+          <span>
+            <b>Vendedor:</b>
+            {{upperCase(claimData.receiver.name)}}
+          </span>
         </div>
+
+        <div class="row">
+          <span>
+            <b>Comprador:</b>
+            {{upperCase(claimData.user.name)}}
+          </span>
+        </div>
+
+        <div class="row">
+          <span>
+            <b>Precio: </b>
+            {{upperCase(claimData.vendor.precio)}}
+          </span>
+        </div>
+
+        <div class="row">
+          <span>
+            <b>Monto pagado: </b>
+            {{upperCase(claimData.payment[0].monto | currency:'USD':'')}} {{upperCase(claimData.payment[0].divisa)}}
+          </span>
+        </div>
+
+        <div class="row">
+
+          <div class="col flex flex-col">
+            <label for="paymentMethod">Metodo de pago:</label>
+            <input
+              readonly
+              disabled 
+              type="text" id="paymentMethod" name="paymentMethod" [value]="upperCase(claimData.payment[0].metodo_pago)" required>  
+          </div>
+
+          <div class="col flex flex-col">
+            <label for="paymentMethod">Numero de Referencia:</label>
+            <input
+              readonly
+              disabled 
+              type="text" id="paymentMethod" name="paymentMethod" [value]="upperCase(claimData.payment[0].referencia)" required>  
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="col flex flex-col">
+            <label for="paymentMethod">Adjuntar comprobante de pago:</label>
+            <input 
+            type="file" 
+            id="fileUpload" 
+            name="fileUpload" 
+            accept=".pdf,.jpg,.png"
+            (change)="onFileChange($event)"
+            placeholder="Subir comprobante"
+            required>
+            <span *ngIf="changeFileFlag">
+              <svg class="check-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </span>
+
+          </div>
+
+        </div>
+
         </div>
       </div>
     </form>
