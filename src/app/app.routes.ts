@@ -19,11 +19,9 @@ import { ChatContactComponent } from './chat-contact/chat-contact.component';
 import { FaqComponent } from './faq/faq.component';
 import { FooterComponent } from './footer/footer.component';
 import { CodeVerifyComponent } from './register/code-verify/code-verify.component';
-<<<<<<< HEAD
 import { UsuariosPruebaComponent } from './usuarios-prueba/usuarios-prueba.component';
-=======
 import { HomeComponent } from './home/home.component';
->>>>>>> aee239079cf933dff031d24ec28b4fed48cca422
+import { ClaimsComponent } from './claims/claims.component';
 
 export const routes: Routes = [
     {
@@ -39,12 +37,16 @@ export const routes: Routes = [
         component: NecesitoComponent
     },  
     {   
-        path: 'chat/:userId/:receiverId', 
+        path: 'chat/:userId/:receiverId/:vendorServiceId', 
         component: ChatComponent   
     },
     {   
         path: 'chat/invite',
         component: ChatContactComponent
+    },
+    {   
+        path: 'claims/:claimsId',
+        component: ClaimsComponent
     },
     {  
         path: 'notification-modal',  
@@ -121,12 +123,10 @@ export const routes: Routes = [
         component: CodeVerifyComponent,
     },
     {  
-<<<<<<< HEAD
         path: 'app-usuarios-prueba',
         component: UsuariosPruebaComponent,
     },
-
-=======
+    {
         path: 'home',
         component: HomeComponent,
     },
@@ -134,8 +134,4 @@ export const routes: Routes = [
         path: '',
         component: HomeComponent,
     },
-    
->>>>>>> aee239079cf933dff031d24ec28b4fed48cca422
-    
-
 ];
