@@ -11,9 +11,14 @@ import { AcceptOfferRequest } from '../models/AcceptOfferRequest';
 })  
 export class MoneyNowService {  
   private apiUrl = 'http://localhost:8080/api/ineeds';  
+  private apiUrl2 = 'http://localhost:8080/api';  
   private categoriesUrl = 'http://localhost:8080/api/categories';  
 
   constructor(private http: HttpClient) { }   
+
+  enviarNegociacion(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl2}/negotiations`, data);
+  }
 
   public aceptarOferta(request: AcceptOfferRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/aceptar`, request).pipe(

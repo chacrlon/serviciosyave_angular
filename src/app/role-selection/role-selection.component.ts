@@ -5,11 +5,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { Notification } from '../models/Notification';  
 import { NotificationsseService } from '../notification-modal/notificationsse.service';  
 import { NotificationModalComponent } from '../notification-modal/notification-modal.component';  
+import { NegotiationModalComponent } from '../negotiation-modal/negotiation-modal.component';  
 import { Subscription } from 'rxjs';  
 import { CommonModule } from '@angular/common';  
 import { ChangeDetectorRef } from '@angular/core';   
 import { AcceptOfferRequest } from '../models/AcceptOfferRequest'; 
-import { SellerRegistrationComponent } from '../seller-registration/seller-registration.component';
 
 interface GeolocationError {  
   code: number;  
@@ -106,6 +106,20 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
       })  
     );  
     }  
+
+    openNegotiationModal(negotiationNotification: NegotiationNotification): void {
+      const dialogRef = this.dialog.open(NegotiationModalComponent, {
+        data: {
+          ...negotiationNotification,
+          ineedId: negotiationNotification.ineedId
+        },
+        width: '500px'
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        this.markAsRead(negotiationNotification.id!);
+      });
+    }
 
 
     loadNotifications(): void {  

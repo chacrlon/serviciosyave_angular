@@ -7,9 +7,8 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-
   private url: string = 'http://localhost:8080/login';
-
+  private currentUserSubject = new BehaviorSubject<any>(null);
   private _token: string | undefined;
 
   private _user: any = {
@@ -22,7 +21,11 @@ export class AuthService {
   authStatus$ = this.authStatusSubject.asObservable();  
 
   constructor(private http: HttpClient) { }
-
+  
+  getCurrentUserId(): number {
+    return this.currentUserSubject.value?.id;
+  }
+  
   loginUser({ username, password }: any): Observable<any>{
     return this.http.post<any>(this.url, { username, password }).pipe(
       map(mp => {

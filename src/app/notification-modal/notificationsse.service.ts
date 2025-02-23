@@ -2,7 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';  
 import { Observable, Subject, BehaviorSubject } from 'rxjs';  
 import { Notification } from '../models/Notification';  
-import { AcceptOfferRequest } from '../models/AcceptOfferRequest'; // Asegúrate de que la ruta sea correcta
+import { AcceptOfferRequest } from '../models/AcceptOfferRequest'; 
 
 @Injectable({  
   providedIn: 'root'  
@@ -37,7 +37,7 @@ export class NotificationsseService {
 
     return new Observable((observer) => {  
       this.eventSource = new EventSource(`${this.baseUrl}/notifications`);  
-      
+      this.eventSource = new EventSource(`${this.baseUrl}/sse/subscribe/${userId}`); 
       this.eventSource.onopen = () => {  
         console.log('Conexión SSE establecida');  
         this.connectionStatus.next(true);  
@@ -56,6 +56,7 @@ export class NotificationsseService {
           }  
         });  
       };  
+      
 
       this.eventSource.onerror = (error) => {  
         console.error('Error en conexión SSE:', error);  
@@ -105,4 +106,18 @@ export class NotificationsseService {
     this.disconnectSSE();  
     this.connectToSSE();  
   }  
+
+
+
+  //METODOS PARA CONTRAOFERTA
+
+    // Nuevo método para enviar contraofertas
+    sendCounterOffer(negotiationData: any): Observable<any> {
+      return this.http.post(`${this.baseUrl}/api/negotiations`, negotiationData);
+    }
+  
+    // Método para aceptar negociación
+    acceptNegotiation(negotiationId: number): Observable<any> {
+      return this.http.post(`${this.baseUrl}/api/negotiations/${negotiationId}/accept`, {});
+    }
 }
