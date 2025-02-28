@@ -44,6 +44,13 @@
     </div>  
   </div>  
 
+  <div
+    class="user-type-button" 
+    [class.disabled]="negotiationCancelledByProvider"
+    (click)="claim()">  
+  Disputa  
+  </div>
+  
   <div *ngIf="userType === 'Buyer'" class="user-type-button" [class.disabled]="negotiationEnabled" (click)="confirmAction('enableNegotiation')">  
     Habilitar negociación  
   </div>  
@@ -54,8 +61,7 @@
      [class.disabled]="negotiationCancelledByProvider" 
      (click)="confirmAction('cancelNegotiationByProvider')">  
   Cancelar negociación  
-</div>  
-   
+</div>
   
   <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" [class.disabled]="serviceApprovedByProvider" (click)="confirmAction('approveServiceByProvider')">  
     Ya realicé el servicio  

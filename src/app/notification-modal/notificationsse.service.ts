@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';  
 import { Notification } from '../models/Notification';  
 import { AcceptOfferRequest } from '../models/AcceptOfferRequest'; 
+import { AuthService } from '../services/auth.service';
 
 @Injectable({  
   providedIn: 'root'  
@@ -13,7 +14,7 @@ export class NotificationsseService {
   private notificationSubject = new Subject<Notification>();  
   private connectionStatus = new BehaviorSubject<boolean>(false);  
 
-  constructor(private http: HttpClient, private ngZone: NgZone) {}  
+  constructor(private http: HttpClient, private ngZone: NgZone, private token: AuthService) {}  
 
   // Getters para los observables  
   get notifications$(): Observable<Notification> {  
@@ -37,7 +38,7 @@ export class NotificationsseService {
 
     return new Observable((observer) => {  
       this.eventSource = new EventSource(`${this.baseUrl}/notifications`);  
-      this.eventSource = new EventSource(`${this.baseUrl}/sse/subscribe/${userId}`); 
+      // this.eventSource = new EventSource(`${this.baseUrl}/sse/subscribe/${this.token.userId}`); 
       this.eventSource.onopen = () => {  
         console.log('Conexión SSE establecida');  
         this.connectionStatus.next(true);  

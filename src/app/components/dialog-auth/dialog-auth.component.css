@@ -1,0 +1,52 @@
+/* Estilos para la tarjeta (card) */  
+.card {  
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.9);  
+    box-shadow: 0 rgba(255, 255, 255, 0.9);  
+    text-align: center;
+}  
+
+.card-header {  
+    margin-bottom: 20px; /* Espaciado inferior */  
+}  
+
+.card-title {  
+    color: #0056b3; /* Color principal para el título */  
+    font-size: 24px; /* Tamaño del título */  
+}  
+
+/* Estilos para el formulario */  
+.form-control {  
+    width: calc(100% - 20px); /* Ajustar ancho */  
+    padding: 10px; /* Espaciado interior */  
+    margin-bottom: 15px; /* Espaciado entre campos */  
+    border: 1px solid #ccc; /* Borde ligero */  
+    border-radius: 5px; /* Bordes redondeados */  
+    transition: border 0.3s; /* Transición suave para enfoque */  
+}  
+
+.form-control:focus {  
+    border: 1px solid #0056b3; /* Borde azul al enfocar */  
+    outline: none; /* Sin contorno adicional */  
+}  
+
+/* Estilos para los botones */  
+.btn {  
+    padding: 10px 15px; /* Espaciado interior */  
+    background-color: #0056b3; /* Color de fondo azul */  
+    color: white; /* Texto blanco */  
+    border: none; /* Sin borde */  
+    border-radius: 5px; /* Bordes redondeados */  
+    cursor: pointer; /* Cursor de puntero */  
+    transition: background-color 0.3s, transform 0.3s; /* Transición para hover */  
+}  
+
+.btn:hover {  
+    background-color: #004494; /* Color más oscuro en hover */  
+    transform: translateY(-2px); /* Efecto de elevación */  
+}  
+
+/* Espaciado y alineación */  
+.my-2 {  
+    margin: 0.5rem; /* Margen en todas direcciones */  
+}

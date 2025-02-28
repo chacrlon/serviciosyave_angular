@@ -21,8 +21,8 @@ import { FooterComponent } from './footer/footer.component';
 import { CodeVerifyComponent } from './register/code-verify/code-verify.component';
 import { UsuariosPruebaComponent } from './usuarios-prueba/usuarios-prueba.component';
 import { HomeComponent } from './home/home.component';
+import { ClaimsComponent } from './claims/claims.component';
 import { ProfileComponent } from './profile/profile.component';
-// Agregar al inicio del archivo
 import { NegotiationModalComponent } from './negotiation-modal/negotiation-modal.component';
 
 export const routes: Routes = [
@@ -43,12 +43,16 @@ export const routes: Routes = [
         component: NecesitoComponent
     },  
     {   
-        path: 'chat/:userId/:receiverId', 
+        path: 'chat/:userId/:receiverId/:vendorServiceId', 
         component: ChatComponent   
     },
     {   
         path: 'chat/invite',
         component: ChatContactComponent
+    },
+    {   
+        path: 'claims/:claimsId',
+        component: ClaimsComponent
     },
     {  
         path: 'notification-modal',  
@@ -136,10 +140,8 @@ export const routes: Routes = [
         path: '',
         component: HomeComponent,
     },
-
     {  
         path: 'profile',
         component: ProfileComponent,
-    },
-
+    }
 ];

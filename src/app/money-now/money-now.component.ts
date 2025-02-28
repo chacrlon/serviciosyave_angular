@@ -27,7 +27,7 @@ export class MoneyNowComponent implements OnInit {
   };
   constructor(private dialog: MatDialog, private moneyNowService: MoneyNowService,
     private authService: AuthService) {
-      this.userId = this.authService.getCurrentUserId();
+      this.userId = this.authService.userId;
     } 
 
   ngOnInit(): void {  

@@ -13,6 +13,7 @@ export class ChatService {
   private messageSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
   private countdownSubject: BehaviorSubject<number> = new BehaviorSubject<number>(5); // Inicializamos con 300 segundos
   private isConnected: boolean = false;
+
   private apiUrl = 'http://localhost:8080/api/service'; 
   private notificacionUrl = 'http://localhost:8080/api/notifications'; 
   private userUrl = 'http://localhost:8080/api/users'; 
@@ -109,6 +110,5 @@ getMessageSubject(){
 getCountdownSubject() {
   return this.countdownSubject.asObservable();
 }
-
 
 }

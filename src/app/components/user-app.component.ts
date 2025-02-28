@@ -32,6 +32,7 @@ export class UserAppComponent implements OnInit {
     this.findUserById();
     this.pageUsersEvent();
     this.handlerLogin();
+    this.onlyLogin();
   }
 
   handlerLogin() {  
@@ -70,6 +71,40 @@ export class UserAppComponent implements OnInit {
         });  
     });  
 }
+
+  onlyLogin() {  
+    this.sharingData.onlyLoginEventEmitter.subscribe(({ username, password }) => {  
+        console.log(username + ' ' + password);  
+
+        this.authService.loginUser({ username, password }).subscribe({  
+            next: response => {  
+                const token = response.token;  
+                const userId = response.userDetails.userId;  // Accede al userId desde userDetails  
+                console.log(token);  
+                console.log(userId);  
+                const payload = this.authService.getPayload(token);  
+
+                const user = { username: payload.sub, id: userId }; // Agregas el id al objeto user  
+                const login = {  
+                    user,  
+                    isAuth: true,  
+                    isAdmin: payload.isAdmin  
+                };  
+                
+                this.authService.token = token;  
+                this.authService.user = login;  
+
+            },  
+            error: error => {  
+                if (error.status == 401) {  
+                    Swal.fire('Error en el Login', error.error.message, 'error');  
+                } else {  
+                    throw error;  
+                }  
+            }  
+        });  
+    });  
+  }
 
   pageUsersEvent() {
     this.sharingData.pageUsersEventEmitter.subscribe(pageable => {

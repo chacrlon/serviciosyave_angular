@@ -66,4 +66,8 @@ export class NegotiationModalComponent {
   close() {
     this.dialogRef.close();
   }
+
+  public sendOffer(): void {
+    
+  }
 }

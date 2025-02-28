@@ -10,6 +10,8 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';  
 import { ChangeDetectorRef } from '@angular/core';   
 import { AcceptOfferRequest } from '../models/AcceptOfferRequest'; 
+import { AuthService } from '../services/auth.service';
+import { NegotiationNotification } from '../models/NegotiationNotification';
 
 interface GeolocationError {  
   code: number;  
@@ -36,17 +38,20 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
     private locationService: LocationService,  
     private route: ActivatedRoute,  
     private dialog: MatDialog,  
-    private notificationsseService: NotificationsseService  
+    private notificationsseService: NotificationsseService,
+    private token: AuthService  
   ) {}  
 
-  ngOnInit(): void {  
-    this.subscriptions.push(  
-      this.route.paramMap.subscribe(params => {  
-        this.userId = +params.get('id')!;  
-        console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId);  
-        this.loadNotifications();
-      })  
-    );  
+  ngOnInit(): void {
+    this.userId = this.token.userId;
+    console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId);  
+    this.loadNotifications();
+
+    // this.subscriptions.push(  
+    //   this.route.paramMap.subscribe(params => {  
+    //     this.userId = this.token.userId;
+      // })  
+    // );  
   
     this.subscriptions.push(  
       this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
@@ -88,13 +93,6 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
   } 
 
   ngAfterViewInit() { 
-
-    this.subscriptions.push(  
-      this.route.paramMap.subscribe(params => {  
-        this.userId = +params.get('id')!;  
-        console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId);  
-      })  
-    );  
   
     this.subscriptions.push(  
       this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
@@ -105,12 +103,12 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
         }  
       })  
     );  
-    }  
+  }  
 
     openNegotiationModal(negotiationNotification: NegotiationNotification): void {
       const dialogRef = this.dialog.open(NegotiationModalComponent, {
         data: {
-          ...negotiationNotification,
+          negotiationNotification,
           ineedId: negotiationNotification.ineedId
         },
         width: '500px'
@@ -119,6 +117,7 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
       dialogRef.afterClosed().subscribe(result => {
         this.markAsRead(negotiationNotification.id!);
       });
+
     }
 
 

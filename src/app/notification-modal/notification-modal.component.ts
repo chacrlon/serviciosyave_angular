@@ -44,8 +44,9 @@ export class NotificationModalComponent {
                     toEmail: userEmailResponse.email,  
                     subject: 'Invitación a chat',  
                     text: `Hola, tienes un nuevo mensaje de ${this.data.userId}. Haz clic en el siguiente enlace para unirte al chat: ${chatLink}`,  
-                    userType: this.data.userType, vendorServiceId: this.data.vendorServiceId // Incluir userType  
-                };  
+                    userType: this.data.userType,
+                    vendorServiceId: this.data.vendorServiceId // Incluir userType  
+                };
 
                 // Validar antes de enviar  
                 if (!emailRequest.toEmail || !emailRequest.subject || !emailRequest.text || !emailRequest.userType || !emailRequest.vendorServiceId) {  
@@ -58,7 +59,7 @@ export class NotificationModalComponent {
                     .subscribe(response => {  
                         console.log('Correo enviado:', response);  
                         // Navegar al chat y pasar userType como parámetro de consulta  
-                        this.router.navigate(['chat', this.data.userId, receiverId], 
+                        this.router.navigate(['chat', this.data.userId, receiverId, this.data.vendorServiceId], 
                           { queryParams: 
                             { userType: this.data.userType, 
                               vendorServiceId: this.data.vendorServiceId,
