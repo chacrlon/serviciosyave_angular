@@ -94,7 +94,8 @@
             <label for="idNumber">Cedula / RIF:</label>  
             <input type="text" id="idNumber" [(ngModel)]="bankTransferData.rif" name="rif" required>  
 
-            <button type="submit">Registrar datos bancarios</button>  
+            <button type="submit">Registrar datos bancarios</button> 
+            <button type="button" (click)="setPaymentMethod('TRANSFERENCIA')">Quiero cobrar a traves de esta via</button>
             <button type="button" (click)="closeModal()">Cerrar</button>  
         </form>  
     </div>  
@@ -106,6 +107,7 @@
             <input type="email" id="binanceEmail" [(ngModel)]="binanceData.binanceEmail" name="binanceEmail" required>  
             
             <button type="submit">Registrar Binance</button>  
+            <button type="button" (click)="setPaymentMethod('BINANCE')">Quiero cobrar a traves de esta via</button>
             <button type="button" (click)="closeModal()">Cerrar</button>  
         </form>  
     </div>  
@@ -123,6 +125,7 @@
             <input type="text" id="bank" [(ngModel)]="mobileData.banco" name="banco" required>  
 
             <button type="submit">Registrar pago movil</button>  
+            <button type="button" (click)="setPaymentMethod('PAGO_MOVIL')">Quiero cobrar a traves de esta via</button>
             <button type="button" (click)="closeModal()">Cerrar</button>  
         </form>  
     </div>  

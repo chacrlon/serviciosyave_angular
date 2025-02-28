@@ -22,6 +22,9 @@ import { CodeVerifyComponent } from './register/code-verify/code-verify.componen
 import { UsuariosPruebaComponent } from './usuarios-prueba/usuarios-prueba.component';
 import { HomeComponent } from './home/home.component';
 import { ClaimsComponent } from './claims/claims.component';
+import { ProfileComponent } from './profile/profile.component';
+// Agregar al inicio del archivo
+import { NegotiationModalComponent } from './negotiation-modal/negotiation-modal.component';
 
 export const routes: Routes = [
     {
@@ -31,6 +34,10 @@ export const routes: Routes = [
     { 
         path: 'moneynow', 
         component: MoneyNowComponent 
+    },
+    { 
+        path: 'negotiation-modal', 
+        component: NegotiationModalComponent 
     },
     {
         path: 'necesito',
@@ -134,4 +141,10 @@ export const routes: Routes = [
         path: '',
         component: HomeComponent,
     },
+
+    {  
+        path: 'profile',
+        component: ProfileComponent,
+    },
+
 ];

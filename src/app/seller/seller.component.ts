@@ -31,74 +31,9 @@ export class SellerComponent {
         'Taxi',  
         'Logística de Envíos'  
       ]  
-    },  
-    {  
-      nombre: 'Alimentos y Bebidas',  
-      subcategoria: [  
-        'Restaurantes',  
-        'Caterings',  
-        'Delivery de Comida',  
-        'Bebidas',  
-        'Alimentos Orgánicos'  
-      ]  
-    },  
-    {  
-      nombre: 'Salud y Bienestar',  
-      subcategoria: [  
-        'Consultas Médicas',  
-        'Terapias Alternativas',  
-        'Entrenamiento Personal',  
-        'Nutrición'  
-      ]  
-    },  
-    {  
-      nombre: 'Hogar y Jardín',  
-      subcategoria: [  
-        'Limpieza',  
-        'Jardinería',  
-        'Servicios de Plomería',  
-        'Reparaciones Eléctricas'  
-      ]  
-    },  
-    {  
-      nombre: 'Tecnología',  
-      subcategoria: [  
-        'Soporte Técnico',  
-        'Desarrollo Web',  
-        'Diseño Gráfico',  
-        'Marketing Digital'  
-      ]  
-    },  
-    {  
-      nombre: 'Educación y Capacitación',  
-      subcategoria: [  
-        'Clases Particulares',  
-        'Talleres',  
-        'Cursos Online',  
-        'Entrenamiento Empresarial'  
-      ]  
-    },  
-    {  
-      nombre: 'Entretenimiento',  
-      subcategoria: [  
-        'Eventos',  
-        'Música en Vivo',  
-        'Cine y Teatro',  
-        'Actividades Recreativas'  
-      ]  
-    },  
-    {  
-      nombre: 'Viajes y Turismo',  
-      subcategoria: [  
-        'Agencias de Viajes',  
-        'Guías Turísticos',  
-        'Experiencias Locales',  
-        'Alojamiento'  
-      ]  
     }  
   ];   
 
-   // Para almacenar  
    serviceData = {  
     nombre: '',  
     descripcion: '',  
@@ -107,26 +42,23 @@ export class SellerComponent {
     categoria: '',  
     subcategoria: '',  
     remoto: '',  
-    latitude: 0, // Este valor se llenará automáticamente desde la geolocalización  
-    longitude: 0  // Este valor se llenará automáticamente desde la geolocalización  
+    latitude: 0, 
+    longitude: 0 
   };  
 
-  subcategoria: string[] = []; // Lista de subcategorias según la categoria seleccionada
-  services: any[] = []; // Array para almacenar los servicios registrados  
+  subcategoria: string[] = []; 
+  services: any[] = []; 
   notificationMessage: string | null = null;   
-  // Para almacena la ubicación  
   location: { latitude: number; longitude: number } | null = null;   
 
 
   constructor(private http: HttpClient, private locationService: LocationService) {  
     this.loadServices(); 
-    // Suscribirse al servicio de ubicación  
     this.locationService.location$.subscribe(location => {  
-      this.location = location; // Actualiza la ubicación cuando cambie  
+      this.location = location;
       if (location) {      
     this.serviceData.latitude = location.latitude; 
     this.serviceData.longitude = location.longitude; 
-        // Aquí puedes hacer algo con la ubicación, como enviarla a tu backend o usarla en tu lógica  
       }  
     });  
   }  
@@ -176,11 +108,26 @@ export class SellerComponent {
       categoria: service.categoria,  
       subcategoria: service.subcategoria,  
       remoto: service.remoto,  
-      latitude: this.serviceData.latitude,  // Mantener la latitud de la geolocalización  
-      longitude: this.serviceData.longitude  // Mantener la longitud de la geolocalización  
+      latitude: this.serviceData.latitude, 
+      longitude: this.serviceData.longitude
     };  
-    this.selectedServiceId = service.id;  // Asigna el ID del servicio seleccionado  
+    this.selectedServiceId = service.id; 
   }    
+
+  // En SellerComponent
+setPaymentMethod(method: string) {
+  this.http.patch('http://localhost:8080/api/users/payment-method', { paymentMethod: method })
+    .subscribe(
+      () => {
+        this.notificationMessage = 'Método de pago actualizado correctamente';
+        this.closeModal();
+      },
+      error => {
+        console.error('Error actualizando método de pago:', error);
+        this.notificationMessage = 'Error al actualizar el método de pago';
+      }
+    );
+}
 
   // Método para actualizar el servicio existente  
   updateService() {  
@@ -191,7 +138,7 @@ export class SellerComponent {
           this.notificationMessage = "Servicio actualizado con éxito";  
           this.loadServices();  
           this.resetFormData();  
-          this.selectedServiceId = null; // Reiniciar el ID después de la actualización  
+          this.selectedServiceId = null; 
         }, error => {  
           console.error('Error updating service:', error);  
           this.notificationMessage = "Error al actualizar el servicio";  

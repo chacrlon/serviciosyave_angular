@@ -1,5 +1,5 @@
 export interface MoneyNow {  
-  id?: number;  
+  id: number;  
   titulo: string;  
   descripcion: string;  
   category: { id: number; name: string } | null; // Ahora incluye 'name'  

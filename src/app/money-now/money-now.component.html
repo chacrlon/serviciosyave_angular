@@ -12,18 +12,5 @@
     <button (click)="abrirNegociacion(necesidad)">Negociar</button>  
   </div>  
 
-  <!-- Modal o formulario para negociar -->  
-  <div *ngIf="negotiating" class="negotiation-form">  
-    <h4>Negociar oferta para {{ negotiationDetails.currentNeccesity?.titulo }}</h4>  
-    <div>  
-      <label for="amount">Nuevo Monto:</label>  
-      <input type="text" id="amount" [(ngModel)]="negotiationDetails.amount" />  
-    </div>  
-    <div>  
-      <label for="justification">Justificación:</label>  
-      <input type="text" id="justification" [(ngModel)]="negotiationDetails.justification" />  
-    </div>  
-    <button (click)="enviarNegociacion()">Enviar Propuesta</button>  
-    <button (click)="negotiating = false">Cancelar</button>  
-  </div>  
+ 
 </div>
