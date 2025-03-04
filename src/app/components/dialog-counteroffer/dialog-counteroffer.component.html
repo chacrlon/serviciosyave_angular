@@ -1,0 +1,29 @@
+<div class="card">  
+    <div class="card-header">
+        <div class="row">
+            <h5 class="card-title">Has recibido una oferta por: </h5>
+            <span><b>{{dataIneedResponse?.titulo}}</b></span>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <p>Oferta enviada $: {{ data?.amount }}</p>
+            <p>Justificación: {{ data?.justification }}</p>
+            <p>Oferta {{ data?.currentOffer}}/3</p>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <button (click)="accept()">
+                    Aceptar
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="denied()">
+                    Rechazar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -72,7 +72,8 @@ export class MoneyNowComponent implements OnInit {
         userId2: necesidad.userId,
         currentOffer: 1,
         isInitialOffer: true,
-        presupuestoInicial: necesidad.presupuesto
+        presupuestoInicial: necesidad.presupuesto,
+        titleService: necesidad.titulo
       }
     });
 

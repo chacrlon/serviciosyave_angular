@@ -6,6 +6,9 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SharingDataService } from '../services/sharing-data.service';
 import { AuthService } from '../services/auth.service';
+import { NegotiationService } from '../negotiation-modal/service/negotiation.service';
+import { DialogCounterOfferComponent } from './dialog-counteroffer/dialog-counteroffer.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'user-app',
@@ -23,8 +26,10 @@ export class UserAppComponent implements OnInit {
     private service: UserService,
     private sharingData: SharingDataService,
     private authService: AuthService,
-  private route: ActivatedRoute) {
-  }
+    private negotiationService: NegotiationService,
+    private route: ActivatedRoute,
+    private dialog: MatDialog,
+  ) { }
 
   ngOnInit(): void {
     this.addUser();
@@ -33,6 +38,10 @@ export class UserAppComponent implements OnInit {
     this.pageUsersEvent();
     this.handlerLogin();
     this.onlyLogin();
+  }
+
+  ngAfetViewInit(): void {
+
   }
 
   handlerLogin() {  
@@ -56,6 +65,12 @@ export class UserAppComponent implements OnInit {
                 
                 this.authService.token = token;  
                 this.authService.user = login;  
+
+                this.negotiationService.connectToSSE().subscribe(
+                  success => {            
+                    this.loadNotifications(success);
+                  }
+                );
 
                 // Navegar a RoleSelectionComponent pasando el userId como parámetro  
                 this.router.navigate(['/role-selection', { id: userId }]);  
@@ -210,6 +225,14 @@ export class UserAppComponent implements OnInit {
           });
         }
       });
+    });
+  }
+
+  loadNotifications(data: any): void {  
+    const dialogRef = this.dialog.open(DialogCounterOfferComponent, {  
+      data: data,  
+      width: '400px',  
+      disableClose: true  
     });
   }
 

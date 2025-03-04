@@ -26,9 +26,9 @@ export class NotificationsseService {
   }  
 
    // Método para aceptar una oferta  
-   acceptOffer(request: AcceptOfferRequest): Observable<any> {  
-    return this.http.post(`${this.baseUrl}/api/ineeds/aceptar`, request);  
-  }  
+   acceptOffer(request: AcceptOfferRequest): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/ineeds/aceptar`, request);
+  }
 
   // Métodos para SSE  
   connectToSSE(): Observable<any> {  
@@ -106,9 +106,7 @@ export class NotificationsseService {
     console.log('Intentando reconexión SSE...');  
     this.disconnectSSE();  
     this.connectToSSE();  
-  }  
-
-
+  }
 
   //METODOS PARA CONTRAOFERTA
 
@@ -116,7 +114,7 @@ export class NotificationsseService {
     sendCounterOffer(negotiationData: any): Observable<any> {
       return this.http.post(`${this.baseUrl}/api/negotiations`, negotiationData);
     }
-  
+
     // Método para aceptar negociación
     acceptNegotiation(negotiationId: number): Observable<any> {
       return this.http.post(`${this.baseUrl}/api/negotiations/${negotiationId}/accept`, {});

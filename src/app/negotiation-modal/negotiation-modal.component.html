@@ -1,50 +1,30 @@
-<div class="modal">
-    <div class="modal-content">
-      <h3>{{ data.message }}</h3>
-      <p>Monto ofertado: ${{ data.amount }}</p>
-      <p>Justificación: {{ data.justification }}</p>
-      <p>Oferta {{ data.currentOffer }}/3</p>
-      
-      <div *ngIf="showCounterForm">
-        <input type="number" [(ngModel)]="counterAmount" placeholder="Nuevo monto">
-        <textarea [(ngModel)]="counterJustification" placeholder="Justificación"></textarea>
-      </div>
+<div class="modal-content">
+  <h3>Negociación para: {{ data.titleService }}</h3>
+  
+  <div class="row" *ngIf="negotiationData">
+    <p>Oferta enviada: ${{ negotiationData.amount }}</p>
+    <p>Justificación: {{ negotiationData.justification }}</p>
+    <p>Oferta {{ negotiationData.offerCount }}/3</p>
 
-      <div class="actions">
-        <button (click)="acceptOffer()">Aceptar</button>
-        <button *ngIf="data.currentOffer < 3" (click)="toggleCounterForm()">
-          {{ showCounterForm ? 'Enviar Contraoferta' : 'Hacer Contraoferta' }}
-        </button>
-        <button (click)="close()">Rechazar</button>
-      </div>
-    </div>
+    <span *ngIf="negotiationData.offerCount >=3" class="max_offer text-center">Límite de ofertas alcanzado</span>
   </div>
 
-
-  <div class="modal-content">
-    <h3>Negociación para: {{ data.titulo }}</h3>
+  <form [formGroup]="formGroup" class="text-center">
     
-    <div *ngIf="data.isInitialOffer; else counterOfferTemplate">
-      <input type="number" [(ngModel)]="counterAmount" 
-             [placeholder]="'Monto (mínimo $' + data.presupuestoInicial + ')'">
-      <textarea [(ngModel)]="counterJustification" 
-                placeholder="Justificación de la oferta"></textarea>
+    <div class="row">
+      <input type="number" formControlName="counterAmount" 
+      [placeholder]="'Monto (mínimo $' + data.presupuestoInicial + ')'">
+      <textarea formControlName="counterJustification"
+      placeholder="Justificación de la oferta"></textarea>
     </div>
-  
-    <ng-template #counterOfferTemplate>
-      <p>Oferta recibida: ${{ data.amount }}</p>
-      <p>Justificación: {{ data.justification }}</p>
-      <p>Oferta {{ data.currentOffer }}/3</p>
-      
-      <div *ngIf="showCounterForm">
-        <input type="number" [(ngModel)]="counterAmount" 
-               placeholder="Nuevo monto">
-        <textarea [(ngModel)]="counterJustification" 
-                  placeholder="Contrajustificación"></textarea>
-      </div>
-    </ng-template>
-  
-    <button (click)="sendOffer()">
+
+    
+    <button (click)="sendOffer()" [disabled]="formGroup.invalid || negotiationData?.offerCount >=3 ">
       {{ data.isInitialOffer ? 'Enviar Oferta' : 'Enviar Contraoferta' }}
     </button>
-  </div>
+  </form>
+  
+  <div class="row text-center " *ngIf="messageError">
+    <span class="max_offer text-center">{{messageError}}</span>
+  </div>  
+</div>
