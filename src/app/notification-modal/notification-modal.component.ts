@@ -45,11 +45,12 @@ export class NotificationModalComponent {
                     subject: 'Invitación a chat',  
                     text: `Hola, tienes un nuevo mensaje de ${this.data.userId}. Haz clic en el siguiente enlace para unirte al chat: ${chatLink}`,  
                     userType: this.data.userType,
-                    vendorServiceId: this.data.vendorServiceId // Incluir userType  
+                    vendorServiceId: this.data.vendorServiceId, // Incluir userType  
+                    ineedId: this.data.ineedId
                 };
 
                 // Validar antes de enviar  
-                if (!emailRequest.toEmail || !emailRequest.subject || !emailRequest.text || !emailRequest.userType || !emailRequest.vendorServiceId) {  
+                if (!emailRequest.toEmail || !emailRequest.subject || !emailRequest.text || !emailRequest.userType || (!emailRequest.vendorServiceId && !emailRequest.ineedId)) {  
                     console.error('Los campos toEmail, subject, text y userType son requeridos.');  
                     return;  
                 }  
@@ -59,10 +60,10 @@ export class NotificationModalComponent {
                     .subscribe(response => {  
                         console.log('Correo enviado:', response);  
                         // Navegar al chat y pasar userType como parámetro de consulta  
-                        this.router.navigate(['chat', this.data.userId, receiverId, this.data.vendorServiceId], 
+                        this.router.navigate(['chat', this.data.userId, receiverId, this.data.vendorServiceId || this.data.ineedId], 
                           { queryParams: 
                             { userType: this.data.userType, 
-                              vendorServiceId: this.data.vendorServiceId,
+                              vendorServiceId: this.data.vendorServiceId || this.data.ineedId,
                               notificationId: this.data.id,
                               notificationId2: this.data.id2,
                               userId2: this.data.userId2,

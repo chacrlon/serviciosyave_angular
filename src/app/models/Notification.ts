@@ -1,10 +1,11 @@
-export interface Notification {  
+export interface Notification {
+  ineedId?: any;  
   id: number;  
   userId: number;
   message: string;  
   read: boolean;  
   userId2: number; 
   userType: string;
-  vendorServiceId: number;
+  vendorServiceId?: number;
   id2: number; 
 }

@@ -228,12 +228,21 @@ export class UserAppComponent implements OnInit {
     });
   }
 
-  loadNotifications(data: any): void {  
+  loadNotifications(data: any): void {
     const dialogRef = this.dialog.open(DialogCounterOfferComponent, {  
       data: data,  
       width: '400px',  
       disableClose: true  
     });
+          dialogRef.afterClosed().subscribe(
+            event => {
+              this.negotiationService.connectToSSE().subscribe(
+                success => {            
+                  this.loadNotifications(success);
+                }
+              );
+            }
+          );
   }
 
 }

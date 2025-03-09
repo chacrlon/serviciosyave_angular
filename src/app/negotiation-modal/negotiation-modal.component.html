@@ -22,6 +22,11 @@
     <button (click)="sendOffer()" [disabled]="formGroup.invalid || negotiationData?.offerCount >=3 ">
       {{ data.isInitialOffer ? 'Enviar Oferta' : 'Enviar Contraoferta' }}
     </button>
+
+    <button *ngIf="!data.isInitialOffer" (click)="close()" class="text-rigth">
+      Atrás
+    </button>
+
   </form>
   
   <div class="row text-center " *ngIf="messageError">

@@ -1,4 +1,4 @@
-<div class="card">  
+<div class="card" *ngIf="data?.status == 'ACTIVE'">  
     <div class="card-header">
         <div class="row">
             <h5 class="card-title">Has recibido una oferta por: </h5>
@@ -8,7 +8,77 @@
 
     <div class="card-body">
         <div class="row">
-            <p>Oferta enviada $: {{ data?.amount }}</p>
+            <p>Oferta recibida $: {{ data?.amount }}</p>
+            <p>Justificación: {{ data?.justification }}</p>
+            <p>Oferta {{ data?.currentOffer}}/3</p>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <button (click)="accept()">
+                    Aceptar
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="counterOffer()">
+                    Contraoferta
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="deniedActive()">
+                    Rechazar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" *ngIf="data?.status == 'COUNTEROFFER'">
+    <div class="card-header">
+        <div class="row">
+            <h5 class="card-title">Has recibido una contraoferta por: </h5>
+            <span><b>{{dataIneedResponse?.titulo}}</b></span>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <p>Oferta recibida $: {{ data?.amount }}</p>
+            <p>Justificación: {{ data?.justification }}</p>
+            <p>Oferta {{ data?.currentOffer}}/3</p>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <button (click)="pay()">
+                    Pagar
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="counterCounterOffer()">
+                    Contraoferta
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="deniedCounterOffer()">
+                    Rechazar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" *ngIf="data?.status == 'COUNTERCOUNTEROFFER'">
+    <div class="card-header">
+        <div class="row">
+            <h5 class="card-title">Has recibido una contraoferta por: </h5>
+            <span><b>{{dataIneedResponse?.titulo}}</b></span>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <p>Oferta recibida $: {{ data?.amount }}</p>
             <p>Justificación: {{ data?.justification }}</p>
             <p>Oferta {{ data?.currentOffer}}/3</p>
         </div>
@@ -22,6 +92,61 @@
             <div class="col">
                 <button (click)="denied()">
                     Rechazar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" *ngIf="data?.status == 'ACCEPTED'">
+    <div class="card-header">
+        <div class="row">
+            <h5 class="card-title">Ha sido aceptada tu oferta por: </h5>
+            <span><b>{{dataIneedResponse?.titulo}}</b></span>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <p>Oferta recibida $: {{ data?.amount }}</p>
+            <p>Justificación: {{ data?.justification }}</p>
+            <p>Oferta {{ data?.currentOffer}}/3</p>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <button (click)="pay()">
+                    Pagar
+                </button>
+            </div>
+            <div class="col">
+                <button (click)="deniedAccept()">
+                    Rechazar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" *ngIf="data?.status == 'REJECTED'">
+    <div class="card-header">
+        <div class="row">
+            <h5 class="card-title">Tu oferta ha sido rechazada</h5>
+            <span><b>{{dataIneedResponse?.titulo}}</b></span>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <p>Oferta enviada $: {{ data?.amount }}</p>
+            <p>Justificación: {{ data?.justification }}</p>
+            <p>Oferta {{ data?.currentOffer}}/3</p>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <button (click)="ignore()">
+                    Aceptar
                 </button>
             </div>
         </div>

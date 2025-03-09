@@ -44,7 +44,9 @@ export class NegotiationModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
-    this.getNegotiation();
+    if(this.data.isInitialOffer) {
+      this.getNegotiation();
+    } 
   }
 
   ngAfterViewInit(): void {
@@ -104,6 +106,7 @@ export class NegotiationModalComponent implements OnInit {
   }
 
   public sendOffer(): void {
+    if(!this.data.isInitialOffer) { this.dialogRef.close(this.formGroup.getRawValue()); return;}
     if(this.formGroup.invalid) { return };
 
     const negotiationData = {
@@ -112,7 +115,9 @@ export class NegotiationModalComponent implements OnInit {
       receiverUserId: this.data.userId2,
       amount: this.formGroup.get('counterAmount')?.value,
       justification: this.formGroup.get('counterJustification')?.value,
-      id: this.negotiationData?.id ?? null
+      id: this.negotiationData?.id ?? null,
+      negotiationStatus: 0,
+      sendId: this.data.userId2
     };
 
     this.negotiationService.createNegotiation(negotiationData).subscribe({

@@ -21,5 +21,9 @@ export class PaymentService {
 
   rejectPayment(id: number): Observable<void> {  
     return this.http.put<void>(`${this.apiUrl}/reject/${id}`, {});  
-  }  
+  }
+
+  createPayment(paymentPayload: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/create`, paymentPayload);
+  }
 }

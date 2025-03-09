@@ -2,6 +2,8 @@ import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';  
 import { BehaviorSubject, Observable, Subject } from 'rxjs';  
 import { AuthService } from '../../services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogCounterOfferComponent } from '../../components/dialog-counteroffer/dialog-counteroffer.component';
 
 @Injectable({  
   providedIn: 'root'  
@@ -15,7 +17,8 @@ export class NegotiationService {
   constructor(
     private http: HttpClient,
     private ngZone: NgZone,
-    private token: AuthService
+    private token: AuthService,
+    private dialog: MatDialog
   ) {}
 
   public negotiation(payload: any): Observable<any> {
@@ -33,7 +36,7 @@ export class NegotiationService {
   public connectToSSE(): Observable<any> {  
     if (this.eventSource) {  
       this.disconnectSSE();  
-    }  
+    }
 
     return new Observable((observer) => {  
       // this.eventSource = new EventSource(`${this.baseUrl}/notifications`);  
@@ -61,21 +64,27 @@ export class NegotiationService {
         this.eventSource?.close();  
 
         // Pasar el error al observer  
-        this.ngZone.run(() => {  
+        this.ngZone.run(() => { 
+          // Reintentar conexión después de 5 segundos  
+          this.disconnectSSE();
+          setTimeout(() => {
+            console.log('Reintentando conexión SSE...');  
+            this.connectToSSE().subscribe((observer) => {
+                  const dialogRef = this.dialog.open(DialogCounterOfferComponent, {  
+                    data: observer,
+                    width: '400px',
+                    disableClose: true
+                  });
+            }); // Manejar reconexión
+          }, 5000); 
           observer.error(error);  
-        });  
-
-        // Reintentar conexión después de 5 segundos  
-        setTimeout(() => {  
-          console.log('Reintentando conexión SSE...');  
-          this.connectToSSE().subscribe(observer); // Manejar reconexión  
-        }, 5000);  
-      };  
+        });
+      };
 
       // Cerrar conexión al cancelar la suscripción  
-      return () => {  
-        this.eventSource?.close();  
-      };  
+      // return () => {  
+      //   this.eventSource?.close();  
+      // };  
     });  
   }  
 

@@ -1,0 +1,72 @@
+<div class="modal-content" *ngIf="flowView == 'initial'">
+  <div class="stepper">
+    <h3>Selecciona un Método de Pago</h3>
+    <div class="stepper">
+      <div *ngFor="let step of steps; let i = index" class="step">
+        <div class="step-header" (click)="toggleStep(step)">
+          <span class="step-number">{{ i + 1 }}</span>
+          <span class="step-label">{{ step.title }}</span>
+        </div>
+        <div class="step-content" *ngIf="step.isOpen">
+          <p *ngIf="i == 0">
+            <label>Banco: </label><label>Bancamiga</label><br>
+            <label>Teléfono: </label><label>04123705210</label><br>
+            <label>Cédula: </label><br><label>24286418</label><br>
+            <label>Monto: </label><label>{{data.presupuestoInicial | number:'1.2-2'}}</label>
+          </p>
+          <p *ngIf="i == 1">
+            <label>Banco: </label><label>Bancamiga</label><br>
+            <label>Número de Cuenta: </label><label>01720107701075174910</label><br>
+            <label>RIF: </label><label>242864189</label><br>
+            <label>Monto: </label><label>{{data.presupuestoInicial | number:'1.2-2'}}</label>
+          </p>
+          <p *ngIf="i == 2">
+            <label>Correo: </label><label>chacrlonroman&#64;gmail.com</label><br>
+            <label>Monto: </label><label>{{data.presupuestoInicial | number:'1.2-2'}}</label>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button (click)="donePay()">Ya pagué</button>
+
+  <button (click)="close()" class="text-rigth">Atrás</button>
+    
+  <div class="row text-center " *ngIf="messageError">
+    <span class="max_offer text-center">{{messageError}}</span>
+  </div>  
+</div>
+
+<div class="modal-content" *ngIf="flowView == 'paytowin'">
+
+  <h3>Introduce la referencia de pago</h3>
+
+  <form [formGroup]="formGroup">
+    <div class="row" *ngFor="let step of steps; let i = index">
+      <div *ngIf="i == 0 && step.isOpen">
+        <label>Referencia:</label>  
+        <input formControlName="reference" placeholder="Introduce la referencia de pago" />  
+        <label>Teléfono:</label>  
+        <input formControlName="phone" placeholder="Introduce tu teléfono" /> 
+      </div>
+      <div *ngIf="i == 1 && step.isOpen">
+        <label>Referencia:</label>
+        <input formControlName="reference" placeholder="Introduce la referencia de pago" />  
+        <label>Número de Cuenta:</label>  
+        <input formControlName="numberAccount" placeholder="Introduce tu número de cuenta" />
+      </div>
+      <div *ngIf="i == 2 && step.isOpen">
+        <label>Referencia:</label>  
+        <input formControlName="reference" placeholder="Introduce la referencia de pago" />  
+        <label>Correo de Binance:</label>
+        <input formControlName="email" placeholder="Introduce tu correo de Binance" />    
+      </div>
+    </div>
+  </form>
+
+  <button (click)="pay()">Registrar pago</button>
+
+  <button (click)="back()">Atrás</button>
+
+</div>
