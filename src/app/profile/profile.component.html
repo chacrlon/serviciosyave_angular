@@ -1,60 +1,155 @@
-<div class="profile-container" [formGroup]="registrationForm"> <!-- Añade [formGroup] aquí -->
-  <!-- Sección de la foto de perfil -->
-  <div class="profile-picture-section">
-    <label for="profilePicture">Foto de perfil:</label>
-    <input type="file" id="profilePicture" (change)="onProfilePictureChange($event)" accept="image/*">
-    <img *ngIf="profilePictureUrl" [src]="profilePictureUrl" alt="Foto de perfil" class="profile-picture">
+<div class="profile-container" [formGroup]="registrationForm">
+  <!-- Progress Indicator -->
+  <div class="progress-steps">
+    <div *ngFor="let step of [1,2,3,4]" 
+         [class.active]="currentStep === step"
+         class="step">{{step}}</div>
   </div>
 
-  <!-- Información Personal -->
-  <div class="info-section">
+  <!-- Step 1 -->
+  <div *ngIf="currentStep === 1" class="step-section">
     <h2>Información Personal</h2>
-    <label for="fullName">Nombre Completo:</label>
-    <input type="text" id="fullName" formControlName="fullName">
+    
+    <div class="form-group">
+      <label>Foto de perfil:</label>
+      <input type="file" (change)="onFileSelected($event, 'profilePicture')" accept="image/*">
+      <img *ngIf="profilePictureUrl" [src]="profilePictureUrl" class="preview-image">
+    </div>
 
-    <label for="idNumber">Cédula:</label>
-    <input type="text" id="idNumber" formControlName="idNumber">
+    <div class="form-group">
+      <label>Nombre Completo:</label>
+      <input type="text" formControlName="fullName">
+    </div>
 
-    <label for="gender">Género:</label>
-    <input type="text" id="gender" formControlName="gender">
-  </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Edad:</label>
+        <input type="number" formControlName="age">
+      </div>
+      <div class="form-group">
+        <label>Fecha de Nacimiento:</label>
+        <input type="date" formControlName="birthdate">
+      </div>
+    </div>
 
-  <!-- Información Profesional -->
-  <div class="info-section">
-    <h2>Información Profesional</h2>
-    <label for="profession">Profesión/Ocupación:</label>
-    <input type="text" id="profession" formControlName="profession">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Cédula:</label>
+        <input type="text" formControlName="idNumber">
+      </div>
+      <div class="form-group">
+        <label>Género:</label>
+        <select formControlName="gender">
+          <option value="masculino">Masculino</option>
+          <option value="femenino">Femenino</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+    </div>
 
-    <label for="yearsOfExperience">Años de Experiencia:</label>
-    <input type="number" id="yearsOfExperience" formControlName="yearsOfExperience">
-
-    <label for="skillsDescription">Descripción de Habilidades:</label>
-    <textarea id="skillsDescription" formControlName="skillsDescription"></textarea>
-  </div>
-
-  <!-- Galería de Creaciones o Servicios -->
-  <div class="gallery-section">
-    <h2>Galería</h2>
-    <label for="galleryImages">Subir imágenes:</label>
-    <input type="file" id="galleryImages" (change)="onGalleryImagesChange($event)" accept="image/*" multiple>
-    <div class="gallery">
-      <img *ngFor="let imageUrl of galleryImageUrls" [src]="imageUrl" alt="Imagen de galería" class="gallery-image">
+    <div class="form-group">
+      <label>Ciudad de Residencia:</label>
+      <input type="text" formControlName="city">
     </div>
   </div>
 
-  <!-- Botones de acción -->
-  <div class="action-buttons">
-    <button (click)="saveProfile()" [disabled]="isLoading">
-      {{ isLoading ? 'Guardando...' : 'Guardar Perfil' }}
-    </button>
-    <button (click)="cancel()" class="cancel-button">Cancelar</button>
+  <!-- Step 2 -->
+  <div *ngIf="currentStep === 2" class="step-section">
+    <h2>Información Profesional</h2>
+    
+    <div class="form-group">
+      <label>Profesión/Ocupación:</label>
+      <input type="text" formControlName="profession">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Años de Experiencia:</label>
+        <input type="number" formControlName="yearsOfExperience">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Descripción del Servicio:</label>
+      <textarea formControlName="skillsDescription" rows="4"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Modalidades:</label>
+      <div class="modalities" formGroupName="modalities"> <!-- Agrega formGroupName aquí -->
+        <label>
+          <input type="checkbox" formControlName="presencial"> Presencial
+        </label>
+        <label>
+          <input type="checkbox" formControlName="online"> Online
+        </label>
+        <label>
+          <input type="checkbox" formControlName="hibrido"> Híbrido
+        </label>
+      </div>
+    </div>
+    
   </div>
 
-  <!-- Mensajes de éxito y error -->
-  <div *ngIf="registrationSuccess" class="success-message">
-    Perfil guardado exitosamente. Redirigiendo...
+  <!-- Step 3 -->
+  <div *ngIf="currentStep === 3" class="step-section">
+    <h2>Verificación de Identidad</h2>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>DNI/Pasaporte (Frente):</label>
+        <input type="file" (change)="onFileSelected($event, 'dniFront')" accept="image/*">
+        <img *ngIf="dniFrontUrl" [src]="dniFrontUrl" class="preview-image">
+      </div>
+      <div class="form-group">
+        <label>DNI/Pasaporte (Dorso):</label>
+        <input type="file" (change)="onFileSelected($event, 'dniBack')" accept="image/*">
+        <img *ngIf="dniBackUrl" [src]="dniBackUrl" class="preview-image">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Selfie con Documento:</label>
+      <input type="file" (change)="onFileSelected($event, 'selfie')" accept="image/*">
+      <img *ngIf="selfieUrl" [src]="selfieUrl" class="preview-image">
+    </div>
+
+    <div class="form-group">
+      <label>Título Universitario:</label>
+      <input type="file" (change)="onFileSelected($event, 'universityTitle')" accept="image/*, .pdf">
+    </div>
+
+    <div class="form-group">
+      <label>Otras Certificaciones (máx. 3):</label>
+      <input type="file" (change)="onFileSelected($event, 'certifications')" accept="image/*, .pdf" multiple>
+    </div>
   </div>
+
+  <!-- Step 4 -->
+  <div *ngIf="currentStep === 4" class="step-section">
+    <h2>Galería de Trabajos</h2>
+    
+    <div class="form-group">
+      <label>Subir imágenes de trabajos anteriores:</label>
+      <input type="file" (change)="onFileSelected($event, 'galleryImages')" accept="image/*" multiple>
+      <div class="gallery-preview">
+        <img *ngFor="let img of galleryImageUrls" [src]="img" class="gallery-image">
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Controls -->
+  <div class="navigation-buttons">
+    <button *ngIf="currentStep > 1" type="button" class="btn-previous" (click)="previousStep()">Anterior</button>
+    <button *ngIf="currentStep < totalSteps" type="button" class="btn-next" (click)="nextStep()">Siguiente</button>
+    <button *ngIf="currentStep === totalSteps" type="button" class="btn-submit" (click)="saveProfile()" [disabled]="isLoading">
+      {{ isLoading ? 'Guardando...' : 'Finalizar Registro' }}
+    </button>
+  </div>
+
+  <!-- Mensajes -->
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>
 </div>
+

@@ -208,22 +208,6 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
       this.obtenerUbicacion(role);  
     }  
   }  
-/*
-  openSellerRegistrationModal(): void {  
-    if (this.isModalOpen) return; // Si ya está abierto, no hacer nada  
-    this.isModalOpen = true; // Marcar el modal como abierto  
-  
-    const dialogRef = this.dialog.open(SellerRegistrationComponent, {  
-      width: '400px',  
-      disableClose: true  
-    });  
-  
-    this.subscriptions.push(  
-      dialogRef.afterClosed().subscribe(() => {  
-        this.isModalOpen = false; // Marcar el modal como cerrado  
-      })  
-    );  
-  }  */
 
   obtenerUbicacion(role: string): void {  
     console.log('Obteniendo ubicación para el rol:', role);  

@@ -3,11 +3,12 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
 import { User } from '../../models/user';  
 import { AuthService } from '../../services/auth.service';   
 import { CommonModule } from '@angular/common';  // Importa CommonModule   
+import { NotificationsComponent } from '../../notifications/notifications.component';
 
 @Component({  
   selector: 'navbar',  
   standalone: true,  
-  imports: [RouterModule, CommonModule, RouterLink],  
+  imports: [RouterModule, CommonModule, RouterLink, NotificationsComponent],  
   templateUrl: './navbar.component.html',  
   styleUrls: ['./navbar.component.css'] 
 })  
