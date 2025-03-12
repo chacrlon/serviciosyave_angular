@@ -1,0 +1,7 @@
+<li class="dropdown-item d-flex justify-content-between" 
+    *ngFor="let notification of notifications">
+  <span [class.text-muted]="notification.read">{{ notification.message }}</span>
+  <small class="text-muted">{{ notification.date | date:'short' }}</small>
+</li>
+<div class="dropdown-divider"></div>
+<a class="dropdown-item text-center" href="#">Ver todas</a>

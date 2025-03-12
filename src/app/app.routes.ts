@@ -24,6 +24,8 @@ import { HomeComponent } from './home/home.component';
 import { ClaimsComponent } from './claims/claims.component';
 import { ProfileComponent } from './profile/profile.component';
 import { NegotiationModalComponent } from './negotiation-modal/negotiation-modal.component';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 export const routes: Routes = [
     {
@@ -33,6 +35,14 @@ export const routes: Routes = [
     { 
         path: 'moneynow', 
         component: MoneyNowComponent 
+    },
+    { 
+        path: 'dashboard', 
+        component: DashboardComponent
+    },
+    { 
+        path: 'notifications', 
+        component: NotificationsComponent
     },
     { 
         path: 'negotiation-modal', 
@@ -144,4 +154,5 @@ export const routes: Routes = [
         path: 'profile',
         component: ProfileComponent,
     }
+
 ];
