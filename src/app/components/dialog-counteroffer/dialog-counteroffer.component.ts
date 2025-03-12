@@ -57,6 +57,23 @@ export class DialogCounterOfferComponent implements OnInit {
     })
   }
 
+  public acceptCounterOffer() {
+    let payload = {
+      id: this.data.negotiateId,
+      negotiationStatus: 0,
+      amount: this.data.amount,
+      ineedId: this.data.ineedId,
+      justification: this.data.justification,
+      receiverUserId: this.token.userId,
+      senderUserId: this.data.senderId,
+      sendId: this.data.receiverId
+    }
+    this.negotiationService.updateNegotiation(payload).subscribe({
+      next: (response) => { this.dialogRef.close() },
+      error: (err) => { alert(err.error); }
+    })
+  }
+
   public denied() {
     let payload = {
       id: this.data.negotiateId,
@@ -206,6 +223,27 @@ export class DialogCounterOfferComponent implements OnInit {
         isInitialOffer: false,
         presupuestoInicial: this.data.presupuesto,
         titleService: this.data.titulo
+      }
+    });
+
+    dialogRefPay.afterClosed().subscribe(data => {
+
+      if(data) {
+
+        let payload = {
+          id: this.data.negotiateId,
+          negotiationStatus: 4,
+          amount: data.counterAmount,
+          ineedId: this.data.ineedId,
+          justification: data.counterJustification,
+          receiverUserId: this.data.receiverId,
+          senderUserId: this.data.senderId,
+          sendId: this.data.receiverId
+        }
+        this.negotiationService.updateNegotiation(payload).subscribe({
+          next: (response) => { this.dialogRef.close() },
+          error: (err) => { alert(err.error); }
+        })
       }
     });
   }
