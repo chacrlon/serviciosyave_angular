@@ -181,6 +181,7 @@ export class DialogPaymentMethodComponent implements OnInit {
       divisa: this.currency,
       metodoPago: this.selectedPaymentMethod,
       ineedId: this.data.ineedId,
+      receiverId: this.data.userId2,
       referencia: this.formGroup.get('reference')?.value,
       estatus: 'procesando'
     };
