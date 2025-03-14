@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';  
 import { ChangeDetectorRef } from '@angular/core';   
 import { ClaimService } from '../services/claim.service';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { DailogAuthComponent } from '../components/dialog-auth/dialog-auth.component';
 
@@ -25,7 +25,9 @@ interface GeolocationError {
 export class ClaimsComponent implements OnInit {  
   
   private subscriptions: Subscription[] = [];  
-  
+  private formData: FormData = new FormData();
+  private latestImage: any;
+
   public claimData: any;
   public claimsId: number | undefined;
   public changeFileFlag: string = '';
@@ -44,7 +46,8 @@ export class ClaimsComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
-      image: new FormControl(''),
+      image: new FormControl('', Validators.required),
+      observation: new FormControl('', Validators.required)
     });
 
     this.subscriptions.push(  
@@ -82,6 +85,8 @@ export class ClaimsComponent implements OnInit {
         this.claimData = response;
         if(this.token.userId == response?.user.id && response?.claim.voucherUser){ this.imageUpload = "data:image/png;base64,"+response?.claim.voucherUser}
         if(this.token.userId == response?.receiver.id && response?.claim.voucherReceiver){ this.imageUpload = "data:image/png;base64,"+response?.claim.voucherReceiver}
+        if(this.token.userId == response?.user.id && response?.claim.observation_user){ this.formGroup.get('observation')?.setValue(response?.claim.observation_user)}
+        if(this.token.userId == response?.receiver.id && response?.claim.observation_receiver){ this.formGroup.get('observation')?.setValue(response?.claim.observation_receiver)}
       },
       error: (err) => {
 
@@ -101,31 +106,37 @@ export class ClaimsComponent implements OnInit {
     console.log("EVENT", event);
     let target = event.target as HTMLInputElement;
     let file: any = target.files;
-    this.changeFileFlag = file.length > 0 ? "load" : "return";
 
     if(file.length > 0) {
-      this.formGroup.get("image")?.setValue(file);
+      this.formGroup.get('image')?.setValue(file[0]);
+    }
+  }
 
-      const formData = new FormData();
-            formData.append('file', file[0]);
-            formData.append('user', this.token.userId);
-            formData.append('claimId', this.claimsId as any);
-
-      this.claimService.patchClaim(formData).subscribe({
-        next: (response) => {
-          this.changeFileFlag="done";
-          this.getClaim();
-          console.log("success", response);
-        },
-        error: (err) => {
-          this.changeFileFlag="failed";
-          console.log("error",err);
-        }
-      })
-    } else {
-      this.changeFileFlag="return";
-      return;
+  public putObservation(): void {
+    this.formData = new FormData();
+    this.changeFileFlag = "load";
+    this.formData.append('file', this.formGroup.get('image')?.value);
+    this.formData.append('user', this.token.userId);
+    this.formData.append('claimId', this.claimsId as any);
+    if(this.token.userId == this.claimData?.user.id){ 
+      this.formData.append('observation_user', this.formGroup.get('observation')?.value); 
+      this.formData.append('observation_receiver', ''); 
+    }
+    if(this.token.userId == this.claimData?.receiver.id){ 
+      this.formData.append('observation_receiver', this.formGroup.get('observation')?.value);
+      this.formData.append('observation_user', '');
     }
 
+    this.claimService.patchClaim(this.formData).subscribe({
+      next: (response) => {
+        this.changeFileFlag="done";
+        this.getClaim();
+        console.log("success", response);
+      },
+      error: (err) => {
+        this.changeFileFlag="failed";
+        console.log("error",err);
+      }
+    });
   }
 }

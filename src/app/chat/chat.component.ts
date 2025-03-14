@@ -6,6 +6,8 @@ import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';  
 import { FormsModule } from '@angular/forms';   
 import { ClaimService } from '../services/claim.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogValorateServiceComponent } from '../components/dialog-valorate-service/dialog-valorate-service.component';
 
 @Component({  
   selector: 'app-chat',  
@@ -28,6 +30,7 @@ export class ChatComponent implements OnInit {
   notificationId: number | null = null; 
   notificationId2: number | null = null; 
   vendorServiceId: number | null = null;
+  ineedId: number | null = null;
   userId2: number | null = null;
   isServiceApprovedByProvider: boolean = false;
 
@@ -44,7 +47,8 @@ export class ChatComponent implements OnInit {
     private route: ActivatedRoute,  
     private authService: AuthService,  
     private router: Router,
-    private claimService: ClaimService
+    private claimService: ClaimService,
+    private dialog: MatDialog
   ) {}   
 
   ngOnInit(): void {  
@@ -52,7 +56,8 @@ export class ChatComponent implements OnInit {
     this.route.queryParams.subscribe(params => { 
       this.userType = params['userType']; 
       console.log('Tipo de usuario:', this.userType); 
-      this.vendorServiceId = +params['vendorServiceId']; 
+      this.vendorServiceId = +params['vendorServiceId'];
+      this.ineedId =+params['ineedId'];
       console.log('ID del servicio:', this.vendorServiceId); 
 
     this.notificationId = +params['notificationId']; 
@@ -68,12 +73,12 @@ export class ChatComponent implements OnInit {
           next: response => {
             this.userId = this.authService.userId; // Ajusta según tu modelo de respuesta
             this.receiverId = this.route.snapshot.params["receiverId"];
-            this.vendorServiceId = this.route.snapshot.params["vendorServiceId"];  
-
+            this.vendorServiceId = this.route.snapshot.params["vendorServiceId"];
+            this.ineedId = this.route.snapshot.params["ineedId"];
             this.chatService.initConnenctionSocket(this.userId, this.receiverId);
             this.listenerMessage();
             this.listenerCountdown(); // Escuchar actualizaciones del contador
-          },  
+          },
           error: error => {  
             console.error('Error al autenticar con token:', error);  
             // Redirigir o manejar el error según lo necesites  
@@ -358,7 +363,8 @@ confirmAction(action: string) {
       case 'approveServiceByClient':  
         this.serviceApprovedByClient = true;  
         this.approveServiceByClient(); // Ajustado para el Buyer  
-        this.updateUserStatusNoOccupied();  
+        this.updateUserStatusNoOccupied();
+        this.dialogValorateService();  
         this.ngOnDestroy();  
         break;  
       default:  
@@ -372,7 +378,8 @@ confirmAction(action: string) {
       userId: this.userId,
       receiverId: this.receiverId,
       roomId: [this.userId, this.receiverId].sort().join('-'),
-      vendorServiceId: this.vendorServiceId
+      vendorServiceId: this.vendorServiceId,
+      ineedId: this.ineedId,
     };
 
     this.claimService.createClaim(payload).subscribe({
@@ -383,5 +390,13 @@ confirmAction(action: string) {
   });
     // this.router.navigate(['/login']);
 
+  }
+
+  private dialogValorateService(): void {
+        const dialogRefNegotiation = this.dialog.open(DialogValorateServiceComponent, {
+            data: {
+              receiverId: this.receiverId,
+            }
+          });
   }
 }

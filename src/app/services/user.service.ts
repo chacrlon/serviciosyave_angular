@@ -37,4 +37,8 @@ export class UserService {
   remove(id: number): Observable<void>{
     return this.http.delete<void>(`${this.url}/${id}`);
   }
+
+  setValorate(payload: any): Observable<void>{
+    return this.http.post<void>(`${this.url}/valorate`, payload);
+  }
 }

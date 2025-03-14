@@ -53,8 +53,8 @@ export const routes: Routes = [
         component: NecesitoComponent
     },  
     {   
-        path: 'chat/:userId/:receiverId/:vendorServiceId', 
-        component: ChatComponent   
+        path: 'chat/:userId/:receiverId/:vendorServiceId/:ineedId', 
+        component: ChatComponent
     },
     {   
         path: 'chat/invite',

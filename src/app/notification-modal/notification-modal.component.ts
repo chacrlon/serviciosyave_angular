@@ -60,14 +60,14 @@ export class NotificationModalComponent {
                     .subscribe(response => {  
                         console.log('Correo enviado:', response);  
                         // Navegar al chat y pasar userType como parámetro de consulta  
-                        this.router.navigate(['chat', this.data.userId, receiverId, this.data.vendorServiceId || this.data.ineedId], 
+                        this.router.navigate(['chat', this.data.userId, receiverId, this.data.vendorServiceId || 0, this.data.ineedId || 0], 
                           { queryParams: 
                             { userType: this.data.userType, 
-                              vendorServiceId: this.data.vendorServiceId || this.data.ineedId,
+                              vendorServiceId: this.data.vendorServiceId,
                               notificationId: this.data.id,
                               notificationId2: this.data.id2,
                               userId2: this.data.userId2,
-
+                              ineedId: this.data.ineedId
                             } });  
                         this.dialogRef.close();  
                     }, error => {  

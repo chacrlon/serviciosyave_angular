@@ -1,0 +1,18 @@
+<div class="card">  
+    <div class="card-header">
+        <div class="row">
+        </div>
+    </div>
+
+    <div class="card-body">
+        <h5 class="card-title">¿Que valoracion tienes de este servicio?</h5>
+        <div class="row">
+            <div class="rating">
+                <span *ngFor="let star of stars; let i = index" (click)="rate(i + 1)">
+                    <i class="bi" [class.bi-star-fill]="i < rating" [class.bi-star]="i >= rating"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+</div>
