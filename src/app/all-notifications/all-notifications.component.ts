@@ -23,7 +23,7 @@ export class AllNotificationsComponent implements OnInit {
   public previewNotification: string = 'initial';
   public chatUrl: SafeResourceUrl | undefined = undefined;
   public urlChat: string = "";
-  public dataPreview: string | undefined;
+  public dataPreview: string = "";
 
   constructor(
     private authService: AuthService,
