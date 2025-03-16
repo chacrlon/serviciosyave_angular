@@ -1,33 +1,83 @@
-<div class="chat_window">
-    <div class="top_menu">
-      <div class="buttons">
-        <div class="button close"></div>
-        <div class="button minimize"></div>
-        <div class="button maximize"></div>
-      </div>
-      <div class="title">
-        <img src="assets/whatsapp-icon.png" width="25px" height="25px">
-        WhatsApp
-      </div>
-    </div>
-    <ul class="messages">
-      <li class="message right" *ngFor="let item of messageList"
-      [ngClass]="{'left': item.message_side === 'receiver', 'right': item.message_side === 'sender'}"
-      >
-        <div class="avatar"></div>
-        <div class="text_wrapper">
-          <div class="text">{{item.message}}</div>
-        </div>
-      </li>
-    </ul>
-    <div class="bottom_wrapper clearfix">
-      <div class="message_input_wrapper">
-        <input class="message_input" placeholder="Message..." [(ngModel)]="messageInput" 
-        (keyup.enter)="sendMessage()"/>
-      </div>
-      <div class="send_message" (click)="sendMessage()">
-        <div class="icon"></div>
-        <div class="text">Send</div>
-      </div>
-    </div>
-  </div>
+<div class="chat_window">  
+  <div class="top_menu">  
+    <div class="buttons">  
+      <div class="button close"></div>  
+      <div class="button minimize"></div>  
+      <div class="button maximize"></div>  
+    </div>  
+    <div class="title">  
+      <img src="assets/whatsapp-icon.png" width="25px" height="25px">  
+      WhatsApp  
+    </div>  
+  </div>  
+
+  <ul class="messages" #scrollContainer>  
+    <li class="message right" *ngFor="let item of messageList"
+    [ngClass]="{'left': item.message_side === 'receiver', 'right': item.message_side === 'sender'}">
+      <div class="avatar"></div>
+      <div class="text_wrapper">
+        <div class="text">{{item.message}}</div>
+      </div>  
+    </li>
+  </ul>
+
+
+
+  <div class="bottom_wrapper clearfix">  
+    <div class="message_input_wrapper">  
+        <input class="message_input" placeholder="Message..." [(ngModel)]="messageInput"   
+        (keyup.enter)="sendMessage()"/>  
+    </div>  
+    <div class="send_message" (click)="sendMessage()">  
+        <div class="icon"></div>  
+        <div class="text">Send</div>  
+    </div>  
+
+      <!-- Sección para mostrar el tiempo restante -->  
+  <!-- <div class="time_remaining">  
+    <div *ngIf="countdown > 0">  
+      <p>Tiempo restante: {{ countdown }} segundos</p>  
+    </div>  
+
+    <div *ngIf="countdown <= 0">  
+      <p>¡El tiempo se ha agotado y las acciones se han ejecutado!</p>  
+    </div>  
+  </div>   -->
+<!-- 
+  <div
+    class="user-type-button" 
+    [class.disabled]="negotiationCancelledByProvider"
+    (click)="claim()">  
+  Disputa  
+  </div> -->
+  
+  <!-- <div *ngIf="userType === 'Buyer'" class="user-type-button" [class.disabled]="negotiationEnabled" (click)="confirmAction('enableNegotiation')">  
+    Habilitar negociación  
+  </div>   -->
+  
+<!-- Botón Cancelar (Proveedor) -->
+<div *ngIf="userType === 'Seller' && !serviceConfirmed && !isNegotiationEnabled" 
+     class="user-type-button" 
+     [class.disabled]="negotiationCancelledByProvider" 
+     (click)="confirmAction('cancelNegotiationByProvider')">  
+  Cancelar negociación  
+</div>
+  
+  <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" [class.disabled]="serviceApprovedByProvider" (click)="confirmAction('approveServiceByProvider')">  
+    Ya realicé el servicio  
+  </div>  
+  
+  <div *ngIf="isNegotiationEnabled && userType === 'Buyer' && isServiceApprovedByProvider" class="user-type-button" [class.disabled]="serviceApprovedByClient" (click)="confirmAction('approveServiceByClient')">  
+    Ya recibí el servicio  
+  </div>  
+  
+<!-- Botón Cancelar (Cliente) -->
+<div *ngIf="userType === 'Buyer' && !serviceConfirmed && !isNegotiationEnabled" 
+     class="user-type-button" 
+     [class.disabled]="negotiationCancelledByClient" 
+     (click)="confirmAction('cancelNegotiationByClient')">  
+  Cancelar negociación  
+</div> 
+
+  </div>  
+</div>
