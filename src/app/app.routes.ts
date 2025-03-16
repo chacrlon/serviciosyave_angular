@@ -26,6 +26,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { NegotiationModalComponent } from './negotiation-modal/negotiation-modal.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
 
 export const routes: Routes = [
     {
@@ -153,6 +154,9 @@ export const routes: Routes = [
     {  
         path: 'profile',
         component: ProfileComponent,
+    },
+    {  
+        path: 'all-notifications',
+        component: AllNotificationsComponent,
     }
-
 ];

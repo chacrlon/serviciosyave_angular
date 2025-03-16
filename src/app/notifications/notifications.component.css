@@ -1,11 +1,50 @@
-.dropdown-item {
-    padding: 0.75rem 1.5rem;
-  }
-  
-  .dropdown-item:hover {
-    background-color: #f8f9fa;
-  }
-  
-  .text-muted {
-    opacity: 0.7;
-  }
+::ng-deep .mat-mdc-menu-panel {
+  max-width: 500px !important;
+  overflow-x: hidden !important;
+}
+
+.scrollable-content {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.menu-title {
+  padding: 10px;
+  font-weight: bold;
+  color: rgb(98, 135, 255);
+  margin: 0.5em 0 0.5em 0;
+  text-align: center;
+}
+
+.footer {
+  padding: 10px;
+  overflow-x: hidden !important;
+}
+
+.view_all {
+  color: rgb(98, 135, 255);
+  margin-top: 0.5em;
+}
+
+.container_title {
+  padding-left: 1em;
+  margin: 0.5em;
+}
+
+.container_text {
+  margin: 0 0 0 1em;
+  text-align: left;
+}
+
+.container_date {
+  text-align: center;
+  align-self: anchor-center;
+}
+
+.badge {
+  position: absolute;
+  top: 20px;
+  padding: 5px 8px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+}

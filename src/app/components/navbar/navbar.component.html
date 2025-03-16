@@ -56,19 +56,11 @@
                        <img src="assets/ws.jpg" alt="WhatsApp">  
                    </a>  
              </li>
-
+             <li class="nav-item" *ngIf="login.isAuth">
+                 <notifications></notifications>
+             </li>
           </ul>  
       </div>  
-<li class="nav-item dropdown" *ngIf="login.isAuth">
-  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
-     role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <i class="bi bi-bell-fill" style="font-size: 1.2rem;"></i>
-    <span class="badge bg-danger rounded-pill">3</span>
-  </a>
-  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-    <notifications></notifications>
-  </ul>
-</li>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNavAuth">  
           <span class="nav-item nav-link text-primary mx-3">  
               <ng-container *ngIf="login.isAuth; else loggedOut">  

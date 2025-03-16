@@ -1,0 +1,59 @@
+<div class="container">
+  <h1>Notificaciones</h1>
+  <div class="row content_center">
+    <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 side_content">
+        <div class="menu-title pointer">Historial</div>
+        <div class="scrollable-content">
+          <ng-container *ngIf="(notifications$ | async) as notifications">
+            <ng-container *ngIf="notifications.length > 0; else notContent">
+              <button mat-menu-item *ngFor="let notification of notifications">
+                <div class="row" (click)="action(notification)">
+                  <div class="row container_title">Informacion</div>
+                  <div class="col col-10 container_text">{{notification.message}}</div>
+                  <div class="col container_date">
+                    <span class="row">
+                      <i class="bi bi-clock-fill" style="font-size:10px;">{{getDate()}}</i>
+                    </span>
+                  </div>
+                </div>
+              </button>
+            </ng-container>
+          </ng-container>
+          <ng-template #notContent>
+            <button mat-menu-item>
+              <div class="row">
+                <div class="row container_title"></div>
+                <div class="col container_text">No tienes notificaciones</div>
+              </div>
+            </button>        
+          </ng-template>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row footer">
+            <span class="footer pointer text-center"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-7 col-lg-7 col-xl-7 side_content">
+      <div class="row side_content_background">
+        <ng-container [ngSwitch]="previewNotification">
+
+          <div *ngSwitchCase="'initial'" class="default_view">Visualiza tus mensajes</div>
+
+          <div *ngSwitchCase="'chat'" class="container-iframe">
+            <ng-container *ngIf="chatUrl">
+               <iframe [src]="chatUrl"></iframe>
+              </ng-container>
+          </div>
+
+          <div *ngSwitchCase="'information'">
+            <div class="row side_content information_view">
+              {{cleanMessage(dataPreview, extractingUrl(dataPreview))}}
+              <div class="row text-center" *ngIf="dataPreview">
+                <a [href]="extractingUrl(dataPreview)" class="pointer">Ir al sitio</a>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+  </div>
+</div>
