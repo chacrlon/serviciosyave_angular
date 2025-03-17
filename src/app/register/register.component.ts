@@ -34,9 +34,6 @@ export class RegisterComponent {
     });  
   }  
 
-  // Método ejemplar para verificar al usuario  
-
-
   onClear(form: NgForm): void {  
     form.reset();  
     this.user = new User();  

@@ -1,21 +1,32 @@
-<div class="card">  
-    <div class="card-header">  
-      <h5 class="card-title">Verificación de Código</h5>  
-    </div>  
-    <div class="card-body">  
-      <p>Se ha enviado un código a tu correo registrado. Por favor ingrésalo a continuación:</p>  
-      <input  
-        type="text"  
-        [(ngModel)]="verificationCode"  
-        placeholder="Código de verificación"  
-        class="form-control"  
-        required  
-      />  
-      <button type="button" class="btn btn-primary mt-2" (click)="onVerifyCode()" [disabled]="!verificationCode">  
-        Verificar  
-      </button>  
-    </div>  
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title">Verificación de Código</h5>
   </div>
-  
-  
-  
+  <div class="card-body">
+    <p>Se ha enviado un código a tu correo registrado. Por favor ingrésalo a continuación:</p>
+    <input
+      type="text"
+      [(ngModel)]="verificationCode"
+      placeholder="Código de verificación"
+      class="form-control"
+      required
+    />
+    <button
+      type="button"
+      class="btn btn-primary mt-2"
+      (click)="onVerifyCode()"
+      [disabled]="!verificationCode"
+    >
+      Verificar
+    </button>
+
+    <!-- Botón para reenviar el código -->
+    <button
+      type="button"
+      class="btn btn-secondary mt-2 ms-2"
+      (click)="onResendCode()"
+    >
+      Reenviar Código
+    </button>
+  </div>
+</div>

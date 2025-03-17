@@ -43,6 +43,7 @@ export class UserAppComponent implements OnInit {
   ngAfetViewInit(): void {
 
   }
+  
 
   handlerLogin() {  
     this.sharingData.handlerLoginEventEmitter.subscribe(({ username, password }) => {  
@@ -77,14 +78,17 @@ export class UserAppComponent implements OnInit {
 
             },  
             error: error => {  
-                if (error.status == 401) {  
-                    Swal.fire('Error en el Login', error.error.message, 'error');  
-                } else {  
-                    throw error;  
-                }  
-            }  
-        });  
-    });  
+              console.log('Error completo:', error);
+              if (error.error.userId) { // Si viene el ID
+                this.router.navigate(['/app-code-verify', { id: error.error.userId }]);
+                Swal.fire('Verifica tu correo', error.error.message, 'warning');
+            } else {
+                Swal.fire('Error', error.error.message, 'error');
+            }
+             
+          }  
+      });  
+  });  
 }
 
   onlyLogin() {  

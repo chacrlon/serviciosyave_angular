@@ -26,12 +26,21 @@ import { ProfileComponent } from './profile/profile.component';
 import { NegotiationModalComponent } from './negotiation-modal/negotiation-modal.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 export const routes: Routes = [
     {
         path: 'users/page/0',
         component: UserComponent 
     },
+    { 
+        path: 'forgot-password', 
+        component: ForgotPasswordComponent 
+    },
+    { 
+        path: 'reset-password', 
+        component: ResetPasswordComponent },
     { 
         path: 'moneynow', 
         component: MoneyNowComponent 

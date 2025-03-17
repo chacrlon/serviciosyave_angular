@@ -1,20 +1,19 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../services/auth.service'; // Asegúrate de importar el servicio
 
 @Component({
   selector: 'profile',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
-
 export class ProfileComponent implements OnInit {
-  userId: number | undefined; 
+  userId: number | null = null;
   currentStep: number = 1;
   totalSteps: number = 4;
   registrationForm!: FormGroup;
@@ -41,18 +40,16 @@ export class ProfileComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private token: AuthService
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.userId = this.token.userId;// Obtener el ID del usuario autenticado
-    console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId); 
+    this.userId = this.authService.userId; // Obtener el ID del usuario autenticado
     if (!this.userId) {
       this.router.navigate(['/login']); // Redirigir al login si no hay usuario autenticado
     }
     this.buildForm();
   }
-
 
   buildForm(): void {
     this.registrationForm = this.fb.group({
@@ -63,7 +60,8 @@ export class ProfileComponent implements OnInit {
       idNumber: ['', Validators.required],
       gender: ['', Validators.required],
       city: ['', Validators.required],
-      
+      profilePicture: [''], // Campo para la foto de perfil en Base64
+
       // Step 2
       profession: ['', Validators.required],
       yearsOfExperience: [0, [Validators.required, Validators.min(0)]],
@@ -71,21 +69,25 @@ export class ProfileComponent implements OnInit {
       modalities: this.fb.group({
         presencial: [false],
         online: [false],
-        hibrido: [false]
+        hibrido: [false],
       }),
-      
+
       // Step 3
-      universityTitle: [''],
-      
-      // Step 4 (galería)
-      galleryImages: ['']
+      dniFrontName: [''], // Campo para el DNI frente en Base64
+      dniBackName: [''], // Campo para el DNI dorso en Base64
+      selfieName: [''], // Campo para la selfie en Base64
+      universityTitleName: [''], // Campo para el título universitario en Base64
+      certificationsNames: [[]], // Lista de certificaciones en Base64
+
+      // Step 4
+      galleryImagesNames: [[]], // Lista de imágenes de galería en Base64
     });
   }
 
   nextStep(): void {
     if (this.currentStep === 1 && !this.registrationForm.get('fullName')?.valid) return;
     if (this.currentStep === 2 && !this.registrationForm.get('profession')?.valid) return;
-    
+
     if (this.currentStep < this.totalSteps) {
       this.currentStep++;
     }
@@ -99,110 +101,145 @@ export class ProfileComponent implements OnInit {
 
   // Métodos para manejar archivos
   onFileSelected(event: any, field: string): void {
-    const file = event.target.files[0];
-    if (file) {
-      switch(field) {
-        case 'profilePicture':
-          this.profilePicture = file;
-          this.profilePictureUrl = URL.createObjectURL(file);
-          break;
-        case 'dniFront':
-          this.dniFront = file;
-          this.dniFrontUrl = URL.createObjectURL(file);
-          break;
-        case 'dniBack':
-          this.dniBack = file;
-          this.dniBackUrl = URL.createObjectURL(file);
-          break;
-        case 'selfie':
-          this.selfie = file;
-          this.selfieUrl = URL.createObjectURL(file);
-          break;
-        case 'universityTitle':
-          this.universityTitle = file;
-          break;
-        case 'certifications':
-          this.certifications = Array.from(event.target.files);
-          break;
-        case 'galleryImages':
-          this.galleryImages = Array.from(event.target.files);
-          this.galleryImageUrls = this.galleryImages.map(file => URL.createObjectURL(file));
-          break;
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      if (field === 'certifications' || field === 'galleryImages') {
+        const fileList = Array.from(files) as File[]; // Tipar explícitamente como File[]
+        Promise.all(fileList.map((file) => this.convertFileToBase64(file)))
+          .then((base64Files) => {
+            if (field === 'certifications') {
+              this.certifications = fileList;
+              this.registrationForm.get('certificationsNames')?.setValue(base64Files);
+            } else if (field === 'galleryImages') {
+              this.galleryImages = fileList;
+              this.galleryImageUrls = fileList.map((file) => URL.createObjectURL(file));
+              this.registrationForm.get('galleryImagesNames')?.setValue(base64Files);
+            }
+            this.cdr.detectChanges();
+          })
+          .catch((error) => {
+            console.error('Error al convertir archivos a Base64:', error);
+          });
+      } else {
+        const file = files[0] as File; // Tipar explícitamente como File
+        this.convertFileToBase64(file)
+          .then((base64) => {
+            switch (field) {
+              case 'profilePicture':
+                this.profilePicture = file;
+                this.profilePictureUrl = URL.createObjectURL(file);
+                this.registrationForm.get('profilePicture')?.setValue(base64);
+                break;
+              case 'dniFront':
+                this.dniFront = file;
+                this.dniFrontUrl = URL.createObjectURL(file);
+                this.registrationForm.get('dniFrontName')?.setValue(base64);
+                break;
+              case 'dniBack':
+                this.dniBack = file;
+                this.dniBackUrl = URL.createObjectURL(file);
+                this.registrationForm.get('dniBackName')?.setValue(base64);
+                break;
+              case 'selfie':
+                this.selfie = file;
+                this.selfieUrl = URL.createObjectURL(file);
+                this.registrationForm.get('selfieName')?.setValue(base64);
+                break;
+              case 'universityTitle':
+                this.universityTitle = file;
+                this.registrationForm.get('universityTitleName')?.setValue(base64);
+                break;
+            }
+            this.cdr.detectChanges();
+          })
+          .catch((error) => {
+            console.error('Error al convertir archivo a Base64:', error);
+          });
       }
-      this.cdr.detectChanges();
     }
   }
 
+  // Método para convertir un archivo a Base64
+  private convertFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64 = (reader.result as string).split(',')[1]; // Extraer solo la parte Base64
+        resolve(base64);
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
   saveProfile(): void {
-    // Verificación de formulario inválido
+    // Marcar todos los campos como "touched" para mostrar errores de validación
+    this.markFormGroupTouched(this.registrationForm);
+
+    // Verificar si el formulario es válido
     if (this.registrationForm.invalid) {
       console.log('Formulario inválido. Errores:', this.registrationForm.errors);
+      console.log('Estado del formulario:', this.registrationForm.value);
+      console.log('Errores por campo:');
+      Object.keys(this.registrationForm.controls).forEach((key) => {
+        const control = this.registrationForm.get(key);
+        if (control?.invalid) {
+          console.log(`Campo: ${key}, Errores:`, control.errors);
+        }
+      });
       this.errorMessage = 'Revise los campos marcados.';
       return;
     }
-  
-    if (this.registrationForm.valid) {
-      this.isLoading = true;
-      this.errorMessage = '';
-  
-      // Logs de depuración
-      console.log('Form Data:', this.registrationForm.value);
-      console.log('User ID:', this.userId);
-      console.log('Archivos:', {
-        profilePicture: this.profilePicture,
-        dniFront: this.dniFront,
-        dniBack: this.dniBack,
-        selfie: this.selfie,
-        universityTitle: this.universityTitle,
-        certifications: this.certifications.length,
-        galleryImages: this.galleryImages.length
-      });
-  
-      const formData = new FormData();
-      const modalitiesForm = this.registrationForm.get('modalities')?.value;
-      const selectedModalities = Object.keys(modalitiesForm).filter(key => modalitiesForm[key]);
-      
-      Object.keys(this.registrationForm.value).forEach(key => {
-        if (key === 'modalities') {
-          formData.append(key, JSON.stringify(selectedModalities));
-        } else {
-          formData.append(key, this.registrationForm.get(key)?.value);
-        }
-      });
-  
-      // Verificación de FormData
-      formData.forEach((value, key) => {
-        console.log('FormData entry:', key, value);
-      });
-  
-      // Archivos
-      if (this.profilePicture) formData.append('profilePicture', this.profilePicture);
-      if (this.dniFront) formData.append('dniFront', this.dniFront);
-      if (this.dniBack) formData.append('dniBack', this.dniBack);
-      if (this.selfie) formData.append('selfie', this.selfie);
-      if (this.universityTitle) formData.append('universityTitle', this.universityTitle);
-      this.certifications.forEach((cert, index) => formData.append(`certification_${index}`, cert));
-      this.galleryImages.forEach((img, index) => formData.append(`gallery_${index}`, img));
-      
-      formData.append('userId', this.userId?.toString() || '');
-  
-      // Llamada al backend
-      this.http.post('http://localhost:8080/api/sellers/register', formData).subscribe({
-        next: (response) => {
-          this.registrationSuccess = true;
-          this.isLoading = false;
-          setTimeout(() => this.router.navigate(['/role-selection']), 1500);
-        },
-        error: (error) => {
-          console.error('Error completo:', error);
-          console.error('Mensaje del servidor:', error.error?.message);
-          this.isLoading = false;
-          this.handleError(error);
-        }
-      });
-    } else {
-      this.errorMessage = 'Por favor, complete todos los campos requeridos correctamente.';
+
+    // Si el formulario es válido, proceder con el envío
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    // Crear el objeto Seller con los datos del formulario
+    const sellerData = {
+      ...this.registrationForm.value,
+      userId: this.userId,
+      createdAt: new Date().toISOString(), // Fecha de creación
+    };
+
+    // Obtener el token JWT del servicio de autenticación
+    const token = this.authService.token;
+
+    if (!token) {
+      this.errorMessage = 'No se encontró el token de autenticación. Por favor, inicie sesión nuevamente.';
+      this.isLoading = false;
+      return;
     }
+
+    // Llamada al backend con el token en las cabeceras
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    this.http.post('http://localhost:8080/api/sellers/register', sellerData, { headers }).subscribe({
+      next: () => {
+        this.registrationSuccess = true;
+        this.isLoading = false;
+        setTimeout(() => this.router.navigate(['/role-selection']), 1500);
+      },
+      error: (error) => {
+        console.error('Error completo:', error);
+        console.error('Mensaje del servidor:', error.error?.message);
+        this.isLoading = false;
+        this.handleError(error);
+      },
+    });
+  }
+
+  // Método para marcar todos los campos del formulario como "touched"
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.values(formGroup.controls).forEach((control) => {
+      control.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 
   // Método para manejar errores
@@ -212,6 +249,9 @@ export class ProfileComponent implements OnInit {
 
     if (error.status === 400) {
       this.errorMessage = 'Hay errores en los datos ingresados. Revise el formulario.';
+    } else if (error.status === 403) {
+      this.errorMessage = 'No tiene permisos para realizar esta acción. Por favor, inicie sesión nuevamente.';
+      this.router.navigate(['/login']); // Redirigir al login si el token no es válido
     } else if (error.status === 409) {
       this.errorMessage = 'El perfil ya existe. Por favor, actualice la información.';
     } else if (error.status === 500) {
@@ -221,4 +261,3 @@ export class ProfileComponent implements OnInit {
     }
   }
 }
-

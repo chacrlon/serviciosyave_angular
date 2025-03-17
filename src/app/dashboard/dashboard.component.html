@@ -1,1 +1,41 @@
-<p>dashboard works!</p>
+<div class="profile-container" [formGroup]="registrationForm">
+    <!-- Foto de perfil -->
+    <div class="form-group">
+      <label>Foto de perfil:</label>
+      <img *ngIf="profilePictureUrl" [src]="profilePictureUrl" class="preview-image">
+      <input *ngIf="isOwner" type="file" (change)="onFileSelected($event, 'profilePicture')" accept="image/*">
+    </div>
+  
+    <!-- Nombre completo -->
+    <div class="form-group">
+      <label>Nombre completo:</label>
+      <input type="text" formControlName="fullName" [disabled]="!isOwner">
+    </div>
+  
+    <!-- Descripción del servicio -->
+    <div class="form-group">
+      <label>Descripción del servicio:</label>
+      <textarea formControlName="skillsDescription" [disabled]="!isOwner" rows="4"></textarea>
+    </div>
+  
+    <!-- Galería de imágenes -->
+    <div class="form-group">
+      <label>Galería de trabajos:</label>
+      <div class="gallery-preview">
+        <img *ngFor="let img of galleryImageUrls" [src]="img" class="gallery-image">
+      </div>
+      <input *ngIf="isOwner" type="file" (change)="onFileSelected($event, 'galleryImages')" accept="image/*" multiple>
+    </div>
+  
+    <!-- Botón de guardar (solo para el dueño) -->
+    <div *ngIf="isOwner" class="navigation-buttons">
+      <button type="button" class="btn-submit" (click)="saveProfile()" [disabled]="isLoading">
+        {{ isLoading ? 'Guardando...' : 'Guardar Cambios' }}
+      </button>
+    </div>
+  
+    <!-- Mensajes de error -->
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>

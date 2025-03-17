@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router'; // Importa RouterModule
 import { User } from '../../models/user';
 import Swal from 'sweetalert2';
 import { SharingDataService } from '../../services/sharing-data.service';
@@ -7,9 +8,9 @@ import { SharingDataService } from '../../services/sharing-data.service';
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RouterModule], // Agrega RouterModule aquí
   templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css'] // Este es el archivo CSS automáticamente asociado 
+  styleUrls: ['./auth.component.css']
 })
 export class AuthComponent {
 

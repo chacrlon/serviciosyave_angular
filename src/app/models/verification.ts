@@ -1,7 +1,8 @@
+// models/verification.ts
 export class Verification {  
-  isEmailVerified: string;  
+  verificationCode: string; // ¡Nombre correcto!
 
   constructor(verificationCode: string) {  
-      this.isEmailVerified = verificationCode;  
+      this.verificationCode = verificationCode;  
   }  
 }
