@@ -1,7 +1,44 @@
-<li class="dropdown-item d-flex justify-content-between" 
-    *ngFor="let notification of notifications">
-  <span [class.text-muted]="notification.read">{{ notification.message }}</span>
-  <small class="text-muted">{{ notification.date | date:'short' }}</small>
-</li>
-<div class="dropdown-divider"></div>
-<a class="dropdown-item text-center" href="#">Ver todas</a>
+<a 
+  class="nav-link dropdown-toggle" id="navbarDropdown" [matMenuTriggerFor]="menu"
+  (click)="silenceNotification()"
+  role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <i class="bi bi-bell-fill" style="font-size: 1.2rem;"></i>
+  <span class="badge bg-danger rounded-pill">
+    <ng-container *ngIf="(countNotification$ | async) as counter">
+      {{counter}}
+    </ng-container>
+  </span>
+</a>
+
+<mat-menu #menu="matMenu" xPosition="before" class="menu">
+    <div class="menu-title pointer">Notificaciones</div>
+    <div class="scrollable-content">
+      <ng-container *ngIf="(notifications$ | async) as notifications">
+        <ng-container *ngIf="notifications.length > 0; else notContent">
+          <button mat-menu-item *ngFor="let notification of notifications">
+            <div class="row" (click)="action(notification)">
+              <div class="row container_title">Informacion</div>
+              <div class="col col-10 container_text">{{notification.message}}</div>
+              <div class="col container_date">
+                <span class="row">
+                  <i class="bi bi-clock-fill" style="font-size:10px;">{{getDate()}}</i>
+                </span>
+              </div>
+            </div>
+          </button>
+        </ng-container>
+      </ng-container>
+      <ng-template #notContent>
+        <button mat-menu-item>
+          <div class="row">
+            <div class="row container_title"></div>
+            <div class="col container_text">No tienes notificaciones</div>
+          </div>
+        </button>        
+      </ng-template>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="row footer" (click)="viewAll()">
+        <span class="view_all pointer text-center">Ver todos</span>
+    </div>
+</mat-menu>

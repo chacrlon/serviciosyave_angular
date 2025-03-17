@@ -11,15 +11,15 @@
     </div>  
   </div>  
 
-  <ul class="messages">  
-    <li class="message right" *ngFor="let item of messageList"  
-    [ngClass]="{'left': item.message_side === 'receiver', 'right': item.message_side === 'sender'}">  
-      <div class="avatar"></div>  
-      <div class="text_wrapper">  
-        <div class="text">{{item.message}}</div>  
+  <ul class="messages" #scrollContainer>  
+    <li class="message right" *ngFor="let item of messageList"
+    [ngClass]="{'left': item.message_side === 'receiver', 'right': item.message_side === 'sender'}">
+      <div class="avatar"></div>
+      <div class="text_wrapper">
+        <div class="text">{{item.message}}</div>
       </div>  
-    </li>  
-  </ul>  
+    </li>
+  </ul>
 
 
 

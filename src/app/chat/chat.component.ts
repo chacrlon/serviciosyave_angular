@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';  
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';  
 import { ActivatedRoute, Router } from '@angular/router';  
 import { ChatMessage } from '../models/chat-message';  
 import { ChatService } from '../chat/chat.service';  
@@ -18,6 +18,8 @@ import { DialogValorateServiceComponent } from '../components/dialog-valorate-se
 })  
 export class ChatComponent implements OnInit {  
   
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+
   messageInput: string = '';  
   userId: string = "";  
   receiverId: string = "";  
@@ -75,6 +77,7 @@ export class ChatComponent implements OnInit {
             this.receiverId = this.route.snapshot.params["receiverId"];
             this.vendorServiceId = this.route.snapshot.params["vendorServiceId"];
             this.ineedId = this.route.snapshot.params["ineedId"];
+            this.getHistoricalConversation();
             this.chatService.initConnenctionSocket(this.userId, this.receiverId);
             this.listenerMessage();
             this.listenerCountdown(); // Escuchar actualizaciones del contador
@@ -91,7 +94,21 @@ export class ChatComponent implements OnInit {
         this.router.navigate(['/login']);  
       }  
     });  
-  }  
+  }
+
+  private getHistoricalConversation(): void {
+    this.chatService.getHistoryChat([this.userId, this.receiverId].sort().join('-')).subscribe({
+      next: (response: Array<any>) => { 
+        console.log("history: ", response);
+        this.messageList = response.map((item: any) => ({ 
+          ...JSON.parse(item.message),
+          message_side: JSON.parse(item.message).user == this.userId ? 'sender' : 'receiver'
+      }));
+      this.scrollToBottom();
+      },
+      error: (err) => { console.log("history: ", err) }
+    });
+  }
 
   // Método que actualiza el estado del usuario  
   updateUserStatusOccupied() {  
@@ -286,6 +303,7 @@ export class ChatComponent implements OnInit {
         const roomId = [this.userId, this.receiverId].sort().join('-');  
         this.chatService.sendMessage(roomId, chatMessage);  
         this.messageInput = '';
+        this.scrollToBottom();
     }  
 }   
 
@@ -301,12 +319,16 @@ sendNegotiationEnabledMessage(): void {
 } 
 
 // Método para escuchar mensajes  
-listenerMessage() {  
+listenerMessage() {
   this.chatService.getMessageSubject().subscribe((messages: any) => {  
-      this.messageList = messages.map((item: any) => ({  
+      this.getHistoricalConversation();
+      let messageList = messages.map((item: any) => ({  
           ...item,  
           message_side: item.user == this.userId ? 'sender' : 'receiver'  
-      }));  
+      }));
+
+      this.messageList.push(messageList);
+      this.scrollToBottom();
 
       // Controlar mensajes de aprobación y rechazo  
       const approvalMessage = messages.find((msg: any) => msg.message === 'El servicio ha sido aprobado por el proveedor');  
@@ -398,5 +420,13 @@ confirmAction(action: string) {
               receiverId: this.receiverId,
             }
           });
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Error al hacer scroll:', err);
+    }
   }
 }

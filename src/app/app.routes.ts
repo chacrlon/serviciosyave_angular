@@ -26,8 +26,12 @@ import { ProfileComponent } from './profile/profile.component';
 import { NegotiationModalComponent } from './negotiation-modal/negotiation-modal.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+<<<<<<< HEAD
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+=======
+import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
+>>>>>>> 8260c5c806448e4a0779cadd0651680962545495
 
 export const routes: Routes = [
     {
@@ -162,6 +166,9 @@ export const routes: Routes = [
     {  
         path: 'profile',
         component: ProfileComponent,
+    },
+    {  
+        path: 'all-notifications',
+        component: AllNotificationsComponent,
     }
-
 ];
