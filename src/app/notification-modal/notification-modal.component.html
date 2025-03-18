@@ -6,7 +6,8 @@
     </div>  
     <div class="modal-footer">  
       <button mat-button (click)="onClose()">Cerrar</button>  
-      <button mat-button (click)="contactUser()">Contactar</button> <!-- Nuevo botón -->  
-    </div>  
-  </div>  
+      <button mat-button (click)="contactUser()" *ngIf="extractingUrl(data.message) == ''">Contactar</button> <!-- Nuevo botón -->  
+      <a *ngIf="extractingUrl(data.message) != ''" [href]="extractingUrl(data.message)" class="pointer">Ir al sitio</a>
+    </div>
+  </div>
 </div>

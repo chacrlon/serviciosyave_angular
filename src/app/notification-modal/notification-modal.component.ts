@@ -3,12 +3,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Notification } from '../models/Notification';  
 import { Router } from '@angular/router';  
 import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({  
   selector: 'app-notification-modal',  
   standalone: true,  
   templateUrl: './notification-modal.component.html',  
-  styleUrls: ['./notification-modal.component.css']  
+  styleUrls: ['./notification-modal.component.css'],
+  imports: [CommonModule]
 })  
 export class NotificationModalComponent {  
 
@@ -78,5 +80,15 @@ export class NotificationModalComponent {
                 console.error('Error al obtener el correo del usuario:', error);  
             }  
         );  
+}
+
+public extractingUrl(message: string): string {
+  const pattern = /http:\/\/localhost:4200\/claims\/\d+$/;
+  const result = message.match(pattern);
+  if (result) {
+    return result[0];
+  } else {
+    return "";
+  }
 }
 }
