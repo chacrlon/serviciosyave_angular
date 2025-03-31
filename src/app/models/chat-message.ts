@@ -3,4 +3,6 @@ export interface ChatMessage {
     sender: string;  
     receiver: string;  
     user: string;
+    vendorServiceId?:number | null;
+    ineedId?: number | null;
 }

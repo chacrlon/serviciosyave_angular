@@ -156,7 +156,9 @@ export class ChatComponent implements OnInit {
         message: 'LOCK_NEGOTIATION',  
         sender: this.userId,  
         receiver: this.receiverId,  
-        user: this.userId  
+        user: this.userId,
+        vendorServiceId:this.vendorServiceId,
+        ineedId: this.ineedId
       };  
       this.chatService.sendMessage(roomId, lockMessage); 
     }  
@@ -181,7 +183,9 @@ export class ChatComponent implements OnInit {
           message: 'El servicio ha sido aprobado por el proveedor',  
           sender: this.userId,  
           receiver: this.receiverId,  
-          user: this.userId  
+          user: this.userId,
+          vendorServiceId:this.vendorServiceId,
+          ineedId: this.ineedId
         };  
         this.chatService.sendMessage(roomId, approvalMessage);  
       },  
@@ -241,7 +245,9 @@ export class ChatComponent implements OnInit {
           message: 'El servicio ha sido rechazado por el proveedor',  
           sender: this.userId,  
           receiver: this.receiverId,  
-          user: this.userId  
+          user: this.userId,
+          vendorServiceId:this.vendorServiceId,
+          ineedId: this.ineedId
         };  
         this.chatService.sendMessage(roomId, rejectionMessage);  
       },  
@@ -281,7 +287,9 @@ export class ChatComponent implements OnInit {
           message: 'El servicio ha sido rechazado por el cliente',  
           sender: this.userId,  
           receiver: this.receiverId,  
-          user: this.userId  
+          user: this.userId,
+          vendorServiceId:this.vendorServiceId,
+          ineedId: this.ineedId
         };  
         this.chatService.sendMessage(roomId, rejectionMessage);  
       },  
@@ -297,8 +305,10 @@ export class ChatComponent implements OnInit {
             message: this.messageInput,  
             sender: this.userId,  
             receiver: this.receiverId,  
-            user: this.userId
-        };  
+            user: this.userId,
+            vendorServiceId: this.vendorServiceId,
+            ineedId: this.ineedId
+        };
 
         const roomId = [this.userId, this.receiverId].sort().join('-');  
         this.chatService.sendMessage(roomId, chatMessage);  
