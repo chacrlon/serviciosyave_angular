@@ -1,39 +1,44 @@
 <div class="profile-container" [formGroup]="registrationForm">
-  <!-- Step 1 -->
+  
+  <!-- Paso 1 -->
   <div *ngIf="currentStep === 1" class="step-section">
     <h2>Información Personal</h2>
     
     <div class="form-group">
       <label>Foto de perfil:</label>
       <i class="fas fa-info-circle" title="Suba una imagen clara de su rostro para su perfil."></i>
-      <input type="file" (change)="onFileSelected($event, 'profilePicture')" accept="image/*">
+      <input type="file" (change)="onFileSelected($event, 'profilePicture')" accept="image/*" required>
       <img *ngIf="profilePictureUrl" [src]="profilePictureUrl" class="preview-image">
+      <div *ngIf="registrationForm.get('profilePicture')?.invalid" class="error-message">
+        Campo obligatorio
+      </div>
     </div>
 
     <div class="form-group">
       <label>Nombre Completo:</label>
       <i class="fas fa-info-circle" title="Ingrese su nombre completo tal como aparece en su documento de identidad."></i>
       <input type="text" formControlName="fullName">
-      <div *ngIf="registrationForm.get('fullName')?.invalid && registrationForm.get('fullName')?.touched" class="error-message">
-        El nombre completo es obligatorio.
+      <div *ngIf="registrationForm.get('fullName')?.invalid" class="error-message">
+        Nombre requerido
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label>Edad:</label>
-        <i class="fas fa-info-circle" title="Ingrese su edad en años."></i>
+        <i class="fas fa-info-circle" title="Ingrese su edad en años. Debe ser mayor o igual a 18."></i>
         <input type="number" formControlName="age">
-        <div *ngIf="registrationForm.get('age')?.invalid && registrationForm.get('age')?.touched" class="error-message">
-          La edad es obligatoria y debe ser mayor o igual a 18.
+        <div *ngIf="registrationForm.get('age')?.invalid" class="error-message">
+          Mínimo 18 años
         </div>
       </div>
+      
       <div class="form-group">
         <label>Fecha de Nacimiento:</label>
         <i class="fas fa-info-circle" title="Seleccione su fecha de nacimiento."></i>
         <input type="date" formControlName="birthdate">
-        <div *ngIf="registrationForm.get('birthdate')?.invalid && registrationForm.get('birthdate')?.touched" class="error-message">
-          La fecha de nacimiento es obligatoria.
+        <div *ngIf="registrationForm.get('birthdate')?.invalid" class="error-message">
+          Fecha requerida
         </div>
       </div>
     </div>
@@ -43,10 +48,11 @@
         <label>Cédula:</label>
         <i class="fas fa-info-circle" title="Ingrese su número de cédula o documento de identidad."></i>
         <input type="text" formControlName="idNumber">
-        <div *ngIf="registrationForm.get('idNumber')?.invalid && registrationForm.get('idNumber')?.touched" class="error-message">
-          La cédula es obligatoria.
+        <div *ngIf="registrationForm.get('idNumber')?.invalid" class="error-message">
+          Cédula requerida
         </div>
       </div>
+      
       <div class="form-group">
         <label>Género:</label>
         <i class="fas fa-info-circle" title="Seleccione su género."></i>
@@ -55,52 +61,50 @@
           <option value="femenino">Femenino</option>
           <option value="otro">Otro</option>
         </select>
-        <div *ngIf="registrationForm.get('gender')?.invalid && registrationForm.get('gender')?.touched" class="error-message">
-          El género es obligatorio.
+        <div *ngIf="registrationForm.get('gender')?.invalid" class="error-message">
+          Seleccione un género
         </div>
       </div>
     </div>
 
     <div class="form-group">
-      <label>Ciudad de Residencia:</label>
+      <label>Ciudad de residencia:</label>
       <i class="fas fa-info-circle" title="Ingrese la ciudad donde reside actualmente."></i>
       <input type="text" formControlName="city">
-      <div *ngIf="registrationForm.get('city')?.invalid && registrationForm.get('city')?.touched" class="error-message">
-        La ciudad es obligatoria.
+      <div *ngIf="registrationForm.get('city')?.invalid" class="error-message">
+        Ciudad requerida
       </div>
     </div>
   </div>
 
-  <!-- Step 2 -->
+  <!-- Paso 2 -->
   <div *ngIf="currentStep === 2" class="step-section">
     <h2>Información Profesional</h2>
     
     <div class="form-group">
-      <label>Profesión/Ocupación:</label>
+      <label>Profesión:</label>
       <i class="fas fa-info-circle" title="Ingrese su profesión u ocupación principal."></i>
       <input type="text" formControlName="profession">
-      <div *ngIf="registrationForm.get('profession')?.invalid && registrationForm.get('profession')?.touched" class="error-message">
-        La profesión es obligatoria.
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label>Años de Experiencia:</label>
-        <i class="fas fa-info-circle" title="Ingrese el número de años de experiencia en su campo profesional."></i>
-        <input type="number" formControlName="yearsOfExperience">
-        <div *ngIf="registrationForm.get('yearsOfExperience')?.invalid && registrationForm.get('yearsOfExperience')?.touched" class="error-message">
-          Los años de experiencia son obligatorios.
-        </div>
+      <div *ngIf="registrationForm.get('profession')?.invalid" class="error-message">
+        Campo obligatorio
       </div>
     </div>
 
     <div class="form-group">
-      <label>Descripción del Servicio:</label>
+      <label>Años de Experiencia:</label>
+      <i class="fas fa-info-circle" title="Ingrese el número de años de experiencia en su campo profesional."></i>
+      <input type="number" formControlName="yearsOfExperience">
+      <div *ngIf="registrationForm.get('yearsOfExperience')?.invalid" class="error-message">
+        Valor mínimo: 0
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Descripción de Servicios:</label>
       <i class="fas fa-info-circle" title="Describa los servicios que ofrece y sus habilidades principales."></i>
       <textarea formControlName="skillsDescription" rows="4"></textarea>
-      <div *ngIf="registrationForm.get('skillsDescription')?.invalid && registrationForm.get('skillsDescription')?.touched" class="error-message">
-        La descripción del servicio es obligatoria.
+      <div *ngIf="registrationForm.get('skillsDescription')?.invalid" class="error-message">
+        Descripción requerida
       </div>
     </div>
 
@@ -115,54 +119,70 @@
           <input type="checkbox" formControlName="online"> Online
         </label>
       </div>
+      <div *ngIf="registrationForm.get('modalities')?.errors?.['atLeastOneRequired']" class="error-message">
+        Seleccione al menos una modalidad
+      </div>
     </div>
   </div>
 
-  <!-- Step 3 -->
+  <!-- Paso 3 -->
   <div *ngIf="currentStep === 3" class="step-section">
     <h2>Verificación de Identidad</h2>
     
     <div class="form-row">
       <div class="form-group">
-        <label>DNI/Pasaporte (Frente):</label>
+        <label>DNI Frente:</label>
         <i class="fas fa-info-circle" title="Suba una imagen clara del frente de su documento de identidad."></i>
-        <input type="file" (change)="onFileSelected($event, 'dniFront')" accept="image/*">
+        <input type="file" (change)="onFileSelected($event, 'dniFront')" accept="image/*" required>
         <img *ngIf="dniFrontUrl" [src]="dniFrontUrl" class="preview-image">
+        <div *ngIf="registrationForm.get('dniFrontName')?.invalid" class="error-message">
+          Documento requerido
+        </div>
       </div>
+      
       <div class="form-group">
-        <label>DNI/Pasaporte (Dorso):</label>
+        <label>DNI Dorso:</label>
         <i class="fas fa-info-circle" title="Suba una imagen clara del dorso de su documento de identidad."></i>
-        <input type="file" (change)="onFileSelected($event, 'dniBack')" accept="image/*">
+        <input type="file" (change)="onFileSelected($event, 'dniBack')" accept="image/*" required>
         <img *ngIf="dniBackUrl" [src]="dniBackUrl" class="preview-image">
+        <div *ngIf="registrationForm.get('dniBackName')?.invalid" class="error-message">
+          Documento requerido
+        </div>
       </div>
     </div>
 
     <div class="form-group">
-      <label>Selfie con Documento:</label>
+      <label>Selfie con DNI:</label>
       <i class="fas fa-info-circle" title="Suba una selfie sosteniendo su documento de identidad."></i>
-      <input type="file" (change)="onFileSelected($event, 'selfie')" accept="image/*">
+      <input type="file" (change)="onFileSelected($event, 'selfie')" accept="image/*" required>
       <img *ngIf="selfieUrl" [src]="selfieUrl" class="preview-image">
+      <div *ngIf="registrationForm.get('selfieName')?.invalid" class="error-message">
+        Selfie requerida
+      </div>
     </div>
 
     <div class="form-group">
       <label>Título Universitario:</label>
       <i class="fas fa-info-circle" title="Suba una imagen o PDF de su título universitario."></i>
-      <input type="file" (change)="onFileSelected($event, 'universityTitle')" accept="image/*, .pdf">
+      <input type="file" (change)="onFileSelected($event, 'universityTitle')" accept="image/*,.pdf" required>
+      <div *ngIf="registrationForm.get('universityTitleName')?.invalid" class="error-message">
+        Documento requerido
+      </div>
     </div>
 
     <div class="form-group">
-      <label>Otras Certificaciones (máx. 3):</label>
+      <label>Certificaciones Adicionales (máx. 3):</label>
       <i class="fas fa-info-circle" title="Suba hasta 3 imágenes o PDFs de otras certificaciones relevantes."></i>
-      <input type="file" (change)="onFileSelected($event, 'certifications')" accept="image/*, .pdf" multiple>
+      <input type="file" (change)="onFileSelected($event, 'certifications')" accept="image/*,.pdf" multiple>
     </div>
   </div>
 
-  <!-- Step 4 -->
+  <!-- Paso 4 (Opcional) -->
   <div *ngIf="currentStep === 4" class="step-section">
-    <h2>Galería de Trabajos</h2>
+    <h2>Galería de Trabajos (Opcional)</h2>
     
     <div class="form-group">
-      <label>Subir imágenes de trabajos anteriores:</label>
+      <label>Imágenes de trabajos anteriores:</label>
       <i class="fas fa-info-circle" title="Suba imágenes de trabajos anteriores que desee mostrar en su galería."></i>
       <input type="file" (change)="onFileSelected($event, 'galleryImages')" accept="image/*" multiple>
       <div class="gallery-preview">
@@ -171,16 +191,33 @@
     </div>
   </div>
 
-  <!-- Navigation Controls -->
+  <!-- Navegación -->
   <div class="navigation-buttons">
-    <button *ngIf="currentStep > 1" type="button" class="btn-previous" (click)="previousStep()">Anterior</button>
-    <button *ngIf="currentStep < totalSteps" type="button" class="btn-next" (click)="nextStep()">Siguiente</button>
-    <button *ngIf="currentStep === totalSteps" type="button" class="btn-submit" (click)="saveProfile()" [disabled]="isLoading">
+    <button *ngIf="currentStep > 1" 
+            type="button" 
+            class="btn-previous" 
+            (click)="previousStep()">
+      Anterior
+    </button>
+    
+    <button *ngIf="currentStep < totalSteps"
+            type="button"
+            class="btn-next"
+            (click)="nextStep()"
+            [disabled]="!isStepValid(currentStep)">
+      Siguiente
+    </button>
+    
+    <button *ngIf="currentStep === totalSteps"
+            type="button"
+            class="btn-submit"
+            (click)="saveProfile()"
+            [disabled]="isLoading">
       {{ isLoading ? 'Guardando...' : 'Finalizar Registro' }}
     </button>
   </div>
 
-  <!-- Mensajes -->
+  <!-- Mensajes de error -->
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>

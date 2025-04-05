@@ -29,6 +29,11 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
+<<<<<<< Updated upstream
+=======
+import { AdminComponent } from './admin/admin.component';
+
+>>>>>>> Stashed changes
 
 export const routes: Routes = [
     {
@@ -149,8 +154,8 @@ export const routes: Routes = [
         component: CodeVerifyComponent,
     },
     {  
-        path: 'app-usuarios-prueba',
-        component: UsuariosPruebaComponent,
+        path: 'admin',
+        component: AdminComponent,
     },
     { 
         path: 'home',

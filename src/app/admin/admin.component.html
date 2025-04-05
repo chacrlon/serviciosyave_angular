@@ -1,0 +1,61 @@
+<div class="pagination-controls">
+    <!-- Selector de tamaño de página -->
+    <select (change)="onPageSizeChange($any($event.target).value)">
+      <option value="10">10 por página</option>
+      <option value="20">20 por página</option>
+      <option value="50">50 por página</option>
+    </select>
+  
+    <!-- Botones de paginación -->
+    <button [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">
+      Anterior
+    </button>
+    
+    <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+    
+    <button [disabled]="currentPage >= totalPages - 1" (click)="onPageChange(currentPage + 1)">
+      Siguiente
+    </button>
+  </div>
+  
+  <!-- Tabla de pagos -->
+  <table>
+    <thead>
+      <tr>
+        <th>Servicio</th>
+        <th>Proveedor</th>
+        <th>Método de Pago</th>
+        <th>Datos de Pago</th>
+        <th>Monto Total</th>
+        <th>Comisión (%)</th>
+        <th>Monto Neto</th>
+        <th>Fecha Servicio</th>
+        <th>Referencia</th>
+        <th>Fecha Pago</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let payment of payments">
+            <td>{{ payment.serviceName }}</td>
+            <td>{{ payment.sellerName }}</td>
+            <td>{{ payment.paymentMethod }}</td>
+            <td>{{ payment.paymentDetails }}</td>
+            <td>{{ payment.amount | currency }}</td>
+            <td>{{ payment.commissionPercentage }}% ({{ payment.commissionAmount | currency }})</td>
+            <td>{{ payment.netAmount | currency }}</td>
+            <td>{{ payment.transactionDate | date }}</td>
+            <td>{{ payment.status }}</td>
+            <td>
+              <button (click)="approvePayment(payment.id)">Aprobar</button>
+              <button (click)="rejectPayment(payment.id)">Rechazar</button>
+            </td>
+          </tr>
+    </tbody>
+  </table>
+  
+  <!-- Total de registros -->
+  <div class="total-registros">
+    Mostrando {{ payments.length }} de {{ totalItems }} registros
+  </div>
