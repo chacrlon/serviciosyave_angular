@@ -37,8 +37,7 @@
 }
 
 .container_date {
-  text-align: center;
-  align-self: anchor-center;
+  text-align: right;
 }
 
 .badge {

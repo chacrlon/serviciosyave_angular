@@ -1,44 +1,94 @@
-<a 
-  class="nav-link dropdown-toggle" id="navbarDropdown" [matMenuTriggerFor]="menu"
-  (click)="silenceNotification()"
-  role="button" data-bs-toggle="dropdown" aria-expanded="false">
-  <i class="bi bi-bell-fill" style="font-size: 1.2rem;"></i>
-  <span class="badge bg-danger rounded-pill">
-    <ng-container *ngIf="(countNotification$ | async) as counter">
-      {{counter}}
-    </ng-container>
-  </span>
-</a>
-
-<mat-menu #menu="matMenu" xPosition="before" class="menu">
-    <div class="menu-title pointer">Notificaciones</div>
-    <div class="scrollable-content">
-      <ng-container *ngIf="(notifications$ | async) as notifications">
-        <ng-container *ngIf="notifications.length > 0; else notContent">
-          <button mat-menu-item *ngFor="let notification of notifications">
-            <div class="row" (click)="action(notification)">
-              <div class="row container_title">Informacion</div>
-              <div class="col col-10 container_text">{{notification.message}}</div>
-              <div class="col container_date">
-                <span class="row">
-                  <i class="bi bi-clock-fill" style="font-size:10px;">{{getDate()}}</i>
-                </span>
-              </div>
-            </div>
-          </button>
+<div class="container d-flex">
+  <div class="col">
+    <a 
+      class="nav-link dropdown-toggle" id="navbarDropdown" [matMenuTriggerFor]="menu"
+      (click)="silenceNotification()"
+      role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-bell-fill" style="font-size: 1.2rem;"></i>
+      <span class="badge bg-danger rounded-pill">
+        <ng-container *ngIf="(countNotification$ | async) as counter">
+          {{counter}}
         </ng-container>
-      </ng-container>
-      <ng-template #notContent>
-        <button mat-menu-item>
-          <div class="row">
-            <div class="row container_title"></div>
-            <div class="col container_text">No tienes notificaciones</div>
-          </div>
-        </button>        
-      </ng-template>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="row footer" (click)="viewAll()">
+      </span>
+    </a>
+    <mat-menu #menu="matMenu" xPosition="before" class="menu">
+      <div class="menu-title pointer">Notificaciones</div>
+      <div class="scrollable-content">
+        <ng-container *ngIf="(notifications$ | async) as notifications">
+          <ng-container *ngIf="notifications.length > 0; else notContent">
+            <button mat-menu-item *ngFor="let notification of notifications">
+              <div class="row" (click)="action(notification)">
+                <div class="row container_title">Informacion</div>
+                <div class="col col-10 container_text">{{notification.message}}</div>
+                <div class="col container_date">
+                  <span class="row">
+                    <i class="bi bi-clock-fill" style="font-size:10px;">{{getDate(notification.createdAt)}}</i>
+                  </span>
+                </div>
+              </div>
+            </button>
+          </ng-container>
+        </ng-container>
+        <ng-template #notContent>
+          <button mat-menu-item>
+            <div class="row">
+              <div class="row container_title"></div>
+              <div class="col container_text">No tienes notificaciones</div>
+            </div>
+          </button>        
+        </ng-template>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="row footer" (click)="viewAll()">
         <span class="view_all pointer text-center">Ver todos</span>
+      </div>
+    </mat-menu>
+  </div>
+  <div class="col">
+    <a 
+      class="nav-link dropdown-toggle" id="navbarDropdownMessages" [matMenuTriggerFor]="menuMessages"
+      (click)="silenceMessages()"
+      role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-messenger" style="font-size: 1.2rem;"></i>
+      <span class="badge bg-primary rounded-pill">
+        <ng-container *ngIf="(countMessages$ | async) as countMessages">
+        {{countMessages}}
+        </ng-container>
+      </span>
+    </a>
+    
+    <mat-menu #menuMessages="matMenu" xPosition="before" class="menu">
+        <div class="menu-title pointer">Mensajes</div>
+        <div class="scrollable-content">
+          <ng-container *ngIf="(messages$ | async) as messages">
+            <ng-container *ngIf="messages.length > 0; else noMessagesContent">
+              <button mat-menu-item *ngFor="let message of messages">
+                <div class="row" (click)="action(message)">
+                  <div class="row container_title">Mensaje</div>
+                  <div class="col col-10 container_text">{{message.message}}</div>
+                  <div class="col container_date">
+                    <span class="row">
+                      <i class="bi bi-clock-fill" style="font-size:10px;">{{getDate(message.createdAt)}}</i>
+                    </span>
+                  </div>
+                </div>
+              </button>
+            </ng-container>
+          </ng-container>
+          <ng-template #noMessagesContent>
+            <button mat-menu-item>
+              <div class="row">
+                <div class="row container_title"></div>
+                <div class="col container_text">No tienes mensajes</div>
+              </div>
+            </button>        
+          </ng-template>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row footer" (click)="viewAll()">
+          <span class="view_all pointer text-center">Ver todos</span>
+        </div>
+      </mat-menu>
+      
     </div>
-</mat-menu>
+</div>

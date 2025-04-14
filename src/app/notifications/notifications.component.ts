@@ -20,7 +20,10 @@ import { Router } from '@angular/router';
 export class NotificationsComponent implements OnInit {
 
   public notifications$: BehaviorSubject<any> = new BehaviorSubject([]);
+  public messages$: BehaviorSubject<any> = new BehaviorSubject([]);
+
   public countNotification$: BehaviorSubject<number> = new BehaviorSubject(0);
+  public countMessages$: BehaviorSubject<number> = new BehaviorSubject(0);
 
   constructor(
     private authService: AuthService,
@@ -36,33 +39,66 @@ export class NotificationsComponent implements OnInit {
   ngAfterViewInit(): void {
     this.notifications$.subscribe(
       (event: Array<any>) => {
-        let count = event?.filter((filter: any) => { return filter.read == false }).length;
-        this.countNotification$.next(count);
-    });
+      let count = event?.filter((filter: any) => filter.read == false && !filter.message.includes("Tienes un nuevo mensaje")).length;
+      this.countNotification$.next(count);
 
-    this.notificationsseService.notifications$.subscribe(
-      (event) => {
+      let countMessage = event?.filter((filter: any) => filter.read == false && filter.message.includes("Tienes un nuevo mensaje")).length;
+      this.countMessages$.next(countMessage);
+      });
+
+      this.messages$.subscribe(
+        (event: Array<any>) => {
+        let countMessage = event?.filter((filter: any) => filter.read == false && filter.message.includes("Tienes un nuevo mensaje")).length;
+        this.countMessages$.next(countMessage);
+        });
+    
+      this.notificationsseService.notifications$.subscribe(
+        (event) => {          
+        let filteredNotifications = event.read == false && !event.message.includes("Tienes un nuevo mensaje") ? event : null;
+        
         let latestNotification: Array<any> = this.notifications$.getValue();
-        this.notifications$.next([event, ...latestNotification]);
+        filteredNotifications ? this.notifications$.next([filteredNotifications, ...latestNotification]) : null;
+        
+        let filteredMessages = event.read == false && event.message.includes("Tienes un nuevo mensaje") ? event : null;
+
+        let latestMessages: Array<any> = this.messages$.getValue();
+        filteredMessages ? this.messages$.next([filteredMessages, ...latestMessages]) : null;
     });
   }
 
   private getNotifications(): void {
     this.notificationsseService.getUserNotifications(this.authService.userId).subscribe({
-      next: (response: Array<any>) => { response.length > 0 ? this.notifications$.next(response.reverse()) : this.notifications$.next([])},
+      next: (response: Array<any>) => { 
+        const filteredResponse = response.filter((notification: any) => 
+          !notification.message.includes("Tienes un nuevo mensaje")
+        );
+
+        const filteredMessages = response.filter((notification: any) => 
+          notification.message.includes("Tienes un nuevo mensaje")
+        );
+
+        filteredResponse.length > 0 ? this.notifications$.next(filteredResponse.reverse()) : this.notifications$.next([]);
+        filteredMessages.length > 0 ? this.messages$.next(filteredMessages.reverse()) : this.messages$.next([]);
+      
+      },
       error: (err) => {}
     })
   }
 
   public getDate(fecha: Date = new Date()): string {
-    const dia = fecha.getDate().toString().padStart(2, '0');
-    const mes = fecha.toLocaleString('es-ES', { month: 'short' }).toLowerCase();
-  
-    return `${dia}${mes}`;
+    const date = new Date(fecha);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   }
 
   public silenceNotification(): void {
     this.countNotification$.next(0);
+  }
+
+  public silenceMessages(): void {
+    this.countMessages$.next(0);
   }
 
   public action(notification: Notification): void {
