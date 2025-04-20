@@ -16,7 +16,7 @@ import { NegotiationNotification } from '../models/NegotiationNotification';
 interface GeolocationError {  
   code: number;  
   message: string;  
-}  
+}
 
 @Component({  
   selector: 'app-role-selection',  
@@ -53,21 +53,21 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
       // })  
     // );  
   
-    this.subscriptions.push(  
-      this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
-        if (notification && notification.userId === this.userId) {  
-          console.log('Nueva notificación recibida:', notification);  
-          this.notifications.push(notification);  
-          this.cdr.detectChanges();  
-        }  
-      })  
-    );  
+    // this.subscriptions.push(  
+    //   this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
+    //     if (notification && notification.userId === this.userId) {  
+    //       console.log('Nueva notificación recibida:', notification);  
+    //       this.notifications.push(notification);  
+    //       this.cdr.detectChanges();  
+    //     }  
+    //   })  
+    // );  
 
-    this.notificationsseService.connectToSSE().subscribe(
-      success => {
-        this.loadNotifications();
-      }
-    );  
+    // this.notificationsseService.connectToSSE().subscribe(
+    //   success => {
+    //     this.loadNotifications();
+    //   }
+    // );  
   } 
   
   acceptOffer(notification: Notification): void {  
@@ -94,15 +94,15 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() { 
   
-    this.subscriptions.push(  
-      this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
-        if (notification && notification.userId === this.userId) {  
-          console.log('Nueva notificación recibida:', notification);  
-          this.notifications.push(notification);  
-          this.cdr.detectChanges();  
-        }  
-      })  
-    );  
+    // this.subscriptions.push(  
+    //   this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
+    //     if (notification && notification.userId === this.userId) {  
+    //       console.log('Nueva notificación recibida:', notification);  
+    //       this.notifications.push(notification);  
+    //       this.cdr.detectChanges();  
+    //     }  
+    //   })  
+    // );  
   }  
 
     openNegotiationModal(negotiationNotification: NegotiationNotification): void {

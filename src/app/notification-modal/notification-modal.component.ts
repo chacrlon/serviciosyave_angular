@@ -4,6 +4,7 @@ import { Notification } from '../models/Notification';
 import { Router } from '@angular/router';  
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { NotificationsseService } from './notificationsse.service';
 
 @Component({  
   selector: 'app-notification-modal',  
@@ -18,7 +19,8 @@ export class NotificationModalComponent {
     public dialogRef: MatDialogRef<NotificationModalComponent>,  
     @Inject(MAT_DIALOG_DATA) public data: Notification,  
     private router: Router ,
-    private http: HttpClient  // Inyección de HttpClient 
+    private http: HttpClient,
+    private notificationSseService: NotificationsseService
   ) {  
     console.log('Datos de NotificationModalComponent:', this.data);  
     console.log('Tipo de usuario:', this.data.userType);
@@ -79,7 +81,16 @@ export class NotificationModalComponent {
             error => {  
                 console.error('Error al obtener el correo del usuario:', error);  
             }  
-        );  
+        );
+
+        this.notificationSseService.markAsRead(this.data.id!).subscribe({
+          next: (response) => {  
+            console.log('Notificación marcada como leída:', response);  
+          },
+          error: (error) => {
+            console.error('Error al marcar la notificación como leída:', error);  
+          }
+        });
 }
 
 public extractingUrl(message: string): string {

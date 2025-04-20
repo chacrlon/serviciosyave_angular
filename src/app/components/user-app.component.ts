@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { User } from '../models/user';
 import { UserService } from '../services/user.service';
 import Swal from 'sweetalert2';
@@ -9,6 +9,10 @@ import { AuthService } from '../services/auth.service';
 import { NegotiationService } from '../negotiation-modal/service/negotiation.service';
 import { DialogCounterOfferComponent } from './dialog-counteroffer/dialog-counteroffer.component';
 import { MatDialog } from '@angular/material/dialog';
+import { NotificationsseService } from '../notification-modal/notificationsse.service';
+import { Subscription } from 'rxjs';
+import { Notification } from '../models/Notification';  
+import { NotificationModalComponent } from '../notification-modal/notification-modal.component';
 
 @Component({
   selector: 'user-app',
@@ -21,6 +25,11 @@ export class UserAppComponent implements OnInit {
   users: User[] = [];
   paginator: any = {};
 
+  userId: number | undefined;  
+  notifications: Notification[] = [];  
+  private subscriptions: Subscription[] = [];  
+  private isModalOpen = false; // Variable para rastrear el estado del modal
+
   constructor(
     private router: Router,
     private service: UserService,
@@ -29,7 +38,14 @@ export class UserAppComponent implements OnInit {
     private negotiationService: NegotiationService,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-  ) { }
+    private notificationsseService: NotificationsseService,
+    private cdr: ChangeDetectorRef,  
+    
+  ) { 
+
+    this.userId = this.authService.userId;
+
+  }
 
   ngOnInit(): void {
     this.addUser();
@@ -38,10 +54,34 @@ export class UserAppComponent implements OnInit {
     this.pageUsersEvent();
     this.handlerLogin();
     this.onlyLogin();
+
+    this.subscriptions.push(  
+      this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
+        if (notification && notification.userId === this.userId) {  
+          console.log('Nueva notificación recibida:', notification);  
+          this.notifications.push(notification);  
+          this.cdr.detectChanges();  
+        }  
+      })  
+    );  
+
+    this.notificationsseService.connectToSSE().subscribe(
+      success => {
+        this.loadNotifications();
+      }
+    );  
   }
 
-  ngAfetViewInit(): void {
-
+  ngAfterViewInit(): void { 
+    this.subscriptions.push(  
+      this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
+        if (notification && notification.userId === this.userId) {  
+          console.log('Nueva notificación recibida:', notification);  
+          this.notifications.push(notification);  
+          this.cdr.detectChanges();  
+        }  
+      })  
+    );  
   }
   
 
@@ -69,9 +109,15 @@ export class UserAppComponent implements OnInit {
 
                 this.negotiationService.connectToSSE().subscribe(
                   success => {            
-                    this.loadNotifications(success);
+                    this.loadCounterOfferNotifications(success);
                   }
                 );
+
+                this.notificationsseService.connectToSSE().subscribe(
+                  success => {
+                    this.loadNotifications();
+                  }
+                );  
 
                 // Navegar a RoleSelectionComponent pasando el userId como parámetro  
                 this.router.navigate(['/role-selection', { id: userId }]);  
@@ -232,7 +278,7 @@ export class UserAppComponent implements OnInit {
     });
   }
 
-  loadNotifications(data: any): void {
+  loadCounterOfferNotifications(data: any): void {
     const dialogRef = this.dialog.open(DialogCounterOfferComponent, {  
       data: data,  
       width: '400px',  
@@ -242,11 +288,83 @@ export class UserAppComponent implements OnInit {
             event => {
               this.negotiationService.connectToSSE().subscribe(
                 success => {            
-                  this.loadNotifications(success);
+                  this.loadCounterOfferNotifications(success);
                 }
               );
             }
           );
   }
+
+  loadNotifications(): void {  
+    if (!this.userId) {  
+      console.warn('No se puede cargar notificaciones: userId no definido');  
+      return;  
+    }  
+  
+    this.subscriptions.push(  
+      this.notificationsseService.getUserNotifications(this.userId).subscribe({  
+        next: (notifications: Notification[]) => {  
+          console.log('Notificaciones recuperadas:', notifications);  
+          
+          // Filtrar y obtener solo la primera notificación no leída  
+          const unreadNotifications = notifications.filter(n => !n.read);  
+          
+          if (unreadNotifications.length > 0) {  
+            const newNotification = unreadNotifications[0];  
+            console.log('Mostrando notificación no leída:', newNotification);  
+            this.notifications.push(newNotification);  
+            this.openNotificationModal(newNotification);  
+          } else {  
+            console.log('No hay notificaciones no leídas');  
+          }  
+        },  
+        error: (error: Error) => {  
+          console.error('Error al cargar las notificaciones:', error);  
+        }  
+      })  
+    );  
+  }
+
+  openNotificationModal(notification: Notification): void {  
+      if (this.isModalOpen) return; // Si ya está abierto, no hacer nada  
+    
+      this.isModalOpen = true; // Marcar el modal como abierto  
+      console.log('Abriendo modal con la notificación:', notification);  
+      const dialogRef = this.dialog.open(NotificationModalComponent, {  
+        data: notification,  
+        width: '400px',  
+        disableClose: true  
+      });  
+    
+      this.subscriptions.push(  
+        dialogRef.afterClosed().subscribe(() => {
+          this.isModalOpen = false; // Marcar el modal como cerrado al cerrarse el diálogo  
+          if (notification.id) {  
+            console.log('Modal cerrado. Marcando notificación como leída:', notification.id);  
+            this.markAsRead(notification.id);
+            this.loadNotifications();
+          }  
+        })  
+      );  
+    }  
+  
+    markAsRead(notificationId: number): void {  
+      this.subscriptions.push(  
+        this.notificationsseService.markAsRead(notificationId).subscribe({  
+          next: () => {  
+            console.log(`Notificación ${notificationId} marcada como leída`);  
+          },  
+          error: (error: Error) => {  
+            console.error(`Error al marcar la notificación ${notificationId} como leída:`, error);  
+          }  
+        })  
+      );  
+    }
+
+    ngOnDestroy(): void {  
+      console.log('Limpiando recursos del componente');  
+      this.subscriptions.forEach(sub => sub.unsubscribe());  
+      this.notificationsseService.disconnectSSE();  
+    }
 
 }
