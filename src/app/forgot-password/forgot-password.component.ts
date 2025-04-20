@@ -17,7 +17,7 @@ export class ForgotPasswordComponent {
   constructor(private http: HttpClient, private router: Router) {}
 
   onSubmit() {
-    this.http.post('http://localhost:8080/api/users/forgot-password', { username: this.username })
+    this.http.post('http://localhost:8080/register/forgot-password', { username: this.username })
       .subscribe({
         next: () => {
           Swal.fire('Éxito', 'Revisa tu correo para restablecer la contraseña', 'success');
