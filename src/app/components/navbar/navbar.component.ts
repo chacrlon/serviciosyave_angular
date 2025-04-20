@@ -4,6 +4,8 @@ import { User } from '../../models/user';
 import { AuthService } from '../../services/auth.service';   
 import { CommonModule } from '@angular/common';  // Importa CommonModule   
 import { NotificationsComponent } from '../../notifications/notifications.component';
+import { NotificationsseService } from '../../notification-modal/notificationsse.service';
+import { NegotiationService } from '../../negotiation-modal/service/negotiation.service';
 
 @Component({  
   selector: 'navbar',  
@@ -17,7 +19,9 @@ export class NavbarComponent implements OnInit {  // Implementa OnInit
   isAuthenticated: boolean = false; // Agrega esta propiedad para almacenar el estado de autenticación  
 
   constructor(private authService: AuthService,  
-    private router: Router  
+    private router: Router,
+    private notificationsseService: NotificationsseService,
+    private negotiationService: NegotiationService,
   ){}  
 
   ngOnInit() {  
@@ -39,7 +43,9 @@ export class NavbarComponent implements OnInit {  // Implementa OnInit
   }  
 
   handlerLogout() {  
-    this.authService.logout();  
-    this.router.navigate(['/login'])  
-  }  
+    this.authService.logout();
+    this.notificationsseService.disconnectSSE();
+    this.negotiationService.disconnectSSE();
+    this.router.navigate(['/login']);
+  }
 }

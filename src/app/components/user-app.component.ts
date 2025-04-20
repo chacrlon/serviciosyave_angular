@@ -41,11 +41,7 @@ export class UserAppComponent implements OnInit {
     private notificationsseService: NotificationsseService,
     private cdr: ChangeDetectorRef,  
     
-  ) { 
-
-    this.userId = this.authService.userId;
-
-  }
+  ) { }
 
   ngOnInit(): void {
     this.addUser();
@@ -55,35 +51,42 @@ export class UserAppComponent implements OnInit {
     this.handlerLogin();
     this.onlyLogin();
 
-    this.subscriptions.push(  
-      this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
-        if (notification && notification.userId === this.userId) {  
-          console.log('Nueva notificación recibida:', notification);  
-          this.notifications.push(notification);  
-          this.cdr.detectChanges();  
-        }  
-      })  
-    );  
+    if(this.authService.token) {
+      this.userId = this.authService.userId; // Asignar el userId desde el token
 
-    this.notificationsseService.connectToSSE().subscribe(
-      success => {
-        this.loadNotifications();
-      }
-    );  
+      this.subscriptions.push(  
+        this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
+          if (notification && notification.userId === this.userId) {  
+            console.log('Nueva notificación recibida:', notification);  
+            this.notifications.push(notification);  
+            this.cdr.detectChanges();  
+          }  
+        })  
+      );  
+      
+      this.notificationsseService.connectToSSE().subscribe(
+        success => {
+          this.loadNotifications();
+        }
+      );  
+    }
   }
 
-  ngAfterViewInit(): void { 
-    this.subscriptions.push(  
-      this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
-        if (notification && notification.userId === this.userId) {  
-          console.log('Nueva notificación recibida:', notification);  
-          this.notifications.push(notification);  
-          this.cdr.detectChanges();  
-        }  
-      })  
-    );  
+  ngAfterViewInit(): void {
+    if(this.authService.token) {
+
+      this.subscriptions.push(  
+        this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
+          if (notification && notification.userId === this.userId) {  
+            console.log('Nueva notificación recibida:', notification);  
+            this.notifications.push(notification);  
+            this.cdr.detectChanges();  
+          }  
+        })  
+      );  
+    }
   }
-  
+ 
 
   handlerLogin() {  
     this.sharingData.handlerLoginEventEmitter.subscribe(({ username, password }) => {  
@@ -95,6 +98,8 @@ export class UserAppComponent implements OnInit {
                 const userId = response.userDetails.userId;  // Accede al userId desde userDetails  
                 console.log(token);  
                 console.log(userId);  
+                this.userId = userId;
+            
                 const payload = this.authService.getPayload(token);  
 
                 const user = { username: payload.sub, id: userId }; // Agregas el id al objeto user  
@@ -112,6 +117,8 @@ export class UserAppComponent implements OnInit {
                     this.loadCounterOfferNotifications(success);
                   }
                 );
+
+                this.loadNotifications();
 
                 this.notificationsseService.connectToSSE().subscribe(
                   success => {
@@ -298,7 +305,7 @@ export class UserAppComponent implements OnInit {
   loadNotifications(): void {  
     if (!this.userId) {  
       console.warn('No se puede cargar notificaciones: userId no definido');  
-      return;  
+      return;
     }  
   
     this.subscriptions.push(  
@@ -342,7 +349,6 @@ export class UserAppComponent implements OnInit {
           if (notification.id) {  
             console.log('Modal cerrado. Marcando notificación como leída:', notification.id);  
             this.markAsRead(notification.id);
-            this.loadNotifications();
           }  
         })  
       );  
@@ -352,7 +358,8 @@ export class UserAppComponent implements OnInit {
       this.subscriptions.push(  
         this.notificationsseService.markAsRead(notificationId).subscribe({  
           next: () => {  
-            console.log(`Notificación ${notificationId} marcada como leída`);  
+            console.log(`Notificación ${notificationId} marcada como leída`);
+            this.loadNotifications();
           },  
           error: (error: Error) => {  
             console.error(`Error al marcar la notificación ${notificationId} como leída:`, error);  
@@ -364,7 +371,8 @@ export class UserAppComponent implements OnInit {
     ngOnDestroy(): void {  
       console.log('Limpiando recursos del componente');  
       this.subscriptions.forEach(sub => sub.unsubscribe());  
-      this.notificationsseService.disconnectSSE();  
+      this.notificationsseService.disconnectSSE();
+      this.negotiationService.disconnectSSE();
     }
 
 }

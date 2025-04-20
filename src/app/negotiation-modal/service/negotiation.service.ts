@@ -13,6 +13,7 @@ export class NegotiationService {
   private readonly baseUrl = 'http://localhost:8080/';  
   private eventSource: EventSource | null = null;
   private notification$: BehaviorSubject<any>= new BehaviorSubject<any>(null);  
+  private connectionStatus = new BehaviorSubject<boolean>(false);  
 
   constructor(
     private http: HttpClient,
@@ -24,6 +25,10 @@ export class NegotiationService {
   public negotiation(payload: any): Observable<any> {
     return this.http.post(this.baseUrl+"api/negotiations/getNegotiation", payload);
   }
+
+  get connectionStatus$(): Observable<boolean> {  
+    return this.connectionStatus.asObservable();  
+  }  
 
   public createNegotiation(negotiationData: any): Observable<any> {
     return this.http.post(`${this.baseUrl}api/negotiations`, negotiationData);
@@ -43,6 +48,7 @@ export class NegotiationService {
       this.eventSource = new EventSource(`${this.baseUrl}sse/subscribe/${this.token.userId}`); 
       this.eventSource.onopen = (event) => {  
         console.log('Conexión SSE establecida', event);  
+        this.connectionStatus.next(true);
       };
 
       this.eventSource?.addEventListener('negotiation', (event: any) => {
@@ -61,7 +67,9 @@ export class NegotiationService {
 
       this.eventSource.onerror = (error) => {  
         console.error('Error en conexión SSE:', error);  
+        this.connectionStatus.next(false);  
         this.eventSource?.close();  
+
 
         // Pasar el error al observer  
         this.ngZone.run(() => { 
@@ -82,9 +90,9 @@ export class NegotiationService {
       };
 
       // Cerrar conexión al cancelar la suscripción  
-      // return () => {  
-      //   this.eventSource?.close();  
-      // };  
+      return () => {  
+        this.eventSource?.close();  
+      };  
     });  
   }  
 
@@ -93,6 +101,7 @@ export class NegotiationService {
       console.log('Cerrando conexión SSE');
       this.eventSource.close();
       this.eventSource = null;
+      this.connectionStatus.next(false);
     }
   }
 

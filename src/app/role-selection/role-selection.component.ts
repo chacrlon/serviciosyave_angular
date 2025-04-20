@@ -45,7 +45,7 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userId = this.token.userId;
     console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId);  
-    this.loadNotifications();
+    // this.loadNotifications();
 
     // this.subscriptions.push(  
     //   this.route.paramMap.subscribe(params => {  
@@ -192,8 +192,8 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {  
     console.log('Limpiando recursos del componente');  
     this.subscriptions.forEach(sub => sub.unsubscribe());  
-    this.notificationsseService.disconnectSSE();  
-  }  
+    // this.notificationsseService.disconnectSSE();
+  }
 
   navegarPorRol(role: string): void {  
     console.log(`Navegando por rol: ${role}`);  
