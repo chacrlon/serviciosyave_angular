@@ -221,7 +221,7 @@ export class DialogCounterOfferComponent implements OnInit {
         userId2: this.data.senderId,
         currentOffer: this.data.currentOffer,
         isInitialOffer: false,
-        presupuestoInicial: this.data.presupuesto,
+        presupuestoInicial: this.data.amount || this.data.presupuesto,
         titleService: this.data.titulo
       }
     });

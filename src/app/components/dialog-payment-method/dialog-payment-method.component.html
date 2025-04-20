@@ -12,13 +12,17 @@
             <label>Banco: </label><label>Bancamiga</label><br>
             <label>Teléfono: </label><label>04123705210</label><br>
             <label>Cédula: </label><br><label>24286418</label><br>
-            <label>Monto: </label><label>{{data.presupuestoInicial | number:'1.2-2'}}</label>
+            <label>Monto en dolares: </label><label>$ {{data.presupuestoInicial | number:'1.2-2'}}</label>
+            <label>Tasa de cambio: </label><label>Bs {{rate | number:'1.2-2'}}</label>
+            <label>Monto en bolívares: </label><label>$ {{getCalculatedAmountRate() | number:'1.2-2'}}</label>
           </p>
           <p *ngIf="i == 1">
             <label>Banco: </label><label>Bancamiga</label><br>
             <label>Número de Cuenta: </label><label>01720107701075174910</label><br>
             <label>RIF: </label><label>242864189</label><br>
-            <label>Monto: </label><label>{{data.presupuestoInicial | number:'1.2-2'}}</label>
+            <label>Monto en dolares: </label><label>$ {{data.presupuestoInicial | number:'1.2-2'}}</label>
+            <label>Tasa de cambio: </label><label>Bs {{rate | number:'1.2-2'}}</label>
+            <label>Monto en bolívares: </label><label>$ {{getCalculatedAmountRate() | number:'1.2-2'}}</label>
           </p>
           <p *ngIf="i == 2">
             <label>Correo: </label><label>chacrlonroman&#64;gmail.com</label><br>

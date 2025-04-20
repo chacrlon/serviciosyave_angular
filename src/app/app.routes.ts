@@ -29,11 +29,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
-<<<<<<< Updated upstream
-=======
 import { AdminComponent } from './admin/admin.component';
 
->>>>>>> Stashed changes
 
 export const routes: Routes = [
     {

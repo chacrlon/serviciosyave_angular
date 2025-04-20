@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-reset-password',

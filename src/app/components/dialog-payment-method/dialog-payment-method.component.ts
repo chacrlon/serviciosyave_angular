@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
 import { NotificationsseService } from '../../notification-modal/notificationsse.service';
 import { PaymentService } from '../../payment-component/paymentService';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-dialog-payment-method',
@@ -31,6 +32,7 @@ export class DialogPaymentMethodComponent implements OnInit {
     { title: 'Binance', isOpen: false, currency: 'usdt', value: 'binance' }
   ];
   private currency: string | undefined;
+  public rate: number | undefined;
   private selectedPaymentMethod: string | undefined;
 
   notifications: Notification[] = [];  
@@ -44,7 +46,8 @@ export class DialogPaymentMethodComponent implements OnInit {
     private cdr: ChangeDetectorRef,  
     private paymentService: PaymentService,
     private notificationsseService: NotificationsseService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private currencyService: CurrencyService
   ) {}
 
   ngOnInit(): void {
@@ -53,6 +56,8 @@ export class DialogPaymentMethodComponent implements OnInit {
     if(this.data.isInitialOffer) {
       this.getNegotiation();
     } 
+
+    this.getRate();
   }
 
   ngAfterViewInit(): void {
@@ -103,6 +108,19 @@ export class DialogPaymentMethodComponent implements OnInit {
       error: (err) => { this.getError(err) }
     });
   }
+
+  private getRate() {
+    this.currencyService.getExchangeRate().subscribe(
+      (response) => {
+        this.rate = response;
+      },
+      (error) => {
+        console.error('Error al obtener la tasa de cambio:', error);
+        this.rate = 0;
+      }
+    );
+  }
+
 
   private getError(exception: any) {
     if(exception.status == 400) {
@@ -202,5 +220,9 @@ export class DialogPaymentMethodComponent implements OnInit {
       }, error => {
         console.error('Error al procesar el pago:', error);
       });
+  }
+
+  public getCalculatedAmountRate(): number {
+    return this.data.presupuestoInicial * (this.rate ?? 0);
   }
 }
