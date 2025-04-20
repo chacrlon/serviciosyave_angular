@@ -163,11 +163,12 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
     });  
   
     this.subscriptions.push(  
-      dialogRef.afterClosed().subscribe(() => {  
+      dialogRef.afterClosed().subscribe(() => {
         this.isModalOpen = false; // Marcar el modal como cerrado al cerrarse el diálogo  
         if (notification.id) {  
           console.log('Modal cerrado. Marcando notificación como leída:', notification.id);  
-          this.markAsRead(notification.id);  
+          this.markAsRead(notification.id);
+          this.loadNotifications();
         }  
       })  
     );  
