@@ -200,8 +200,13 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
+    // const modalities = Object.keys(this.registrationForm.get('modalities')?.value)
+    //   .filter(k => this.registrationForm.get(`modalities.${k}`)?.value);
+
     const modalities = Object.keys(this.registrationForm.get('modalities')?.value)
-      .filter(k => this.registrationForm.get(`modalities.${k}`)?.value);
+      .filter(k => this.registrationForm.get(`modalities.${k}`)?.value)
+      .map(modality => modality === 'presencial' ? 0 : (modality === 'online' ? 1 : -1)) // Puedes ajustar el -1 si necesitas manejar otros casos
+      .filter(value => value !== -1); // Esto elimina cualquier valor que no sea 'presencial' u 'online' si es necesario
 
     const sellerData = {
       ...this.registrationForm.value,

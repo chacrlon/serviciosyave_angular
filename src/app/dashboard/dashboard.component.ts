@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = this.authService.userId; // ID del usuario autenticado
-    this.profileUserId = this.getProfileUserIdFromRoute(); // Obtener el ID del perfil desde la ruta
+    // this.profileUserId = this.getProfileUserIdFromRoute(); // Obtener el ID del perfil desde la ruta
 
     if (!this.userId) {
       this.router.navigate(['/login']); // Redirigir al login si no hay usuario autenticado
@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit {
 
   private loadProfileData(): void {
     // Llamar al backend para obtener los datos del perfil
-    this.http.get(`http://localhost:8080/api/sellers/${this.profileUserId}`).subscribe({
+    this.http.get(`http://localhost:8080/api/sellers/seller/${this.userId}`).subscribe({
       next: (data: any) => {
         this.registrationForm.patchValue(data); // Rellenar el formulario con los datos del perfil
         this.profilePictureUrl = data.profilePicture ? `data:image/jpeg;base64,${data.profilePicture}` : null;
