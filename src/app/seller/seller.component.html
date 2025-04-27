@@ -39,7 +39,10 @@
 
             <label for="remoto">Servicio Remoto:</label>  
             <input type="checkbox" id="remoto" [(ngModel)]="serviceData.remoto" name="remoto">  
-    
+
+            <label for="allowNegotiation">Permite Negociación:</label>
+            <input type="checkbox" id="allowNegotiation" [(ngModel)]="serviceData.allowNegotiation" name="allowNegotiation">  
+
             <label for="latitude">Latitud:</label>  
             <input type="text" id="latitude" [(ngModel)]="serviceData.latitude" name="latitude" readonly>  
 
@@ -62,7 +65,8 @@
                     <th>Destacado</th>  
                     <th>Categoría</th>  
                     <th>Subcategoría</th>  
-                    <th>Remoto</th>  
+                    <th>Remoto</th>
+                    <th>Permite Negociación</th>
                     <th>Acciones</th> <!-- Nueva columna para acciones -->  
                 </tr>  
             </thead>  
@@ -75,6 +79,7 @@
                     <td>{{ service.categoria }}</td> <!-- Mostrar categoría -->  
                     <td>{{ service.subcategoria }}</td> <!-- Mostrar subcategoría -->  
                     <td>{{ service.remoto ? 'Sí' : 'No' }}</td> <!-- Mostrar si es remoto -->
+                    <td>{{ service.allowNegotiation ? 'Sí' : 'No' }}</td>
                     <button (click)="editService(service)">Editar</button>  
                 </tr>  
             </tbody>  

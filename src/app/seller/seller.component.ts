@@ -41,7 +41,8 @@ export class SellerComponent {
     destacado: false,  
     categoria: '',  
     subcategoria: '',  
-    remoto: '',  
+    remoto: '',
+    allowNegotiation: false,
     latitude: 0, 
     longitude: 0 
   };  
@@ -93,6 +94,7 @@ export class SellerComponent {
       categoria: '',  
       subcategoria: '', 
       remoto: '',  
+      allowNegotiation: false,
       latitude: 0,  
       longitude: 0  
     };  
@@ -107,7 +109,8 @@ export class SellerComponent {
       destacado: service.destacado,  
       categoria: service.categoria,  
       subcategoria: service.subcategoria,  
-      remoto: service.remoto,  
+      remoto: service.remoto,
+      allowNegotiation: service.allowNegotiation,
       latitude: this.serviceData.latitude, 
       longitude: this.serviceData.longitude
     };  

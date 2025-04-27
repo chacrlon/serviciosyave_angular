@@ -7,6 +7,7 @@ export interface Ineed {
   subcategory: { id: number } | null;
   ubicacion: string;  
   fechaHora: string;  
+  allowNegotiation?: boolean;
   presupuesto: number | null;  
   userId: number;  
 }  

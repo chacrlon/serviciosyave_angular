@@ -60,18 +60,22 @@
 
 <h2>Servicios Disponibles</h2>  
 <div class="services-container">  
-  <div class="service-card" *ngFor="let service of services" (click)="showModal(service)">  
-    <h3>{{ service.nombre }}</h3>  
-    <p>{{ service.descripcion }}</p>  
-    <p><strong>Precio:</strong> ${{ service.precio }}</p>  
-    <p><strong>Destacado:</strong> {{ service.destacado ? 'Sí' : 'No' }}</p>  
-    <p><strong>Categoría:</strong> {{ service.categoria }}</p>  
-    <p><strong>Subcategoría:</strong> {{ service.subcategoria }}</p>  
-    <p>  
-      <span class="highlight">{{ service.remoto ? 'El servicio es online' : 'El servicio es presencial' }}</span>  
-    </p>  
-  </div>  
-</div>  
+  <div class="card service-card" *ngFor="let service of services">  
+    <div (click)="showModal(service)">
+      <h3>{{ service.nombre }}</h3>  
+      <p>{{ service.descripcion }}</p>  
+      <p><strong>Precio:</strong> ${{ service.precio }}</p>  
+      <p><strong>Destacado:</strong> {{ service.destacado ? 'Sí' : 'No' }}</p>  
+      <p><strong>Categoría:</strong> {{ service.categoria }}</p>  
+      <p><strong>Subcategoría:</strong> {{ service.subcategoria }}</p>  
+      <p><strong>Cerca:</strong> {{ service.nearby || "S/I" }}</p>
+      <p>
+        <span class="highlight">{{ service.remoto ? 'El servicio es online' : 'El servicio es presencial' }}</span>  
+      </p>  
+    </div>
+    <button *ngIf="service.allowNegotiation" (click)="abrirNegociacion(service)">Negociar</button>  
+  </div>
+</div>
 
 <!-- Modal para Contratar Servicio -->  
 <div class="modal" [ngClass]="{'is-active': modalVisible}">  

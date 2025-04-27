@@ -134,3 +134,16 @@
 .button i {  
     margin-right: 8px; /* Espacio entre el icono y el texto */  
 }
+
+.card button {  
+  background-color: #e63946;  
+  color: white;  
+  border: none;  
+  padding: 10px;  
+  border-radius: 5px;  
+  cursor: pointer;  
+}  
+
+.card button:hover {  
+  background-color: #c62839;  
+}

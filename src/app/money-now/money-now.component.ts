@@ -67,6 +67,7 @@ export class MoneyNowComponent implements OnInit {
   abrirNegociacion(necesidad: MoneyNow): void {
     const dialogRef = this.dialog.open(NegotiationModalComponent, {
       data: {
+        type: 'requirement',
         ineedId: necesidad.id,
         userId: this.userId,
         userId2: necesidad.userId,

@@ -2,7 +2,7 @@
     <div class="card-header">
         <div class="row">
             <h5 class="card-title">Has recibido una oferta por: </h5>
-            <span><b>{{dataIneedResponse?.titulo}}</b></span>
+            <span><b>{{dataIneedResponse?.titulo || dataIneedResponse?.nombre}}</b></span>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
     <div class="card-header">
         <div class="row">
             <h5 class="card-title">Has recibido una contraoferta por: </h5>
-            <span><b>{{dataIneedResponse?.titulo}}</b></span>
+            <span><b>{{dataIneedResponse?.titulo || dataIneedResponse?.nombre}}</b></span>
         </div>
     </div>
 
@@ -72,7 +72,7 @@
     <div class="card-header">
         <div class="row">
             <h5 class="card-title">Has recibido una contraoferta por: </h5>
-            <span><b>{{dataIneedResponse?.titulo}}</b></span>
+            <span><b>{{dataIneedResponse?.titulo || dataIneedResponse?.nombre}}</b></span>
         </div>
     </div>
 
@@ -102,7 +102,7 @@
     <div class="card-header">
         <div class="row">
             <h5 class="card-title">Ha sido aceptada tu oferta por: </h5>
-            <span><b>{{dataIneedResponse?.titulo}}</b></span>
+            <span><b>{{dataIneedResponse?.titulo || dataIneedResponse?.nombre}}</b></span>
         </div>
     </div>
 
@@ -132,7 +132,7 @@
     <div class="card-header">
         <div class="row">
             <h5 class="card-title">Tu oferta ha sido rechazada</h5>
-            <span><b>{{dataIneedResponse?.titulo}}</b></span>
+            <span><b>{{dataIneedResponse?.titulo || dataIneedResponse?.nombre}}</b></span>
         </div>
     </div>
 

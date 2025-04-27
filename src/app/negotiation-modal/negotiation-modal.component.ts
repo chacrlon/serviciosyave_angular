@@ -62,6 +62,7 @@ export class NegotiationModalComponent implements OnInit {
 
   private getNegotiation() {
     let payload: any = {
+      type: this.data.type,
       ineedId: this.data.ineedId,
       senderUserId: this.data.userId,
       receiverUserId: this.data.userId2,
@@ -110,6 +111,7 @@ export class NegotiationModalComponent implements OnInit {
     if(this.formGroup.invalid) { return };
 
     const negotiationData = {
+      type: this.data.type,
       ineedId: this.data.ineedId,
       senderUserId: this.data.userId,
       receiverUserId: this.data.userId2,

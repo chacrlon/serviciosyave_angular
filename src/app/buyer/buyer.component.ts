@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';   
 import { Router, ActivatedRoute } from '@angular/router'; 
 import { LocationService } from '../services/location.service'; 
+import { NegotiationModalComponent } from '../negotiation-modal/negotiation-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 interface GeolocationError {  
   code: number;  
@@ -51,7 +53,9 @@ export class BuyerComponent implements OnInit{
   // Para almacena la ubicación  
   location: { latitude: number; longitude: number } | null = null;  
 
-  constructor(private http: HttpClient, private locationService: LocationService, private router: Router, private route: ActivatedRoute) {  
+  constructor(private http: HttpClient, private locationService: LocationService, private router: Router, private route: ActivatedRoute,
+    private dialog: MatDialog
+  ) {  
     // No es necesario llamar a loadServices aquí  
   }  
 
@@ -231,5 +235,24 @@ export class BuyerComponent implements OnInit{
     this.monto = null;  
     this.referenciaPago = '';  
     this.selectedPaymentMethod = null;  
-  }  
+  }
+
+  abrirNegociacion(service: any): void {
+    const dialogRef = this.dialog.open(NegotiationModalComponent, {
+      data: {
+        type: 'service',
+        ineedId: service.id,
+        userId: this.userId,
+        userId2: service.userId,
+        currentOffer: 1,
+        isInitialOffer: true,
+        presupuestoInicial: service.presupuesto,
+        titleService: service.titulo || service.nombre
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('El diálogo se cerró');
+    });
+  }
 }

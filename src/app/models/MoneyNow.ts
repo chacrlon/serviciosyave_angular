@@ -8,4 +8,6 @@ export interface MoneyNow {
   fechaHora: string;  
   presupuesto: number | null;  
   userId: number;  
+  allowNegotiation?: boolean;
+  nearby?: string;
 }

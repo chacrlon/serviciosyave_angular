@@ -7,6 +7,7 @@ import { NegotiationService } from '../../negotiation-modal/service/negotiation.
 import { AuthService } from '../../services/auth.service';
 import { NegotiationModalComponent } from '../../negotiation-modal/negotiation-modal.component';
 import { DialogPaymentMethodComponent } from '../dialog-payment-method/dialog-payment-method.component';
+import { BuyerService } from '../../buyer/buyer.service';
 
 @Component({
   selector: 'app-dialog-counteroffer',
@@ -26,6 +27,7 @@ export class DialogCounterOfferComponent implements OnInit {
     private necesitoService: NecesitoService,
     private negotiationService: NegotiationService,
     private token: AuthService,
+    private buyerService: BuyerService,
 
   ) { }
 
@@ -34,10 +36,17 @@ export class DialogCounterOfferComponent implements OnInit {
   }
 
   private getNegotiation(): void {
-    this.necesitoService.obtenerNecesidadPorId(this.data.ineedId).subscribe({
-      next: (response) => { this.dataIneedResponse = response; },
-      error: (err) => { alert(err.error); }
-    })
+    if(this.data.typeFlow == "requirement") {
+      this.necesitoService.obtenerNecesidadPorId(this.data.ineedId).subscribe({
+        next: (response) => { this.dataIneedResponse = response; },
+        error: (err) => { alert(err.error); }
+      });
+    } else if(this.data.typeFlow == "service") {
+      this.buyerService.vendorServiceById(this.data.ineedId).subscribe({
+        next: (response) => { this.dataIneedResponse = response; },
+        error: (err) => { alert(err.error); }
+      });
+    }
   }
 
   public accept() {
@@ -49,7 +58,8 @@ export class DialogCounterOfferComponent implements OnInit {
       justification: this.data.justification,
       receiverUserId: this.token.userId,
       senderUserId: this.data.senderId,
-      sendId: this.data.senderId
+      sendId: this.data.senderId,
+      type: this.data.typeFlow
     }
     this.negotiationService.updateNegotiation(payload).subscribe({
       next: (response) => { this.dialogRef.close() },
@@ -66,7 +76,8 @@ export class DialogCounterOfferComponent implements OnInit {
       justification: this.data.justification,
       receiverUserId: this.token.userId,
       senderUserId: this.data.senderId,
-      sendId: this.data.receiverId
+      sendId: this.data.receiverId,
+      type: this.data.typeFlow
     }
     this.negotiationService.updateNegotiation(payload).subscribe({
       next: (response) => { this.dialogRef.close() },
@@ -83,7 +94,7 @@ export class DialogCounterOfferComponent implements OnInit {
       justification: this.data.justification,
       receiverUserId: this.data.receiverId,
       senderUserId: this.data.receiverId,
-      // sendId: this.
+      type: this.data.typeFlow
     }
     this.negotiationService.updateNegotiation(payload).subscribe({
       next: (response) => { this.dialogRef.close() },
@@ -100,7 +111,8 @@ export class DialogCounterOfferComponent implements OnInit {
       justification: this.data.justification,
       receiverUserId: this.data.receiverId,
       senderUserId: this.data.senderId,
-      sendId: this.data.receiverId
+      sendId: this.data.receiverId,
+      type: this.data.typeFlow
     }
     this.negotiationService.updateNegotiation(payload).subscribe({
       next: (response) => { this.dialogRef.close() },
@@ -117,7 +129,8 @@ export class DialogCounterOfferComponent implements OnInit {
       justification: this.data.justification,
       receiverUserId: this.data.receiverId,
       senderUserId: this.data.senderId,
-      sendId: this.data.receiverId
+      sendId: this.data.receiverId,
+      type: this.data.typeFlow
     }
     this.negotiationService.updateNegotiation(payload).subscribe({
       next: (response) => { this.dialogRef.close() },
@@ -134,7 +147,8 @@ export class DialogCounterOfferComponent implements OnInit {
       justification: this.data.justification,
       receiverUserId: this.data.receiverId,
       senderUserId: this.data.senderId,
-      sendId: this.data.senderId
+      sendId: this.data.senderId,
+      type: this.data.typeFlow
     }
     this.negotiationService.updateNegotiation(payload).subscribe({
       next: (response) => { this.dialogRef.close() },
@@ -152,7 +166,8 @@ export class DialogCounterOfferComponent implements OnInit {
         currentOffer: this.data.currentOffer,
         isInitialOffer: false,
         presupuestoInicial: this.data.presupuesto,
-        titleService: this.data.titulo
+        titleService: this.data.titulo,
+        type: this.data.typeFlow
       }
     });
 
@@ -167,7 +182,8 @@ export class DialogCounterOfferComponent implements OnInit {
           justification: data.counterJustification,
           receiverUserId: this.data.receiverId,
           senderUserId: this.data.senderId,
-          sendId: this.data.senderId
+          sendId: this.data.senderId,
+          type: this.data.typeFlow
         };
         
         this.negotiationService.updateNegotiation(payload).subscribe({
@@ -188,7 +204,8 @@ export class DialogCounterOfferComponent implements OnInit {
           currentOffer: this.data.currentOffer,
           isInitialOffer: false,
           presupuestoInicial: this.data.presupuesto,
-          titleService: this.data.titulo
+          titleService: this.data.titulo,
+          type: this.data.typeFlow
         }
       });
 
@@ -203,7 +220,8 @@ export class DialogCounterOfferComponent implements OnInit {
           justification: data.counterJustification,
           receiverUserId: this.data.receiverId,
           senderUserId: this.data.senderId,
-          sendId: this.data.receiverId
+          sendId: this.data.receiverId,
+          type: this.data.typeFlow
         }
         this.negotiationService.updateNegotiation(payload).subscribe({
           next: (response) => { this.dialogRef.close() },
@@ -222,7 +240,8 @@ export class DialogCounterOfferComponent implements OnInit {
         currentOffer: this.data.currentOffer,
         isInitialOffer: false,
         presupuestoInicial: this.data.amount || this.data.presupuesto,
-        titleService: this.data.titulo
+        titleService: this.data.titulo,
+        type: this.data.typeFlow
       }
     });
 
@@ -238,7 +257,8 @@ export class DialogCounterOfferComponent implements OnInit {
           justification: data.counterJustification,
           receiverUserId: this.data.receiverId,
           senderUserId: this.data.senderId,
-          sendId: this.data.receiverId
+          sendId: this.data.receiverId,
+          type: this.data.typeFlow
         }
         this.negotiationService.updateNegotiation(payload).subscribe({
           next: (response) => { this.dialogRef.close() },

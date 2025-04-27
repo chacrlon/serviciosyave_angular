@@ -7,10 +7,11 @@
     <p><strong>Presupuesto:</strong> ${{ necesidad.presupuesto }}</p>  
     <p><strong>Categoria:</strong> {{ necesidad.category?.name || 'Sin categoría' }}</p>  
     <p><strong>Subcategoria:</strong> {{ necesidad.subcategory?.name || 'Sin subcategoría' }}</p>  
+    <p><strong>Cerca: </strong>{{ necesidad.nearby || "S/I" }}</p>  
     <hr />  
     <button (click)="aceptarOferta(necesidad)">Aceptar Oferta</button>  
-    <button (click)="abrirNegociacion(necesidad)">Negociar</button>  
-  </div>  
+    <button *ngIf="necesidad.allowNegotiation" (click)="abrirNegociacion(necesidad)">Negociar</button>  
+  </div>
 
  
 </div>

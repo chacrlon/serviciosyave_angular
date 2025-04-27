@@ -1,5 +1,5 @@
 <div class="modal-content">
-  <h3>Negociación para: {{ data.titleService }}</h3>
+  <h3>Negociación para: {{ data.titleService || data.vendorService }}</h3>
   
   <div class="row" *ngIf="negotiationData">
     <p>Oferta enviada: ${{ negotiationData.amount }}</p>
@@ -13,7 +13,7 @@
     
     <div class="row">
       <input type="number" formControlName="counterAmount" 
-      [placeholder]="'Monto (mínimo $' + data.presupuestoInicial + ')'">
+      [placeholder]="'Monto (mínimo $' + (data.presupuestoInicial || 1) + ')'">
       <textarea formControlName="counterJustification"
       placeholder="Justificación de la oferta"></textarea>
     </div>

@@ -6,6 +6,7 @@ import { NecesitoService } from './necesito.service';
 import { Ineed } from '../models/Ineed';  
 import { Category } from '../models/Category';  
 import { Subcategory } from '../models/Subcategory';  
+import { AuthService } from '../services/auth.service';
 
 @Component({  
   selector: 'app-necesito',  
@@ -24,15 +25,18 @@ export class NecesitoComponent implements OnInit {
   subcategories: Subcategory[] = [];  
   ubicacion: string = '';  
   fechaHora: string = '';  
+  allowNegotiation: boolean = false;
   presupuesto: number | null = null;  
   successMessage: string = '';  
   errorMessage: string = '';  
 
-  constructor(private route: ActivatedRoute, private router: Router, private necesitoService: NecesitoService) {}  
+  constructor(private route: ActivatedRoute, private router: Router, private necesitoService: NecesitoService,
+    private authService: AuthService
+  ) {}  
 
   ngOnInit(): void {  
     this.route.queryParams.subscribe(params => {  
-      this.userId = +params['id'];  
+      this.userId = this.authService.userId;
       console.log('User ID recibido en NecesitoComponent:', this.userId);  
     });  
     this.cargarCategorias();  
@@ -82,7 +86,8 @@ export class NecesitoComponent implements OnInit {
         category: this.selectedCategory ? { id: this.selectedCategory.id } : null, // Usar objeto de categoría  
         subcategory: this.selectedSubcategory ? { id: this.selectedSubcategory.id } : null, // Usar objeto de subcategoría  
         ubicacion: this.ubicacion,  
-        fechaHora: this.fechaHora,  
+        fechaHora: this.fechaHora,
+        allowNegotiation: this.allowNegotiation,
         presupuesto: this.presupuesto,  
         userId: this.userId!  
     };  
@@ -106,6 +111,7 @@ export class NecesitoComponent implements OnInit {
     this.selectedSubcategory = null;  
     this.ubicacion = '';  
     this.fechaHora = '';  
+    this.allowNegotiation = false;
     this.presupuesto = null;  
     this.successMessage = '';  
     this.errorMessage = '';  
