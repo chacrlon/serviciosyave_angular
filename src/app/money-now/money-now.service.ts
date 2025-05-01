@@ -26,10 +26,10 @@ export class MoneyNowService {
     );
   }
 
-  public obtenerNecesidades(): Observable<MoneyNow[]> {  
-    return this.http.get<MoneyNow[]>(this.apiUrl).pipe(  
-      catchError(this.handleError)  
-    );  
+  public obtenerNecesidades(location:{ latitude: number; longitude: number } | null): Observable<MoneyNow[]> {  
+    return this.http.get<MoneyNow[]>(this.apiUrl+'?lat='+location?.latitude+'&lon='+location?.longitude).pipe(
+      catchError(this.handleError)
+    );
   }  
 
   public obtenerNecesidadPorId(id: number): Observable<MoneyNow> {  

@@ -5,7 +5,8 @@ export interface Ineed {
   descripcion: string;  
   category: { id: number } | null;
   subcategory: { id: number } | null;
-  ubicacion: string;  
+  latitude: number;
+  longitude: number
   fechaHora: string;  
   allowNegotiation?: boolean;
   presupuesto: number | null;  

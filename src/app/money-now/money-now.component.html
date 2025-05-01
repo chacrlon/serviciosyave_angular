@@ -2,12 +2,12 @@
   <div class="card" *ngFor="let necesidad of necesidades">  
     <h3>{{ necesidad.titulo }}</h3>  
     <p>{{ necesidad.descripcion }}</p>  
-    <p><strong>Ubicación:</strong> {{ necesidad.ubicacion }}</p>  
+    <p><strong>Ubicación:</strong> {{ necesidad.address }}</p>  
     <p><strong>Fecha y Hora:</strong> {{ necesidad.fechaHora | date:'medium' }}</p>  
     <p><strong>Presupuesto:</strong> ${{ necesidad.presupuesto }}</p>  
     <p><strong>Categoria:</strong> {{ necesidad.category?.name || 'Sin categoría' }}</p>  
     <p><strong>Subcategoria:</strong> {{ necesidad.subcategory?.name || 'Sin subcategoría' }}</p>  
-    <p><strong>Cerca: </strong>{{ necesidad.nearby || "S/I" }}</p>  
+    <p><strong>Cerca: </strong>{{ necesidad.nearby != null && necesidad.nearby >= 0 ? necesidad.nearby.toFixed(2) : "S/I" }} Km</p>
     <hr />  
     <button (click)="aceptarOferta(necesidad)">Aceptar Oferta</button>  
     <button *ngIf="necesidad.allowNegotiation" (click)="abrirNegociacion(necesidad)">Negociar</button>  

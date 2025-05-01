@@ -64,10 +64,19 @@ export class BuyerComponent implements OnInit{
       this.userId = +params['id']; // Obtener el userId de los parámetros de consulta  
       console.log('User ID recibido en BuyerComponent:', this.userId);  
     });  
+    this.obtenerUbicacion();
+    // this.locationService.location.subscribe({
+    //   next: (location) => {
+    //     console.log('Ubicación obtenida:', location);
+    //     if (location) {
+    // this.loadServices(this.location);
+    // this.loadExchangeRate();
+    //     }
+    //   },
+    //   error: (error) => { console.error('Error al obtener la ubicación:', error); }
+    // });
 
-    this.loadServices();  
-    this.loadExchangeRate(); // Llamar al método para cargar el tipo de cambio  
-  } 
+  }
 // Acceder a la interfaz para publicar una necesidad y ofertar un monto, esto es para rol de buyer  
   publicarNecesidad(): void {  
     console.log('Publicando necesidad...');  
@@ -75,11 +84,9 @@ export class BuyerComponent implements OnInit{
     this.router.navigate(['/necesito'], { queryParams: { id: this.userId } });   // Asegúrate de que esta ruta esté definida en tu enrutador  
   }
 
-  obtenerUbicacion(role: string): void {  
-    console.log('Obteniendo ubicación para el rol:', role);  
-    
+  obtenerUbicacion(): void {      
     if (!navigator.geolocation) {  
-      console.warn('La geolocalización no está soportada. Navegando por rol:', role);   
+      console.warn('La geolocalización no está soportada:');   
       return;  
     }  
 
@@ -88,6 +95,9 @@ export class BuyerComponent implements OnInit{
         const { latitude: lat, longitude: lon } = position.coords;  
         console.log(`Ubicación obtenida - Latitud: ${lat}, Longitud: ${lon}`);  
         this.locationService.setLocation(lat, lon);  
+        this.location = { latitude: lat, longitude: lon };
+        this.loadServices(this.location);
+        this.loadExchangeRate();
       },  
       (error: GeolocationError) => {  
         console.error('Error al obtener la ubicación:', error);   
@@ -111,10 +121,12 @@ export class BuyerComponent implements OnInit{
       });  
   }  
 
-  loadServices() {  
-    this.http.get<any[]>('http://localhost:8080/api/service/available')  
+  loadServices(location: { latitude: number; longitude: number } | null) {  
+    console.log("location: ", location);
+    
+    this.http.get<any[]>('http://localhost:8080/api/service/available?lat='+location?.latitude+'&lon='+location?.longitude)  
       .subscribe(response => {  
-        this.services = response;  
+        this.services = response;
       }, error => {  
         console.error('Error loading services:', error);  
       });  

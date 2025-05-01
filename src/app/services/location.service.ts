@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';  
-import { BehaviorSubject } from 'rxjs';  
+import { BehaviorSubject, Observable } from 'rxjs';  
 
 @Injectable({  
   providedIn: 'root'  
@@ -10,5 +10,9 @@ export class LocationService {
 
   setLocation(latitude: number, longitude: number) {  
     this.locationSubject.next({ latitude, longitude });  
-  }  
+  }
+  
+  get location(): Observable<any> {
+    return this.locationSubject.asObservable();
+  }
 }

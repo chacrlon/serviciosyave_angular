@@ -4,10 +4,10 @@ export interface MoneyNow {
   descripcion: string;  
   category: { id: number; name: string } | null; // Ahora incluye 'name'  
   subcategory: { id: number; name: string } | null; // Ahora incluye 'name'  
-  ubicacion: string;  
+  address: string;  
   fechaHora: string;  
   presupuesto: number | null;  
   userId: number;  
   allowNegotiation?: boolean;
-  nearby?: string;
+  nearby?: number;
 }

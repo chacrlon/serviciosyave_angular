@@ -64,11 +64,13 @@
     <div (click)="showModal(service)">
       <h3>{{ service.nombre }}</h3>  
       <p>{{ service.descripcion }}</p>  
+        <p><strong>Ubicación:</strong> {{ service.address || "No disponible" }}</p>   
       <p><strong>Precio:</strong> ${{ service.precio }}</p>  
       <p><strong>Destacado:</strong> {{ service.destacado ? 'Sí' : 'No' }}</p>  
       <p><strong>Categoría:</strong> {{ service.categoria }}</p>  
       <p><strong>Subcategoría:</strong> {{ service.subcategoria }}</p>  
-      <p><strong>Cerca:</strong> {{ service.nearby || "S/I" }}</p>
+      <p><strong>Cerca: </strong>{{ service.nearby != null && service.nearby >= 0 ? service.nearby.toFixed(2) : "S/I" }} Km</p>
+
       <p>
         <span class="highlight">{{ service.remoto ? 'El servicio es online' : 'El servicio es presencial' }}</span>  
       </p>  
@@ -225,6 +227,6 @@
       <button (click)="confirmPayment()" class="button is-success">Confirmar</button>  
     </div>  
   </div>  
-  <button class="modal-close is-large" aria-label="close" (click)="closeReferenceModal()"></button>  
+  <button class="modal-close is-large" aria-label="close" (click)="closeReferenceModal()"></button>
   
 </div>

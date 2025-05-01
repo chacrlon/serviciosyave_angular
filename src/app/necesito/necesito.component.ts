@@ -85,7 +85,8 @@ export class NecesitoComponent implements OnInit {
         descripcion: this.descripcion,  
         category: this.selectedCategory ? { id: this.selectedCategory.id } : null, // Usar objeto de categoría  
         subcategory: this.selectedSubcategory ? { id: this.selectedSubcategory.id } : null, // Usar objeto de subcategoría  
-        ubicacion: this.ubicacion,  
+        latitude: this.ubicacion ? parseFloat(this.ubicacion.split(',')[0].split(':')[1].trim()) : 0,
+        longitude: this.ubicacion ? parseFloat(this.ubicacion.split(',')[1].split(':')[1].trim()) : 0,
         fechaHora: this.fechaHora,
         allowNegotiation: this.allowNegotiation,
         presupuesto: this.presupuesto,  

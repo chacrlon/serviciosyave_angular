@@ -7,7 +7,12 @@ import { FormsModule } from '@angular/forms';
 import { AcceptOfferRequest } from '../models/AcceptOfferRequest'; 
 import { MatDialog } from '@angular/material/dialog';
 import { NegotiationModalComponent } from '../negotiation-modal/negotiation-modal.component';
+import { LocationService } from '../services/location.service';
 
+interface GeolocationError {  
+  code: number;  
+  message: string;  
+}
 @Component({  
   selector: 'app-money-now',  
   standalone: true,  
@@ -19,6 +24,7 @@ export class MoneyNowComponent implements OnInit {
   necesidades: MoneyNow[] = [];  
   negotiating: boolean = false;
   userId: number; // Asegúrate de obtener este valor del servicio de autenticación
+  location: { latitude: number; longitude: number } | null = null;  
 
   negotiationDetails = {   
     amount: '',   
@@ -26,13 +32,25 @@ export class MoneyNowComponent implements OnInit {
     currentNeccesity: null as MoneyNow | null
   };
   constructor(private dialog: MatDialog, private moneyNowService: MoneyNowService,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private locationService: LocationService,
+
+  ) {
       this.userId = this.authService.userId;
     } 
 
-  ngOnInit(): void {  
-    this.cargarNecesidades();  
-    console.log('El usuario en sesion es : ', this.userId);
+  ngOnInit(): void {
+    this.obtenerUbicacion();
+    // this.locationService.location.subscribe({
+    //   next: (location) => {
+    //     console.log('Ubicación obtenida:', location);
+    //     if (location) {
+          // this.cargarNecesidades(location);  
+    //     }
+    //   },
+    //   error: (error) => { console.error('Error al obtener la ubicación:', error); }
+    // });
+
   }  
 
   aceptarOferta(necesidad: MoneyNow): void {
@@ -53,8 +71,8 @@ export class MoneyNowComponent implements OnInit {
     });
   } 
 
-  cargarNecesidades(): void {  
-    this.moneyNowService.obtenerNecesidades().subscribe({  
+  cargarNecesidades(location: { latitude: number; longitude: number } | null): void {  
+    this.moneyNowService.obtenerNecesidades(location).subscribe({  
       next: (data) => {  
         this.necesidades = data;  
       },  
@@ -130,5 +148,31 @@ validarNegociacion(): boolean { // Quitar parámetros
     }  
     
     return true;  
+  }
+
+  obtenerUbicacion(): void {      
+    if (!navigator.geolocation) {  
+      console.warn('La geolocalización no está soportada:');   
+      return;  
+    }  
+
+    navigator.geolocation.getCurrentPosition(  
+      (position: GeolocationPosition) => {  
+        const { latitude: lat, longitude: lon } = position.coords;  
+        console.log(`Ubicación obtenida - Latitud: ${lat}, Longitud: ${lon}`);  
+        this.locationService.setLocation(lat, lon);
+        this.location = { latitude: lat, longitude: lon };
+        this.cargarNecesidades(this.location);  
+ 
+      },  
+      (error: GeolocationError) => {  
+        console.error('Error al obtener la ubicación:', error);   
+      },  
+      {  
+        enableHighAccuracy: true,  
+        timeout: 5000,  
+        maximumAge: 0  
+      }  
+    );  
   }
 }
