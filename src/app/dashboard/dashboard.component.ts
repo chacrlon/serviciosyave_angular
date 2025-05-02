@@ -4,11 +4,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { BuyerComponent } from "../buyer/buyer.component";
 
 @Component({
   selector: 'dashboard',
   standalone: true,
-  imports:  [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, BuyerComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -26,6 +27,12 @@ export class DashboardComponent implements OnInit {
   profilePictureUrl: string | null = null;
   galleryImages: File[] = [];
   galleryImageUrls: string[] = [];
+
+
+  dataProfile: any;
+
+  public rating: number = 0;
+  public stars: number[] = [1, 2, 3, 4, 5];
 
   constructor(
     private fb: FormBuilder,
@@ -73,6 +80,8 @@ export class DashboardComponent implements OnInit {
         this.registrationForm.patchValue(data); // Rellenar el formulario con los datos del perfil
         this.profilePictureUrl = data.profilePicture ? `data:image/jpeg;base64,${data.profilePicture}` : null;
         this.galleryImageUrls = data.galleryImagesNames.map((img: string) => `data:image/jpeg;base64,${img}`);
+        this.rating = data.user.rating;
+        this.dataProfile = data;
       },
       error: (error) => {
         console.error('Error al cargar el perfil:', error);
@@ -170,4 +179,21 @@ export class DashboardComponent implements OnInit {
   private handleError(error: any): void {
     this.errorMessage = 'Error al guardar los cambios. Por favor, inténtalo de nuevo.';
   }
+
+  getStarClass(index: number): string {
+    const floorRating = Math.floor(this.rating);
+    const decimalPart = this.rating - floorRating;
+
+    if (index < floorRating) {
+      return 'bi-star-fill';
+    } else if (index === floorRating) {
+      if (decimalPart >= 0.75 && decimalPart > 5) {
+        return 'bi-star-fill';
+      } else if (decimalPart >= 0.25) {
+        return 'bi-star-half';
+      }
+    }
+    return 'bi-star';
+  }
+
 }

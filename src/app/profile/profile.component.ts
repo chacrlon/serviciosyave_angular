@@ -211,7 +211,7 @@ export class ProfileComponent implements OnInit {
     const sellerData = {
       ...this.registrationForm.value,
       modalities,
-      userId: this.userId,
+      user: {id: this.userId},
       createdAt: new Date().toISOString()
     };
 

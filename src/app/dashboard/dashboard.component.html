@@ -1,30 +1,84 @@
 <div class="profile-container" [formGroup]="registrationForm">
     <!-- Foto de perfil -->
     <div class="form-group">
-      <label>Foto de perfil:</label>
-      <img *ngIf="profilePictureUrl" [src]="profilePictureUrl" class="preview-image">
-      <input *ngIf="isOwner" type="file" (change)="onFileSelected($event, 'profilePicture')" accept="image/*">
+      <!-- <label>Foto de perfil:</label> -->
+       <div class="row">
+        <div class="col">
+          <div class="profile-picture-container">
+            <img *ngIf="profilePictureUrl" [src]="profilePictureUrl">
+            <input *ngIf="isOwner" type="file" (change)="onFileSelected($event, 'profilePicture')" accept="image/*"> 
+            <div class="row">
+              <div class="rating">
+                <span *ngFor="let star of stars; let i = index">
+                  <i class="bi" [ngClass]="getStarClass(i)"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col col-8">
+              <h1><b>{{registrationForm.get('fullName')?.value}}</b></h1>
+            </div>
+            <div class="col col-2">
+              <i class="bi bi-patch-check-fill text-primary fs-1"></i>
+            </div>
+          </div>
+          <div class="row">
+            <h2 class="label_username text-info"><b>{{dataProfile?.user?.username}}</b></h2>
+          </div>
+          <div class="row">
+            <textarea style="overflow: auto; resize: none;" name="description" id="profile_description" [value]="dataProfile?.skillsDescription" readonly></textarea>
+          </div>
+        </div>
+        </div>
     </div>
   
-    <!-- Nombre completo -->
-    <div class="form-group">
-      <label>Nombre completo:</label>
-      <input type="text" formControlName="fullName" [disabled]="!isOwner">
-    </div>
-  
-    <!-- Descripción del servicio -->
-    <div class="form-group">
-      <label>Descripción del servicio:</label>
-      <textarea formControlName="skillsDescription" [disabled]="!isOwner" rows="4"></textarea>
-    </div>
-  
-    <!-- Galería de imágenes -->
-    <div class="form-group">
-      <label>Galería de trabajos:</label>
-      <div class="gallery-preview">
-        <img *ngFor="let img of galleryImageUrls" [src]="img" class="gallery-image">
+
+    <div class="container ms-2 md-4 ml-4 mxl-4">
+      <div class="row">
+        <h2 class="fs-4"><b>Detalles del perfil:</b></h2>
+        <ul class="fs-6 ms-2 md-4 ml-4 mxl-4">
+            <li>Profesión/Ocupación: {{dataProfile?.profession}}</li>
+            <li>Zona de cobertura: {{dataProfile?.city}}</li>
+            <li>Años de experiencia: {{dataProfile?.yearsOfExperience}}</li>
+            <li>Título universitario: {{dataProfile?.universityTitleName ? "Sí" : "No"}}</li>
+            <li>Certificación profesional: {{dataProfile?.certificationsNames ? 'Sí' : 'No'}}</li>
+            <li>Garantía: {{dataProfile?.garanty ? 'Sí' : 'No'}}</li>
+        </ul>
       </div>
-      <input *ngIf="isOwner" type="file" (change)="onFileSelected($event, 'galleryImages')" accept="image/*" multiple>
+    </div>
+
+    <hr>
+  
+    <div class="container">
+      <div class="row text-center"> 
+        <h1 class="text-info fs-3 mb-5 mt-5"><b>Mis servicios activos</b></h1>
+
+        <section id="servicesAvailable">
+          <app-buyer [flagExternal]="true"></app-buyer>
+        </section>
+      </div>
+
+    </div>
+
+    <hr>
+
+    <div class="container">
+      <div class="row text-center"> 
+        <h1 class="text-info fs-3 mb-5 mt-5"><b>Galería de trabajos</b></h1>
+
+        <section id="servicesAvailable">
+          <div class="form-group">
+            <div class="gallery-preview">
+              <img *ngFor="let img of galleryImageUrls" [src]="img" class="gallery-image">
+            </div>
+            <input *ngIf="isOwner" type="file" (change)="onFileSelected($event, 'galleryImages')" accept="image/*" multiple>
+          </div>
+        </section>
+      </div>
+
     </div>
   
     <!-- Botón de guardar (solo para el dueño) -->

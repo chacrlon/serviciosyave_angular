@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-<div class="filter-container">  
+<div class="filter-container" *ngIf="!flagExternal">  
   <h2>Filtrar Servicios</h2>  
   
   <!-- Filtro por Precio -->  
@@ -37,7 +37,7 @@
 
 
 <!-- Botón para publicar un requerimiento -->   
-<div class="flex space-x-4">  
+<div class="flex space-x-4"  *ngIf="!flagExternal">  
   <button (click)="publicarNecesidad()" class="p-1 border rounded hover:bg-gray-25">  
     <img src="assets/cliente.jpg" alt="Buyer" class="small-image"/>  
   </button>   
@@ -45,7 +45,7 @@
 
 
 
-<div class="exchange-rate">  
+<div class="exchange-rate"  *ngIf="!flagExternal">  
   <h2>El valor del dólar BCV Hoy es:   
     <span *ngIf="exchangeRate !== null; else loading">  
       {{ exchangeRate | number:'1.2-2' }}   
@@ -58,7 +58,7 @@
 
 <!-- El resto de tu HTML para los modales y otros elementos -->
 
-<h2>Servicios Disponibles</h2>  
+<h2 *ngIf="!flagExternal">Servicios Disponibles</h2>  
 <div class="services-container">  
   <div class="card service-card" *ngFor="let service of services">  
     <div (click)="showModal(service)">

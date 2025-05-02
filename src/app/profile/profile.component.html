@@ -184,7 +184,7 @@
     <div class="form-group">
       <label>Imágenes de trabajos anteriores:</label>
       <i class="fas fa-info-circle" title="Suba imágenes de trabajos anteriores que desee mostrar en su galería."></i>
-      <input type="file" (change)="onFileSelected($event, 'galleryImages')" accept="image/*" multiple>
+      <input type="file" [multiple]="true" (change)="onFileSelected($event, 'galleryImages')" accept="image/*" multiple>
       <div class="gallery-preview">
         <img *ngFor="let img of galleryImageUrls" [src]="img" class="gallery-image">
       </div>

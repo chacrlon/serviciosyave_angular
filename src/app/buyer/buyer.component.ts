@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';  
+import { Component, Input, OnInit } from '@angular/core';  
 import { CommonModule } from '@angular/common';  
 import { HttpClient } from '@angular/common/http';  
 import { FormsModule } from '@angular/forms';   
@@ -20,6 +20,9 @@ interface GeolocationError {
   styleUrls: ['./buyer.component.css']  
 })  
 export class BuyerComponent implements OnInit{  
+  
+  @Input() flagExternal: boolean | undefined = false;
+
   userId: number | undefined;  
   services: any[] = [];   
   selectedService: any;   
