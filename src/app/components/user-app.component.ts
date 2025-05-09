@@ -320,7 +320,7 @@ export class UserAppComponent implements OnInit {
             const newNotification = unreadNotifications[0];  
             console.log('Mostrando notificación no leída:', newNotification);  
             this.notifications.push(newNotification);  
-            this.openNotificationModal(newNotification);  
+            newNotification.userId != this.userId ? this.openNotificationModal(newNotification) : null;  
           } else {  
             console.log('No hay notificaciones no leídas');  
           }  

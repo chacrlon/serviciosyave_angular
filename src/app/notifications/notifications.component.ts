@@ -9,6 +9,7 @@ import { NotificationModalComponent } from '../notification-modal/notification-m
 import { MatDialog } from '@angular/material/dialog';
 import { Notification } from '../models/Notification';  
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'notifications',
@@ -25,11 +26,14 @@ export class NotificationsComponent implements OnInit {
   public countNotification$: BehaviorSubject<number> = new BehaviorSubject(0);
   public countMessages$: BehaviorSubject<number> = new BehaviorSubject(0);
 
+  private userId: number = this.authService.userId;
+
   constructor(
     private authService: AuthService,
     private dialog: MatDialog,
     public notificationsseService: NotificationsseService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient,
   ) {}
 
   ngOnInit(): void {
@@ -134,4 +138,66 @@ export class NotificationsComponent implements OnInit {
       }  
     })
   }
+
+  contactUser(notification: any): void {  
+    const receiverId = notification.userId2;  
+    const roomId = [notification.userId, receiverId].sort().join('-'); // Crear roomId  
+
+    // Obtener el correo del usuario usando el receiverId  
+    this.http.get<{ email: string }>(`http://localhost:8080/api/users/${receiverId}/email`)  
+        .subscribe(  
+            userEmailResponse => {  
+                console.log("Correo del usuario:", userEmailResponse.email);  
+
+                // Crear el enlace para unirse al chat  
+                const chatLink = `http://localhost:4200/chat/${notification.userId}/${receiverId}`;  
+
+                const emailRequest = {  
+                    toEmail: userEmailResponse.email,  
+                    subject: 'Invitación a chat',  
+                    text: `Hola, tienes un nuevo mensaje de ${notification.userId}. Haz clic en el siguiente enlace para unirte al chat: ${chatLink}`,  
+                    userType: notification.userType,
+                    vendorServiceId: notification.vendorServiceId, // Incluir userType  
+                    ineedId: notification.ineedId
+                };
+
+                // Validar antes de enviar  
+                if (!emailRequest.toEmail || !emailRequest.subject || !emailRequest.text || !emailRequest.userType || (!emailRequest.vendorServiceId && !emailRequest.ineedId)) {  
+                    console.error('Los campos toEmail, subject, text y userType son requeridos.');  
+                    return;  
+                }  
+
+                // Enviar el correo  
+                this.http.post('http://localhost:8080/api/email/send', emailRequest)  
+                    .subscribe(response => {  
+                        console.log('Correo enviado:', response);  
+                        // Navegar al chat y pasar userType como parámetro de consulta  
+                        this.router.navigate(['chat', notification.userId, receiverId, notification.vendorServiceId || 0, notification.ineedId || 0], 
+                          { queryParams: 
+                            { userType: notification.userId == this.userId ? "Buyer" : "Seller",
+                              vendorServiceId: notification.vendorServiceId,
+                              notificationId: notification.id,
+                              notificationId2: notification.id2,
+                              userId2: notification.userId2,
+                              ineedId: notification.ineedId
+                            } });  
+                        // this.dialogRef.close();  
+                    }, error => {  
+                        console.error('Error al enviar el correo:', error);  
+                    });  
+            },   
+            error => {  
+                console.error('Error al obtener el correo del usuario:', error);  
+            }  
+        );
+
+        this.notificationsseService.markAsRead(notification.id!).subscribe({
+          next: (response) => {  
+            console.log('Notificación marcada como leída:', response);  
+          },
+          error: (error) => {
+            console.error('Error al marcar la notificación como leída:', error);  
+          }
+        });
+}
 }

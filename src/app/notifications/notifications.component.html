@@ -63,7 +63,7 @@
           <ng-container *ngIf="(messages$ | async) as messages">
             <ng-container *ngIf="messages.length > 0; else noMessagesContent">
               <button mat-menu-item *ngFor="let message of messages">
-                <div class="row" (click)="action(message)">
+                <div class="row" (click)="contactUser(message)">
                   <div class="row container_title">Mensaje</div>
                   <div class="col col-10 container_text">{{message.message}}</div>
                   <div class="col container_date">

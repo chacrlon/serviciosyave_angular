@@ -5,4 +5,5 @@ export interface ChatMessage {
     user: string;
     vendorServiceId?:number | null;
     ineedId?: number | null;
+    userType?: string | null;
 }

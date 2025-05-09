@@ -307,7 +307,8 @@ export class ChatComponent implements OnInit {
             receiver: this.receiverId,  
             user: this.userId,
             vendorServiceId: this.vendorServiceId,
-            ineedId: this.ineedId
+            ineedId: this.ineedId,
+            userType: this.userType
         };
 
         const roomId = [this.userId, this.receiverId].sort().join('-');  
