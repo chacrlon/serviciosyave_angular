@@ -1,11 +1,19 @@
-<div class="flex flex-col items-center">  
-  <h2 class="text-lg font-bold">Select Your Role</h2>  
-  <div class="flex space-x-4">  
-    <button (click)="selectRole('buyer')" class="p-1 border rounded hover:bg-gray-25">  
-      <img src="assets/cliente.jpg" alt="Buyer" class="small-image"/>  
-    </button>  
-    <button (click)="selectRole('seller')" class="p-1 border rounded hover:bg-gray-25">  
-      <img src="assets/proveedor.jpg" alt="Seller" class="small-image"/>  
-    </button>  
-  </div>  
+<div class="role-container">
+  <h2 class="role-title">Esoja el rol que usará:</h2>
+  
+  <div class="button-wrapper">
+    <button (click)="selectRole('buyer')" class="role-button">
+      <div class="image-container">
+        <img src="assets/cliente.jpg" alt="Comprador" class="role-img"/>
+      </div>
+      <span class="button-text">Requiero contratar un servicio</span>
+    </button>
+
+    <button (click)="selectRole('seller')" class="role-button">
+      <div class="image-container">
+        <img src="assets/proveedor.jpg" alt="Proveedor" class="role-img"/>
+      </div>
+      <span class="button-text">Soy proveedor de servicio</span>
+    </button>
+  </div>
 </div>

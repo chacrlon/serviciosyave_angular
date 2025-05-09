@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CategoryService } from './category.service';  
 import { CommonModule } from '@angular/common';  
 import { FormsModule } from '@angular/forms';  
-import { Category } from '../models/Category';  
 import { Subcategory } from '../models/Subcategory';  
 import { Subscription } from 'rxjs';  
+import { Category, FormField } from '../models/Category'; 
 
 @Component({  
   selector: 'app-category-subcategory',  
@@ -49,8 +49,32 @@ export class CategorySubcategoryComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();  
   }  
 
+
+
+
+  agregarCampoNuevo() {
+    if (!this.newCategory.formulario) {
+      this.newCategory.formulario = { campos: [] };
+    }
+    this.newCategory.formulario.campos.push({
+      tipo: 'text',
+      clave: '',
+      etiqueta: '',
+      requerido: false
+    });
+  }
+  
+  eliminarCampoNuevo(index: number) {
+    this.newCategory.formulario?.campos?.splice(index, 1);
+  }
+
   addCategory(): void {  
-    this.categoryService.createCategory(this.newCategory).subscribe(() => {  
+    const categoriaParaEnviar = {
+      ...this.newCategory,
+      formulario: this.newCategory.formulario ? JSON.stringify(this.newCategory.formulario) : null
+    };
+    
+    this.categoryService.createCategory(categoriaParaEnviar).subscribe(() => {  
       this.newCategory = new Category();  
     }, error => {  
       console.error('Error creando categoría', error);  
@@ -58,18 +82,50 @@ export class CategorySubcategoryComponent implements OnInit, OnDestroy {
   }  
 
   editCategory(category: Category): void {  
-    this.updateCategoryData = { ...category };  
-  }  
+    this.updateCategoryData = {
+        ...category,
+        formulario: category.formulario ? {
+            campos: category.formulario.campos?.map((campo: FormField) => ({...campo}))
+        } : null
+    };
+}
 
-  updateCategory(): void {  
-    if (this.updateCategoryData) {  
-      this.categoryService.updateCategory(this.updateCategoryData.id!, this.updateCategoryData).subscribe(() => {  
-        this.updateCategoryData = null;  
+agregarCampo() {
+  if (this.updateCategoryData) {
+    if (!this.updateCategoryData.formulario) {
+      this.updateCategoryData.formulario = { campos: [] };
+    }
+    this.updateCategoryData.formulario.campos.push({
+      tipo: 'text',
+      clave: '',
+      etiqueta: '',
+      requerido: false
+    });
+  }
+}
+
+eliminarCampo(index: number) {
+  if (this.updateCategoryData?.formulario?.campos) {
+    this.updateCategoryData.formulario.campos.splice(index, 1);
+  }
+}
+
+
+
+updateCategory(): void {  
+  if (this.updateCategoryData) {  
+      const categoriaParaEnviar = {
+          ...this.updateCategoryData,
+          formulario: this.updateCategoryData.formulario ? JSON.stringify(this.updateCategoryData.formulario) : null
+      };
+      
+      this.categoryService.updateCategory(categoriaParaEnviar.id!, categoriaParaEnviar).subscribe(() => {  
+          this.updateCategoryData = null;  
       }, error => {  
-        console.error('Error actualizando categoría', error);  
+          console.error('Error actualizando categoría', error);  
       });  
-    }  
   }  
+} 
 
   deleteCategory(id: number): void {  
     this.categoryService.deleteCategory(id).subscribe(() => {}, error => {  

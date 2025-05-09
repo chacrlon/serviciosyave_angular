@@ -23,6 +23,7 @@ export class RegisterComponent {
   }  
 
   onSubmit(form: NgForm): void {  
+  console.log('Contraseña enviada:', this.user.password);
     this.registerService.register(this.user).subscribe({  
       next: (response) => {  
         Swal.fire('Éxito', 'Usuario registrado correctamente. Verifica tu correo para completar el registro.', 'success');  

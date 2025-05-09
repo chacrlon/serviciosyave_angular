@@ -11,6 +11,37 @@
     <textarea id="descripcion" [(ngModel)]="descripcion" name="descripcion" required placeholder="Describe tu necesidad aquí..."></textarea>  
   </div>  
 
+
+<!-- Campos de formulario dinámicos -->
+<div *ngIf="dynamicFormFields.length > 0" class="dynamic-form-section">
+  <h3>Información Específica</h3>
+  <div *ngFor="let field of dynamicFormFields" class="form-field">
+    <!-- Usar field.clave como identificador único -->
+    <label [for]="field.clave">{{field.etiqueta}}</label>
+
+    <!-- Campo de texto/número -->
+    <input *ngIf="field.tipo === 'text' || field.tipo === 'number'"
+           [type]="field.tipo"
+           [id]="field.clave"
+           [name]="field.clave"
+           [(ngModel)]="formData[field.clave]" 
+           [required]="field.requerido"
+           [placeholder]="field.etiqueta">
+
+    <!-- Checkbox -->
+    <div *ngIf="field.tipo === 'checkbox'" class="checkbox-container">
+      <input type="checkbox"
+             [id]="field.clave"
+             [name]="field.clave"
+             [(ngModel)]="formData[field.clave]" 
+             [required]="field.requerido">
+      <label [for]="field.clave">{{field.etiqueta}}</label>
+    </div>
+  </div>
+</div>
+
+
+
   <div>  
     <label for="categoria">Categoría de la necesidad:</label>  
     <select id="categoria" [(ngModel)]="selectedCategory" name="categoria" (change)="onCategoryChange()" required>  
