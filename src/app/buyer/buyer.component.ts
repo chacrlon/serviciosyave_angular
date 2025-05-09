@@ -270,4 +270,8 @@ export class BuyerComponent implements OnInit{
       console.log('El diálogo se cerró');
     });
   }
+
+  getUserRedirectProfessional(userId: string): void {
+    this.router.navigate(['/dashboard', userId])    
+  }
 }

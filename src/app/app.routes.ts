@@ -49,7 +49,7 @@ export const routes: Routes = [
         component: MoneyNowComponent 
     },
     { 
-        path: 'dashboard', 
+        path: 'dashboard/:id', 
         component: DashboardComponent
     },
     { 

@@ -44,7 +44,7 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userId = this.authService.userId; // ID del usuario autenticado
+    this.userId = this.getProfileUserIdFromRoute() || this.authService.userId; // ID del usuario autenticado
     // this.profileUserId = this.getProfileUserIdFromRoute(); // Obtener el ID del perfil desde la ruta
 
     if (!this.userId) {

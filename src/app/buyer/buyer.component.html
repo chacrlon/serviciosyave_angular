@@ -63,6 +63,7 @@
   <div class="card service-card" *ngFor="let service of services">  
     <div (click)="showModal(service)">
       <h3>{{ service.nombre }}</h3>  
+      <h4><strong>Profesional: </strong><a class="pointer" (click)="getUserRedirectProfessional(service?.userId)">{{ service.nameProfessional }}</a></h4>  
       <p>{{ service.descripcion }}</p>  
         <p><strong>Ubicación:</strong> {{ service.address || "No disponible" }}</p>   
       <p><strong>Precio:</strong> ${{ service.precio }}</p>  

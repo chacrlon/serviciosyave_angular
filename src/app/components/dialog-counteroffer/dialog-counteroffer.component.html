@@ -8,6 +8,7 @@
 
     <div class="card-body">
         <div class="row">
+            <p *ngIf="data?.nameProfessional">Profesional: {{ data?.nameProfessional }}</p>
             <p>Oferta recibida $: {{ data?.amount }}</p>
             <p>Justificación: {{ data?.justification }}</p>
             <p>Oferta {{ data?.currentOffer}}/3</p>
@@ -78,6 +79,7 @@
 
     <div class="card-body">
         <div class="row">
+            <p *ngIf="data?.nameProfessional">Profesional: {{ data?.nameProfessional }}</p>
             <p>Oferta recibida $: {{ data?.amount }}</p>
             <p>Justificación: {{ data?.justification }}</p>
             <p>Oferta {{ data?.currentOffer}}/3</p>
