@@ -80,6 +80,47 @@ input[type="file"] {
     padding: 5px;  
 }  
 
+
+
+
+.dynamic-form-section {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .form-field {
+    margin-bottom: 15px;
+  }
+  
+  .form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-field input[type="text"],
+  .form-field input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .checkbox-container input {
+    margin-right: 10px;
+  }
+
+
+
+  
+
 /* Responsive adjustments */  
 @media (max-width: 600px) {  
     form {  

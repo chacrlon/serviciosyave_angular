@@ -140,3 +140,32 @@ body {
     padding: 10px;  
     text-align: right;  
   }
+
+
+  .formulario-container {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.dynamic-form-section {
+    margin: 15px 0;
+}
+
+.campo-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+.campo-row input[type="text"], 
+.campo-row select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}

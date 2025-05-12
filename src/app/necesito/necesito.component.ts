@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';  
 import { NecesitoService } from './necesito.service';  
 import { Ineed } from '../models/Ineed';  
-import { Category } from '../models/Category';  
+import { Category, FormField } from '../models/Category';
 import { Subcategory } from '../models/Subcategory';  
 import { AuthService } from '../services/auth.service';
 
@@ -29,6 +29,8 @@ export class NecesitoComponent implements OnInit {
   presupuesto: number | null = null;  
   successMessage: string = '';  
   errorMessage: string = '';  
+  dynamicFormFields: FormField[] = [];
+  formData: { [key: string]: any } = {};
 
   constructor(private route: ActivatedRoute, private router: Router, private necesitoService: NecesitoService,
     private authService: AuthService
@@ -53,14 +55,31 @@ export class NecesitoComponent implements OnInit {
     );  
   }  
 
-  onCategoryChange() {  
-    if (this.selectedCategory) {  
-      this.subcategories = this.selectedCategory.subcategories; // Asumiendo que las subcategorías están cargadas en la categoría  
-    } else {  
+  onCategoryChange() {
+    if (this.selectedCategory) {
+      console.log('Categoría seleccionada:', this.selectedCategory); // Log para depuración
+      console.log('Formulario de la categoría:', this.selectedCategory?.formulario);
+      this.subcategories = this.selectedCategory.subcategories;
+      try {
+        const parsedForm = JSON.parse(this.selectedCategory.formulario);
+        this.dynamicFormFields = parsedForm.campos;
+        this.formData = {};
+        this.dynamicFormFields.forEach(field => {
+          this.formData[field.clave] = field.requerido ? "" : null;
+        });
+      } catch (e) {
+        console.error('Error parseando formulario:', e);
+        this.dynamicFormFields = [];
+        this.formData = {};
+      }
+    } else {
       this.subcategories = [];  
-      this.selectedSubcategory = null; // Resetea la subcategoría si no hay categoría seleccionada  
-    }  
-  }  
+      this.selectedSubcategory = null;
+      this.dynamicFormFields = [];
+      this.formData = {};
+    }
+  }
+
 
   onCategoryChangeId() {  
     if (this.selectedCategory) {  
@@ -82,6 +101,7 @@ export class NecesitoComponent implements OnInit {
   enviarNecesidad() {  
     const necesidad: Ineed = {  
         titulo: this.titulo,  
+        formularioData: JSON.stringify(this.formData), // Convertir a JSON string
         descripcion: this.descripcion,  
         category: this.selectedCategory ? { id: this.selectedCategory.id } : null, // Usar objeto de categoría  
         subcategory: this.selectedSubcategory ? { id: this.selectedSubcategory.id } : null, // Usar objeto de subcategoría  
@@ -92,6 +112,12 @@ export class NecesitoComponent implements OnInit {
         presupuesto: this.presupuesto,  
         userId: this.userId!  
     };  
+
+     // ✅ Aquí capturas lo que vas a enviar
+  console.log('Datos que se enviarán al backend:', necesidad);
+
+  // Opcional: Para ver el JSON con formato legible
+  console.log('Datos en formato JSON:', JSON.stringify(necesidad, null, 2));
 
     this.necesitoService.publicarNecesidad(necesidad).subscribe({  
         next: () => {  

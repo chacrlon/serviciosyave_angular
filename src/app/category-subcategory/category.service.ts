@@ -33,22 +33,36 @@ export class CategoryService {
   // Cargar categorías desde la API  
   private loadCategories(): void {  
     this.http.get<Category[]>(`${this.apiUrl}/categories`).subscribe(data => {  
-      this.categoriesSubject.next(data); // Actualiza el BehaviorSubject  
-    }, error => {  
+      // Parsear el formulario de string a JSON
+      const parsedCategories = data.map(category => ({
+        ...category,
+        formulario: category.formulario ? JSON.parse(category.formulario) : null
+      }));
+      
+      this.categoriesSubject.next(parsedCategories); // Envía los datos parseados
+    }, error => {
       console.error('Error obteniendo categorías', error);  
-      this.categoriesSubject.next([]); // En caso de error, emitimos un array vacío  
+      this.categoriesSubject.next([]);
     });  
-  }  
+  } 
 
   createCategory(category: Category): Observable<Category> {  
-    return this.http.post<Category>(`${this.apiUrl}/categories`, category, this.httpOptions)  
-      .pipe(tap(() => this.loadCategories())); // Actualiza la lista después de la creación  
+    return this.http.post<Category>(`${this.apiUrl}/categories`, category, this.httpOptions).pipe(
+      tap({
+        next: () => this.loadCategories(),
+        error: (error) => console.error('Error creando categoría', error)
+      })
+    );
   }  
-
+  
   updateCategory(id: number, category: Category): Observable<Category> {  
-    return this.http.put<Category>(`${this.apiUrl}/categories/${id}`, category, this.httpOptions)  
-      .pipe(tap(() => this.loadCategories())); // Actualiza la lista después de la actualización  
-  }  
+    return this.http.put<Category>(`${this.apiUrl}/categories/${id}`, category, this.httpOptions).pipe(
+      tap({
+        next: () => this.loadCategories(),
+        error: (error) => console.error('Error actualizando categoría', error)
+      })
+    );
+  } 
 
   deleteCategory(id: number): Observable<void> {  
     return this.http.delete<void>(`${this.apiUrl}/categories/${id}`, this.httpOptions)  

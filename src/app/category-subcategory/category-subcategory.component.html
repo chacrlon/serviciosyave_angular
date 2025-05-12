@@ -8,6 +8,17 @@
         <button (click)="editCategory(category)">Editar</button>  
         <button (click)="deleteCategory(category.id)">Eliminar</button>  
 
+            <!-- Nuevo: Mostrar estructura del formulario -->
+    <div *ngIf="category.formulario?.campos" class="formulario-container">
+      <h4>Campos del formulario:</h4>
+      <ul>
+          <li *ngFor="let campo of category.formulario.campos">
+              <strong>{{ campo.etiqueta }}</strong> ({{ campo.tipo }})
+              - Requerido: {{ campo.requerido ? 'Sí' : 'No' }}
+          </li>
+      </ul>
+  </div>
+
          
         <ul *ngIf="category.subcategories && category.subcategories.length > 0">  
           <li *ngFor="let subcategory of category.subcategories">  
@@ -19,13 +30,59 @@
       </li>  
     </ul>  
 
-    <input [(ngModel)]="newCategory.name" placeholder="Nombre de nueva categoría" />  
+    <input [(ngModel)]="newCategory.name" placeholder="Nombre de nueva categoría" />
+    <div>
+      <button (click)="agregarCampoNuevo()">Agregar Campo al Formulario</button>
+      <div *ngIf="newCategory.formulario?.campos">
+        <div *ngFor="let campo of newCategory.formulario.campos; index as i">
+          <select [(ngModel)]="campo.tipo">
+            <option value="text">Texto</option>
+            <option value="number">Número</option>
+            <option value="checkbox">Checkbox</option>
+          </select>
+          <input [(ngModel)]="campo.clave" placeholder="Clave (ID)">
+          <input [(ngModel)]="campo.etiqueta" placeholder="Etiqueta">
+          <label>
+            <input type="checkbox" [(ngModel)]="campo.requerido"> Requerido
+          </label>
+          <button (click)="eliminarCampoNuevo(i)">Eliminar</button>
+        </div>
+      </div>
+    </div>  
     <button (click)="addCategory()">Agregar Categoría</button>  
   </div>  
 
+
+
+
   <div *ngIf="updateCategoryData" class="service-form">  
     <h3>Editar Categoría</h3>  
-    <input [(ngModel)]="updateCategoryData.name" placeholder="Editar nombre de categoría" />  
+    <input [(ngModel)]="updateCategoryData.name" placeholder="Editar nombre de categoría" /> 
+    
+    <!-- Sección del formulario dinámico -->
+    <div class="dynamic-form-section">
+      <h4>Campos del formulario:</h4>
+      <button type="button" (click)="agregarCampo()">➕ Agregar Campo</button>
+      
+      <div *ngFor="let campo of updateCategoryData.formulario?.campos; index as i" class="campo-row">
+          <select [(ngModel)]="campo.tipo" name="tipo-{{i}}">
+              <option value="text">Texto</option>
+              <option value="number">Número</option>
+              <option value="checkbox">Checkbox</option>
+          </select>
+          
+          <input [(ngModel)]="campo.clave" placeholder="Clave (ID)" name="clave-{{i}}">
+          
+          <input [(ngModel)]="campo.etiqueta" placeholder="Etiqueta" name="etiqueta-{{i}}">
+          
+          <label>
+              <input type="checkbox" [(ngModel)]="campo.requerido"> Requerido
+          </label>
+          
+          <button type="button" (click)="eliminarCampo(i)">🗑️</button>
+      </div>
+  </div>
+  
     <button (click)="updateCategory()">Actualizar Categoría</button>  
   </div>  
 
@@ -51,59 +108,3 @@
     {{ errorMessage }}  
   </div>  
 </div>
-
-<!-- 
-<div class="container">  
-  <h2>Categorías</h2>  
-  <div class="service-form">  
-    <ul>  
-      <li *ngFor="let category of categories">  
-        {{ category.name }}  
-        <button (click)="editCategory(category)">Editar</button>  
-        <button (click)="deleteCategory(category.id)">Eliminar</button>  
-      </li>  
-    </ul>  
-
-    <input [(ngModel)]="newCategory.name" placeholder="Nombre de nueva categoría" />  
-    <button (click)="addCategory()">Agregar Categoría</button>  
-  </div>  
-
-  <div *ngIf="updateCategoryData" class="service-form">  
-    <h3>Editar Categoría</h3>  
-    <input [(ngModel)]="updateCategoryData.name" placeholder="Editar nombre de categoría" />  
-    <button (click)="updateCategory()">Actualizar Categoría</button>  
-  </div>  
-
-  <h2>Subcategorías</h2>  
-  <div class="service-form">  
-    <label for="categorySelect">Selecciona Categoría:</label>  
-    <select id="categorySelect" [(ngModel)]="selectedCategoryId">  
-      <option value="" disabled>Selecciona una Categoría</option>  
-      <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>  
-    </select>  
-
-    <input [(ngModel)]="newSubcategory.name" placeholder="Nombre de nueva subcategoría" />  
-    <button (click)="addSubcategory()">Agregar Subcategoría</button>  
-  </div>  
-
-  <div *ngIf="updateSubcategoryData" class="service-form">  
-    <h3>Editar Subcategoría</h3>  
-    <input [(ngModel)]="updateSubcategoryData.name" placeholder="Editar nombre de subcategoría" />  
-    <button (click)="updateSubcategory()">Actualizar Subcategoría</button>  
-  </div>  
-
-  <div *ngIf="errorMessage" class="notification">  
-      {{ errorMessage }}  
-  </div>  
-
-  <h3>Todas las Subcategorías</h3>  
-  <ul>  
-    <li *ngFor="let subcategory of subcategories">  
-      {{ subcategory.name }}  
-      <button (click)="editSubcategory(subcategory)">Editar</button>  
-      <button (click)="deleteSubcategory(subcategory.id)">Eliminar</button>  
-    </li>  
-  </ul>  
-</div>
-
--->  
