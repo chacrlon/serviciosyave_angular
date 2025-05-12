@@ -22,6 +22,7 @@ interface GeolocationError {
 export class BuyerComponent implements OnInit{  
   
   @Input() flagExternal: boolean | undefined = false;
+  @Input() id: number | null = null;
 
   userId: number | undefined;  
   services: any[] = [];   
@@ -99,7 +100,12 @@ export class BuyerComponent implements OnInit{
         console.log(`Ubicación obtenida - Latitud: ${lat}, Longitud: ${lon}`);  
         this.locationService.setLocation(lat, lon);  
         this.location = { latitude: lat, longitude: lon };
-        this.loadServices(this.location);
+        if(this.flagExternal) {
+          this.loadServicesByProfessional();
+        } else {
+          this.loadServices(this.location);
+        }
+
         this.loadExchangeRate();
       },  
       (error: GeolocationError) => {  
@@ -134,6 +140,15 @@ export class BuyerComponent implements OnInit{
         console.error('Error loading services:', error);  
       });  
   }  
+
+  loadServicesByProfessional() {      
+    this.http.get<any[]>('http://localhost:8080/api/service/available/'+`${this.id}`)
+      .subscribe(response => {  
+        this.services = response;
+      }, error => {  
+        console.error('Error loading services:', error);  
+      });  
+  }
 
   applyFilters() {  
     // Enviamos el objeto filter como cuerpo de la solicitud  
