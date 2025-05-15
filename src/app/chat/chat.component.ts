@@ -308,7 +308,7 @@ export class ChatComponent implements OnInit {
             user: this.userId,
             vendorServiceId: this.vendorServiceId,
             ineedId: this.ineedId,
-            userType: this.userType
+            userType: this.userType == "Buyer" ? "Seller" : "Buyer"
         };
 
         const roomId = [this.userId, this.receiverId].sort().join('-');  

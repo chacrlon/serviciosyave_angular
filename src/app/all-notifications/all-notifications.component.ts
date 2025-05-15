@@ -65,6 +65,7 @@ export class AllNotificationsComponent implements OnInit {
     if(message.includes("disputa")) { return "information"; }
     if(message.includes("Has comprado el servicio")) { return "chat"; }
     if(message.includes("ha comprado tu servicio")) { return "chat"; }
+    if(message.includes("Tienes un nuevo mensaje")) { return "chat"; }
     return "initial";
   }
 
@@ -83,10 +84,32 @@ export class AllNotificationsComponent implements OnInit {
     return message.replace(expresionRegular, "");
   }
 
-  public getDate(fecha: Date = new Date()): string {
-    const dia = fecha.getDate().toString().padStart(2, '0');
-    const mes = fecha.toLocaleString('es-ES', { month: 'short' }).toLowerCase();
-  
-    return `${dia}${mes}`;
+public getDate(fecha: Date = new Date()): string {
+  const now = new Date();
+  const past = new Date(fecha);
+  const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000);
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  const diffInDays = Math.floor(diffInHours / 24);
+  const diffInMonths = Math.floor(diffInDays / 30.44); // Aproximación
+  const diffInYears = now.getFullYear() - past.getFullYear();
+
+  if (diffInMinutes < 60 && diffInMinutes >= 1) {
+    return `${diffInMinutes}min`;
+  } else if (diffInHours < 24 && diffInHours >= 1) {
+    return `${diffInHours}h`;
+  } else if (diffInDays < 30 && diffInDays >= 1) {
+    return `${diffInDays}d`;
+  } else if (diffInMonths < 12 && diffInMonths >= 1) {
+    return `${diffInMonths}mes`;
+  } else if (diffInYears >= 1) {
+    const day = past.getDate().toString().padStart(2, '0');
+    const month = (past.getMonth() + 1).toString().padStart(2, '0');
+    const year = past.getFullYear();
+    return `${day}/${month}/${year}`;
+  } else {
+    // Si es menos de un minuto, podrías retornar algo como "ahora" o "hace un momento"
+    return 'ahora';
+  }
   }
 }

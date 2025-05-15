@@ -42,30 +42,32 @@ export class NotificationsComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.notifications$.subscribe(
-      (event: Array<any>) => {
-      let count = event?.filter((filter: any) => filter.read == false && !filter.message.includes("Tienes un nuevo mensaje")).length;
+      (event: Array<any>) => {      
+        
+      let count = event?.filter((filter: any) => filter.read == false && filter.userId == this.userId && !filter.message.includes("Tienes un nuevo mensaje")).length;
       this.countNotification$.next(count);
 
-      let countMessage = event?.filter((filter: any) => filter.read == false && filter.message.includes("Tienes un nuevo mensaje")).length;
+      let countMessage = event?.filter((filter: any) => filter.read == false && filter.userId == this.userId && filter.message.includes("Tienes un nuevo mensaje")).length;
       this.countMessages$.next(countMessage);
       });
 
       this.messages$.subscribe(
         (event: Array<any>) => {
-        let countMessage = event?.filter((filter: any) => filter.read == false && filter.message.includes("Tienes un nuevo mensaje")).length;
+        let countMessage = event?.filter((filter: any) => filter.read == false && filter.userId == this.userId && filter.message.includes("Tienes un nuevo mensaje")).length;
         this.countMessages$.next(countMessage);
         });
     
       this.notificationsseService.notifications$.subscribe(
-        (event) => {          
+        (event) => {
+          this.getNotifications();  
         let filteredNotifications = event.read == false && !event.message.includes("Tienes un nuevo mensaje") ? event : null;
         
         let latestNotification: Array<any> = this.notifications$.getValue();
         filteredNotifications ? this.notifications$.next([filteredNotifications, ...latestNotification]) : null;
         
-        let filteredMessages = event.read == false && event.message.includes("Tienes un nuevo mensaje") ? event : null;
+        let filteredMessages = event.read == false && event.userId == this.userId && event.message.includes("Tienes un nuevo mensaje") ? event : null;
 
-        let latestMessages: Array<any> = this.messages$.getValue();
+        let latestMessages: Array<any> = (this.messages$.getValue() as Array<any>).filter(f => f.id != event.id);
         filteredMessages ? this.messages$.next([filteredMessages, ...latestMessages]) : null;
     });
   }
@@ -89,13 +91,33 @@ export class NotificationsComponent implements OnInit {
     })
   }
 
-  public getDate(fecha: Date = new Date()): string {
-    const date = new Date(fecha);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
+public getDate(fecha: Date = new Date()): string {
+  const now = new Date();
+  const past = new Date(fecha);
+  const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000);
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  const diffInDays = Math.floor(diffInHours / 24);
+  const diffInMonths = Math.floor(diffInDays / 30.44); // Aproximación
+  const diffInYears = now.getFullYear() - past.getFullYear();
+
+  if (diffInMinutes < 60 && diffInMinutes >= 1) {
+    return `${diffInMinutes}min`;
+  } else if (diffInHours < 24 && diffInHours >= 1) {
+    return `${diffInHours}h`;
+  } else if (diffInDays < 30 && diffInDays >= 1) {
+    return `${diffInDays}d`;
+  } else if (diffInMonths < 12 && diffInMonths >= 1) {
+    return `${diffInMonths}mes`;
+  } else if (diffInYears >= 1) {
+    const day = past.getDate().toString().padStart(2, '0');
+    const month = (past.getMonth() + 1).toString().padStart(2, '0');
+    const year = past.getFullYear();
     return `${day}/${month}/${year}`;
+  } else {
+    return 'ahora';
   }
+}
 
   public silenceNotification(): void {
     this.countNotification$.next(0);
@@ -174,7 +196,7 @@ export class NotificationsComponent implements OnInit {
                         // Navegar al chat y pasar userType como parámetro de consulta  
                         this.router.navigate(['chat', notification.userId, receiverId, notification.vendorServiceId || 0, notification.ineedId || 0], 
                           { queryParams: 
-                            { userType: notification.userId == this.userId ? "Buyer" : "Seller",
+                            { userType: notification.userType,
                               vendorServiceId: notification.vendorServiceId,
                               notificationId: notification.id,
                               notificationId2: notification.id2,
