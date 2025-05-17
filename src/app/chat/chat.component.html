@@ -51,7 +51,8 @@
   Disputa  
   </div>
   
-  <div *ngIf="userType === 'Buyer'" class="user-type-button" [class.disabled]="negotiationEnabled" (click)="confirmAction('enableNegotiation')">  
+  <div *ngIf="userType === 'Buyer'" class="user-type-button" [class.disabled]="negotiationEnabled" 
+  (click)="confirmAction('enableNegotiation')">  
     Habilitar negociación  
   </div>  
   

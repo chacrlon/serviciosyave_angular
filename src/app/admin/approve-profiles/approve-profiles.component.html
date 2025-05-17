@@ -1,0 +1,56 @@
+<div class="container">
+  <h1>Perfiles de Vendedores</h1>
+  
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+    <p>Cargando datos...</p>
+  </div>
+
+  <table *ngIf="!isLoading" mat-table [dataSource]="sellers" class="mat-elevation-z8">
+    <!-- Columnas -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> ID </th>
+      <td mat-cell *matCellDef="let seller"> {{ seller.id }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="fullName">
+      <th mat-header-cell *matHeaderCellDef> Nombre </th>
+      <td mat-cell *matCellDef="let seller"> {{ seller.fullName }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="profession">
+      <th mat-header-cell *matHeaderCellDef> Profesión </th>
+      <td mat-cell *matCellDef="let seller"> {{ seller.profession }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="city">
+      <th mat-header-cell *matHeaderCellDef> Ciudad </th>
+      <td mat-cell *matCellDef="let seller"> {{ seller.city }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="experience">
+      <th mat-header-cell *matHeaderCellDef> Experiencia (años) </th>
+      <td mat-cell *matCellDef="let seller"> {{ seller.yearsOfExperience }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef> Fecha de Registro </th>
+      <td mat-cell *matCellDef="let seller"> {{ seller.createdAt | date }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Acciones </th>
+      <td mat-cell *matCellDef="let seller">
+        <button mat-raised-button color="primary" (click)="onApprove(seller.id)">
+          <mat-icon>check</mat-icon> Aprobar
+        </button>
+        <button mat-raised-button color="warn" (click)="onReject(seller.id)">
+          <mat-icon>close</mat-icon> Rechazar
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

@@ -17,7 +17,7 @@ import { NegotiationService } from '../../negotiation-modal/service/negotiation.
 export class NavbarComponent implements OnInit {  // Implementa OnInit  
 
   isAuthenticated: boolean = false; // Agrega esta propiedad para almacenar el estado de autenticación  
-
+   activeSubMenu: string | null = null;
   constructor(private authService: AuthService,  
     private router: Router,
     private notificationsseService: NotificationsseService,

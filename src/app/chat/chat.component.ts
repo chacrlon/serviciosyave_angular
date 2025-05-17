@@ -56,6 +56,7 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {  
     // Obtener el token de la URL al cargar el componente  
     this.route.queryParams.subscribe(params => { 
+      console.log('Servicio aprobado por el cliente:', this.serviceApprovedByClient); 
       this.userType = params['userType']; 
       console.log('Tipo de usuario:', this.userType); 
       this.vendorServiceId = +params['vendorServiceId'];

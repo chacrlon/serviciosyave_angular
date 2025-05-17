@@ -1,0 +1,27 @@
+<!-- tabla.component.html -->
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of datos">
+        <td>{{ item.id }}</td>
+        <td>{{ item.nombre }}</td>
+        <td>{{ item.email }}</td>
+        <td>{{ item.rol }}</td>
+        <td>
+          <span class="estado-badge" [class.activo]="item.activo" [class.inactivo]="!item.activo">
+            {{ item.activo ? 'Activo' : 'Inactivo' }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

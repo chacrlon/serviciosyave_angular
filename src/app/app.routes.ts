@@ -29,6 +29,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AllNotificationsComponent } from './all-notifications/all-notifications.component';
+import { ApproveProfilesComponent } from './admin/approve-profiles/approve-profiles.component';
+import { FortnightPaymentsComponent } from './admin/fortnight-payments/fortnight-payments.component';
+import { DisputesComponent } from './admin/disputes/disputes.component';
 import { AdminComponent } from './admin/admin.component';
 
 
@@ -153,7 +156,28 @@ export const routes: Routes = [
     {  
         path: 'admin',
         component: AdminComponent,
+    children: [
+     { path: 'approve-profiles', component: ApproveProfilesComponent },
+    { path: 'fortnight-payments', component: FortnightPaymentsComponent },
+      { path: 'disputes', component: DisputesComponent },
+    ]
     },
+     {  path: 'fortnights-payment',
+       component: FortnightPaymentsComponent,
+       canActivate: [authGuard]
+
+        }, 
+
+       {  path: 'approve-profiles',
+       component: ApproveProfilesComponent,
+       canActivate: [authGuard]
+
+        },   
+ {  path: 'disputes',
+       component: DisputesComponent,
+       canActivate: [authGuard]
+
+        }, 
     { 
         path: 'home',
         component: HomeComponent,

@@ -68,3 +68,56 @@
   border-radius: 50%;
   font-size: 0.75rem;
 }
+
+/* Estilos para el dropdown Admin */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-trigger {
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  min-width: 200px; /* Reducido para que se ajuste al menú vertical */
+  z-index: 1000;
+  padding: 15px;
+}
+
+.dropdown-container:hover .dropdown-content {
+  display: block;
+}
+
+.submenu-options {
+  display: flex;
+  flex-direction: column; /* Esto hace que los elementos se apilen verticalmente */
+  gap: 10px; /* Espacio entre elementos */
+  margin-bottom: 15px;
+}
+
+.submenu-item {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.3s;
+  text-align: left; /* Alinea el texto a la izquierda */
+}
+
+.submenu-item:hover {
+  background-color: #f0f0f0;
+}
+
+.submenu-container {
+  max-height: 70vh;
+  overflow-y: auto;
+}
