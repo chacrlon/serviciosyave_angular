@@ -9,7 +9,7 @@
     <p><strong>Subcategoria:</strong> {{ necesidad.subcategory?.name || 'Sin subcategoría' }}</p>  
     <p><strong>Cerca: </strong>{{ necesidad.nearby != null && necesidad.nearby >= 0 ? necesidad.nearby.toFixed(2) : "S/I" }} Km</p>
     <hr />  
-    <button (click)="aceptarOferta(necesidad)">Aceptar Oferta</button>  
+    <button (click)="aceptarOferta(necesidad)">Aceptar Oferta</button>
     <button *ngIf="necesidad.allowNegotiation" (click)="abrirNegociacion(necesidad)">Negociar</button>  
   </div>
 

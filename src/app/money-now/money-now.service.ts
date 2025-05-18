@@ -20,11 +20,14 @@ export class MoneyNowService {
     return this.http.post(`${this.apiUrl2}/negotiations`, data);
   }
 
-  public aceptarOferta(request: AcceptOfferRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/aceptar`, request).pipe(
-      catchError(this.handleError)
-    );
-  }
+public aceptarOferta(request: AcceptOfferRequest): Observable<any> {
+  return this.http.post(
+    `${this.apiUrl}/${request.necesidadId}/accept/${request.professionalUserId}`,
+    {} // Body vacío o parámetros necesarios
+  ).pipe(
+    catchError(this.handleError)
+  );
+}
 
   public obtenerNecesidades(location:{ latitude: number; longitude: number } | null): Observable<MoneyNow[]> {  
     return this.http.get<MoneyNow[]>(this.apiUrl+'?lat='+location?.latitude+'&lon='+location?.longitude).pipe(

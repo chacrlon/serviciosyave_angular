@@ -69,16 +69,6 @@ export class BuyerComponent implements OnInit{
       console.log('User ID recibido en BuyerComponent:', this.userId);  
     });  
     this.obtenerUbicacion();
-    // this.locationService.location.subscribe({
-    //   next: (location) => {
-    //     console.log('Ubicación obtenida:', location);
-    //     if (location) {
-    // this.loadServices(this.location);
-    // this.loadExchangeRate();
-    //     }
-    //   },
-    //   error: (error) => { console.error('Error al obtener la ubicación:', error); }
-    // });
 
   }
 // Acceder a la interfaz para publicar una necesidad y ofertar un monto, esto es para rol de buyer  

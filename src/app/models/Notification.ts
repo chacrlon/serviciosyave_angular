@@ -8,4 +8,7 @@ export interface Notification {
   userType: string;
   vendorServiceId?: number;
   id2: number; 
+  type: string;
+  status: string;  
+  amount: number | null;
 }

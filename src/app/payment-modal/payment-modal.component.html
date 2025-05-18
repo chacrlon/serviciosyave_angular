@@ -1,0 +1,71 @@
+<div class="modal-header">
+  <h2>Realizar Pago</h2>
+</div>
+
+<div class="modal-content">
+  <!-- Selección de método de pago -->
+  <div *ngIf="paymentMethodModalVisible" class="payment-methods">
+    <h3>Seleccione un método de pago</h3>
+    <button class="method-btn" (click)="selectPaymentMethod('pagoMovil')">
+      Pago Móvil
+    </button>
+    <button class="method-btn" (click)="selectPaymentMethod('transferenciaBancaria')">
+      Transferencia Bancaria
+    </button>
+    <button class="method-btn" (click)="selectPaymentMethod('binance')">
+      Binance
+    </button>
+  </div>
+
+  <!-- Detalles de pago -->
+  <div *ngIf="paymentDetailsModalVisible" class="payment-details">
+    <h3>Detalles del pago</h3>
+    
+    <div *ngIf="selectedPaymentMethod === 'pagoMovil'">
+      <p>Banco: Bancamiga</p>
+      <p>Teléfono: 04123705210</p>
+      <p>Cédula: 24286418</p>
+      <p>Monto: {{ calculatePrice() | number:'1.2-2' }} Bs</p>
+    </div>
+
+    <div *ngIf="selectedPaymentMethod === 'transferenciaBancaria'">
+      <p>Banco: Bancamiga</p>
+      <p>Cuenta: 01720107701075174910</p>
+      <p>RIF: 242864189</p>
+      <p>Monto: {{ calculatePrice() | number:'1.2-2' }} Bs</p>
+    </div>
+
+    <div *ngIf="selectedPaymentMethod === 'binance'">
+      <p>Correo: chacrlonroman&#64;gmail.com</p>
+      <p>Monto: {{ calculatePrice() | number:'1.2-2' }} USDT</p>
+    </div>
+
+    <button (click)="openReferenceModal()">Continuar</button>
+  </div>
+
+  <!-- Referencia de pago -->
+  <div *ngIf="referenceModalVisible" class="payment-reference">
+    <h3>Confirmar Pago</h3>
+    
+    <div *ngIf="selectedPaymentMethod === 'pagoMovil'">
+      <input [(ngModel)]="referenciaPago" placeholder="Número de referencia">
+      <input [(ngModel)]="telefono" placeholder="Teléfono asociado">
+    </div>
+
+    <div *ngIf="selectedPaymentMethod === 'transferenciaBancaria'">
+      <input [(ngModel)]="referenciaPago" placeholder="Número de referencia">
+      <input [(ngModel)]="numeroCuenta" placeholder="Número de cuenta">
+    </div>
+
+    <div *ngIf="selectedPaymentMethod === 'binance'">
+      <input [(ngModel)]="referenciaPago" placeholder="ID de transacción">
+      <input [(ngModel)]="correoBinance" placeholder="Correo de Binance">
+    </div>
+
+    <button (click)="confirmPayment()">Confirmar Pago</button>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button (click)="close()">Cancelar</button>
+</div>

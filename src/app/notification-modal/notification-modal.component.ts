@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NotificationsseService } from './notificationsse.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 
 @Component({  
   selector: 'app-notification-modal',  
@@ -20,7 +22,8 @@ export class NotificationModalComponent {
     @Inject(MAT_DIALOG_DATA) public data: Notification,  
     private router: Router ,
     private http: HttpClient,
-    private notificationSseService: NotificationsseService
+    private notificationSseService: NotificationsseService,
+    private dialog: MatDialog
   ) {  
     console.log('Datos de NotificationModalComponent:', this.data);  
     console.log('Tipo de usuario:', this.data.userType);
@@ -32,6 +35,17 @@ export class NotificationModalComponent {
   }  
 
   contactUser(): void {  
+        // Verificar estado de pago antes de continuar
+  if (this.data.status === 'no_pagado') {
+    this.openPaymentModal();
+    return;
+  }
+     else if (this.data.status === 'pendiente') {
+      alert('Espere mientras se procesa su pago. Le notificaremos cuando esté completado.');
+      this.dialogRef.close();
+      return;
+    }  
+
     const receiverId = this.data.userId2;  
     const roomId = [this.data.userId, receiverId].sort().join('-'); // Crear roomId  
 
@@ -91,6 +105,27 @@ export class NotificationModalComponent {
             console.error('Error al marcar la notificación como leída:', error);  
           }
         });
+}
+
+
+private openPaymentModal(): void {
+  const dialogRef = this.dialog.open(PaymentModalComponent, {
+    width: '600px',
+    data: {
+      precio: this.data.amount,
+      ineedId: this.data.ineedId,
+      userId: this.data.userId,
+      userId2: this.data.userId2
+    }
+  });
+
+  dialogRef.afterClosed().subscribe((paymentSuccess: boolean) => {
+    if (paymentSuccess) {
+      // Actualizar estado de la notificación o recargar datos
+      alert('Pago procesado correctamente. Ahora puedes contactar al usuario.');
+      this.data.status = 'pendiente'; // Actualizar estado localmente
+    }
+  });
 }
 
 public extractingUrl(message: string): string {

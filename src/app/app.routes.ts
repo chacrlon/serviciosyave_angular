@@ -33,12 +33,16 @@ import { ApproveProfilesComponent } from './admin/approve-profiles/approve-profi
 import { FortnightPaymentsComponent } from './admin/fortnight-payments/fortnight-payments.component';
 import { DisputesComponent } from './admin/disputes/disputes.component';
 import { AdminComponent } from './admin/admin.component';
-
+import { PaymentModalComponent } from './payment-modal/payment-modal.component';
 
 export const routes: Routes = [
     {
         path: 'users/page/0',
         component: UserComponent 
+    },
+    {
+        path: 'paymentmodal',
+        component: PaymentModalComponent 
     },
     { 
         path: 'forgot-password', 

@@ -162,9 +162,17 @@ public getDate(fecha: Date = new Date()): string {
   }
 
   contactUser(notification: any): void {  
-    const receiverId = notification.userId2;  
-    const roomId = [notification.userId, receiverId].sort().join('-'); // Crear roomId  
 
+    if (notification.status === 'no_pagado') {
+        const tipo = notification.type === 'servicio' ? 'servicio' : 'requerimiento';
+        alert(`Este ${tipo} no ha sido pagado. No puedes contactar al usuario hasta que se complete el pago.`);
+        return;
+    } else if (notification.status === 'pendiente') {
+        alert('Espere mientras se procesa su pago. Le notificaremos cuando esté completado.');
+        return;
+    }
+    const receiverId = notification.userId2;  
+    const roomId = [notification.userId, receiverId].sort().join('-'); // Crear roomId   
     // Obtener el correo del usuario usando el receiverId  
     this.http.get<{ email: string }>(`http://localhost:8080/api/users/${receiverId}/email`)  
         .subscribe(  

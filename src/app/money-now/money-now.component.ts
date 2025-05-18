@@ -41,35 +41,26 @@ export class MoneyNowComponent implements OnInit {
 
   ngOnInit(): void {
     this.obtenerUbicacion();
-    // this.locationService.location.subscribe({
-    //   next: (location) => {
-    //     console.log('Ubicación obtenida:', location);
-    //     if (location) {
-          // this.cargarNecesidades(location);  
-    //     }
-    //   },
-    //   error: (error) => { console.error('Error al obtener la ubicación:', error); }
-    // });
-
   }  
 
-  aceptarOferta(necesidad: MoneyNow): void {
+aceptarOferta(necesidad: MoneyNow): void {
     const request: AcceptOfferRequest = {
-      necesidadId: 123, // traernos el id de Ineed
-      professionalUserId: 123 // Aquí tenemos que traernos el id del usuario que provee el servicio
+      necesidadId: necesidad.id,
+      professionalUserId: this.userId
     };
 
     this.moneyNowService.aceptarOferta(request).subscribe({
       next: (response) => {
-        console.log('Oferta aceptada:', response);
-        alert('Oferta aceptada correctamente');
+        alert('¡Se le ha notificado al usuario para que te contacte!');
+        this.cargarNecesidades(this.location);
       },
       error: (err) => {
-        console.error('Error al aceptar oferta:', err);
-        alert('Error al aceptar la oferta');
+        alert('Error en el sistema, intentelo luego');
+        console.error('Error:', err);
       }
     });
-  } 
+  }
+
 
   cargarNecesidades(location: { latitude: number; longitude: number } | null): void {  
     this.moneyNowService.obtenerNecesidades(location).subscribe({  
