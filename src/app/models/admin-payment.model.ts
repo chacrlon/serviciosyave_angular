@@ -1,14 +1,25 @@
 export interface AdminPayment {
+  id: number;
+  user: {
     id: number;
-    sellerName: string;
-    serviceName: string;
-    paymentMethod: string;
-    paymentDetails: string;
-    amount: number;
-    commissionPercentage: number;
-    commissionAmount: number;
-    netAmount: number;
-    transactionDate: Date;
-    status: string;
-    // Agrega otros campos necesarios
-  }
+    name: string;
+  };
+  amount: number;
+  paymentMethod: string;
+  reference: string;
+  paymentDate: string;
+  cedula: string;
+  phone: string;
+  email: string;
+  paymentDetails: string;
+  status: 'PENDIENTE' | 'PAGADO';
+}
+
+export interface PaymentDetails {
+  cedula?: string;
+  telefono?: string;
+  banco?: string;
+  cuentaBancaria?: string;
+  nombreTitular?: string;
+  email?: string;
+}

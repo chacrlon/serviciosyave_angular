@@ -4,23 +4,26 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { latLng, tileLayer } from 'leaflet';
 
 @Component({
   selector: 'profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, LeafletModule ],
 })
 export class ProfileComponent implements OnInit {
+  
   userId: number | null = null;
   currentStep: number = 1;
-  totalSteps: number = 4;
+  totalSteps: number = 2;
   registrationForm!: FormGroup;
   registrationSuccess: boolean = false;
   errorMessage: string = '';
   isLoading: boolean = false;
-
+  subcategories: any[] = [];
   // Archivos
   profilePicture: File | null = null;
   profilePictureUrl: string | null = null;
@@ -35,6 +38,26 @@ export class ProfileComponent implements OnInit {
   galleryImages: File[] = [];
   galleryImageUrls: string[] = [];
 
+   mapOptions = {
+    layers: [
+      tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      })
+    ],
+    zoom: 12,
+    center: latLng(10.4806, -66.9036) // Coordenadas iniciales (Caracas)
+  };
+
+  selectedLatitude: number | null = null;
+  selectedLongitude: number | null = null;
+  // Método para capturar clics en el mapa
+  onMapClick(event: any): void {
+    this.selectedLatitude = event.latlng.lat;
+    this.selectedLongitude = event.latlng.lng;
+    this.cdr.detectChanges();
+  }
+
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -47,76 +70,76 @@ export class ProfileComponent implements OnInit {
     this.userId = this.authService.userId;
     if (!this.userId) this.router.navigate(['/login']);
     this.buildForm();
+    this.loadSubcategories();
   }
+
+  ngAfterViewInit(): void {
+  if (this.currentStep === 1) {
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize')); // Fuerza redibujado del mapa
+    }, 300);
+  }
+}
 
   buildForm(): void {
     this.registrationForm = this.fb.group({
-      // Paso 1
+      // Paso 1: Verificación
       fullName: ['', Validators.required],
-      age: [null, [Validators.required, Validators.min(18)]],
-      birthdate: ['', Validators.required],
-      idNumber: ['', Validators.required],
-      gender: ['', Validators.required],
-      city: ['', Validators.required],
-      profilePicture: ['', Validators.required],
-
-      // Paso 2
-      profession: ['', Validators.required],
-      yearsOfExperience: [0, [Validators.required, Validators.min(0)]],
-      skillsDescription: ['', Validators.required],
-      modalities: this.fb.group({
-        presencial: [false],
-        online: [false]
-      }, { validators: this.atLeastOneCheckboxChecked() }),
-
-      // Paso 3
       dniFrontName: ['', Validators.required],
       dniBackName: ['', Validators.required],
       selfieName: ['', Validators.required],
+      profilePicture: ['', Validators.required],
+      coverageRadius: [5, Validators.required], // Campo nuevo
+
+      // Paso 2: Información Profesional
+      profession: ['', Validators.required],
+      yearsOfExperience: [0, [Validators.required, Validators.min(0)]],
+      skillsDescription: ['', Validators.required],
       universityTitleName: ['', Validators.required],
       certificationsNames: [[]],
-
-      // Paso 4 (Opcional)
-      galleryImagesNames: [[]]
+      selectedSubcategories: [[], Validators.required] // Campo nuevo
     });
-  }
-
-  private atLeastOneCheckboxChecked(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const group = control as FormGroup;
-      const hasSelection = Object.values(group.controls).some(control => control.value);
-      return hasSelection ? null : { atLeastOneRequired: true };
-    };
   }
 
   isStepValid(step: number): boolean {
     switch (step) {
-      case 1: return !!(
-        this.registrationForm.get('fullName')?.valid &&
-        this.registrationForm.get('age')?.valid &&
-        this.registrationForm.get('birthdate')?.valid &&
-        this.registrationForm.get('profilePicture')?.valid
-      );
-      
-      case 2: return !!(
-        this.registrationForm.get('profession')?.valid &&
-        this.registrationForm.get('skillsDescription')?.valid &&
-        this.registrationForm.get('modalities')?.valid
-      );
-      
-      case 3: return !!(
-        this.registrationForm.get('dniFrontName')?.valid &&
-        this.registrationForm.get('dniBackName')?.valid &&
-        this.registrationForm.get('selfieName')?.valid &&
-        this.registrationForm.get('universityTitleName')?.valid
-      );
-      
-      case 4: return true;
-      
-      default: return false;
+      case 1: 
+        return !!(
+          this.selectedLatitude !== null &&
+          this.selectedLongitude !== null &&
+          this.registrationForm.get('coverageRadius')?.valid
+        );
+        
+      case 2: 
+        return !!(
+          this.registrationForm.get('selectedSubcategories')?.valid &&
+          this.registrationForm.get('universityTitleName')?.valid
+        );
+        
+      default: 
+        return false;
     }
   }
 
+  loadSubcategories(): void {
+  this.http.get('http://localhost:8080/api/subcategories').subscribe({
+    next: (res: any) => this.subcategories = res,
+    error: (err) => console.error('Error cargando subcategorías', err)
+  });
+}
+
+toggleSubcategory(subcategoryId: number): void {
+  const selected = this.registrationForm.get('selectedSubcategories')?.value;
+  const index = selected.indexOf(subcategoryId);
+  
+  if (index > -1) {
+    selected.splice(index, 1);
+  } else {
+    selected.push(subcategoryId);
+  }
+}
+
+  
   nextStep(): void {
     if (this.currentStep < this.totalSteps) this.currentStep++;
   }
@@ -124,6 +147,21 @@ export class ProfileComponent implements OnInit {
   previousStep(): void {
     if (this.currentStep > 1) this.currentStep--;
   }
+
+  subcategoriesList: any[] = []; // Cargar desde API
+
+onSubcategoryChange(event: any, subcategoryId: number): void {
+  const selected = this.registrationForm.get('selectedSubcategories')?.value;
+  
+  if (event.target.checked) {
+    selected.push(subcategoryId);
+  } else {
+    const index = selected.indexOf(subcategoryId);
+    if (index > -1) selected.splice(index, 1);
+  }
+  
+  this.registrationForm.get('selectedSubcategories')?.setValue(selected);
+}
 
   onFileSelected(event: any, field: string): void {
     const files = event.target.files;
@@ -200,18 +238,13 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    // const modalities = Object.keys(this.registrationForm.get('modalities')?.value)
-    //   .filter(k => this.registrationForm.get(`modalities.${k}`)?.value);
-
-    const modalities = Object.keys(this.registrationForm.get('modalities')?.value)
-      .filter(k => this.registrationForm.get(`modalities.${k}`)?.value)
-      .map(modality => modality === 'presencial' ? 0 : (modality === 'online' ? 1 : -1)) // Puedes ajustar el -1 si necesitas manejar otros casos
-      .filter(value => value !== -1); // Esto elimina cualquier valor que no sea 'presencial' u 'online' si es necesario
-
     const sellerData = {
       ...this.registrationForm.value,
-      modalities,
       user: {id: this.userId},
+       latitude: this.selectedLatitude,
+    longitude: this.selectedLongitude,
+    serviceArea: 'Generado automáticamente', // Lo calcula el backend
+    status: 'PENDIENTE',
       createdAt: new Date().toISOString()
     };
 

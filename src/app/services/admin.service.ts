@@ -8,29 +8,17 @@ import { AdminPayment } from '../models/admin-payment.model';
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = '/api/admin/paymentseller'; // Endpoint para obtener los pagos
+   private apiUrl = 'http://localhost:8080/api/payroll';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  // Obtener todos los pagos con paginación
-  getAllSellerPayments(page: number = 0, size: number = 10, sort: string = 'transactionDate,desc'): Observable<PaginatedResponse<AdminPayment>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString())
-      .set('sort', sort);
-  
-    return this.http.get<PaginatedResponse<AdminPayment>>(this.apiUrl, { params });
+    // Obtener pagos pendientes
+  getPendingPayments(): Observable<AdminPayment[]> {
+    return this.http.get<AdminPayment[]>(`${this.apiUrl}/pending`);
   }
 
-  // Aprobar un pago
-  approvePayment(paymentId: number): Observable<void> {
-    const url = `/api/payment/approve/${paymentId}`;
-    return this.http.put<void>(url, {});
-  }
-
-  // Rechazar un pago
-  rejectPayment(paymentId: number): Observable<void> {
-    const url = `/api/payment/reject/${paymentId}`;
-    return this.http.put<void>(url, {});
+  // Actualizar pago
+  updatePayment(paymentId: number, reference: string): Observable<AdminPayment> {
+    return this.http.put<AdminPayment>(`${this.apiUrl}/${paymentId}`, { reference });
   }
 }

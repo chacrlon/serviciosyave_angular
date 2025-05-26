@@ -1,61 +1,72 @@
-<div class="pagination-controls">
-    <!-- Selector de tamaño de página -->
-    <select (change)="onPageSizeChange($any($event.target).value)">
-      <option value="10">10 por página</option>
-      <option value="20">20 por página</option>
-      <option value="50">50 por página</option>
-    </select>
-  
-    <!-- Botones de paginación -->
-    <button [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">
-      Anterior
-    </button>
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="spinner"></div>
+</div>
+<!-- Lista de pagos pendientes -->
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Usuario</th>
+      <th>Cédula</th>
+      <th>Teléfono</th>
+      <th>Email</th>
+      <th>Monto</th>
+      <th>Método</th>
+      <th>Referencia</th>
+      <th>Fecha Pago</th>
+      <th>Detalles Pago</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let payment of pendingPayments">
+      <td>{{ payment.id }}</td>
+      <td>{{ payment.user.name }}</td>
+      <td>{{ payment.cedula }}</td>
+      <td>{{ payment.phone }}</td>
+      <td>{{ payment.email }}</td>
+      <td>{{ payment.amount | currency }}</td>
+      <td>{{ getPaymentMethodName(payment.paymentMethod) }}</td>
+      <td>{{ payment.reference || 'N/A' }}</td>
+      <td>{{ payment.paymentDate | date:'dd/MM/yyyy HH:mm' }}</td>
+      <td>
+        <div *ngIf="payment.paymentDetails">
+          <div *ngFor="let detail of parsePaymentDetails(payment.paymentDetails) | keyvalue">
+            {{ detail.key }}: {{ detail.value }}
+          </div>
+        </div>
+      </td>
+      <td [class.text-success]="payment.status === 'PAGADO'" 
+          [class.text-warning]="payment.status === 'PENDIENTE'">
+        {{ payment.status }}
+      </td>
+      <td>
+        <button *ngIf="payment.status === 'PENDIENTE'" 
+                (click)="openPaymentModal(payment)">
+          Pagar
+        </button>
+        <span *ngIf="payment.status === 'PAGADO'">✅</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Modal de pago -->
+<div class="modal" *ngIf="selectedPayment">
+  <div class="modal-content">
+    <h3>Registrar Pago</h3>
+    <p>Usuario: {{ selectedPayment.user.name }}</p>
+    <p>Monto: {{ selectedPayment.amount | currency }}</p>
     
-    <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+    <input type="text" [(ngModel)]="reference" placeholder="Referencia de pago" required>
     
-    <button [disabled]="currentPage >= totalPages - 1" (click)="onPageChange(currentPage + 1)">
-      Siguiente
-    </button>
+    <div class="modal-actions">
+      <button (click)="submitPayment()" [disabled]="!reference">Confirmar</button>
+      <button class="btn-cancel" (click)="selectedPayment = null">Cancelar</button>
+    </div>
   </div>
-  
-  <!-- Tabla de pagos -->
-  <table>
-    <thead>
-      <tr>
-        <th>Servicio</th>
-        <th>Proveedor</th>
-        <th>Método de Pago</th>
-        <th>Datos de Pago</th>
-        <th>Monto Total</th>
-        <th>Comisión (%)</th>
-        <th>Monto Neto</th>
-        <th>Fecha Servicio</th>
-        <th>Referencia</th>
-        <th>Fecha Pago</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let payment of payments">
-            <td>{{ payment.serviceName }}</td>
-            <td>{{ payment.sellerName }}</td>
-            <td>{{ payment.paymentMethod }}</td>
-            <td>{{ payment.paymentDetails }}</td>
-            <td>{{ payment.amount | currency }}</td>
-            <td>{{ payment.commissionPercentage }}% ({{ payment.commissionAmount | currency }})</td>
-            <td>{{ payment.netAmount | currency }}</td>
-            <td>{{ payment.transactionDate | date }}</td>
-            <td>{{ payment.status }}</td>
-            <td>
-              <button (click)="approvePayment(payment.id)">Aprobar</button>
-              <button (click)="rejectPayment(payment.id)">Rechazar</button>
-            </td>
-          </tr>
-    </tbody>
-  </table>
-  
-  <!-- Total de registros -->
-  <div class="total-registros">
-    Mostrando {{ payments.length }} de {{ totalItems }} registros
-  </div>
+</div>
+
+<div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+<div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
