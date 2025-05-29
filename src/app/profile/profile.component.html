@@ -1,81 +1,91 @@
 <div class="profile-container" [formGroup]="registrationForm">
-  
   <!-- Paso 1: Información Personal -->
   <div *ngIf="currentStep === 1" class="step-section">
     <h2>Información Personal</h2>
 
-    <!-- Sección de Mapa -->
-  <div *ngIf="currentStep === 1" class="map-container">
-    <div leaflet 
-         [leafletOptions]="mapOptions" 
-         (leafletClick)="onMapClick($event)">
-    </div>
+
+
+    <!-- Sección de Mapa y Ubicación -->
+<div class="map-container">
+  <!-- Contenedor del mapa con ID específico -->
+  <div class="map-frame">
+    <div id="map"></div>
   </div>
 
-    <!-- Coordenadas y Radio -->
-    <div *ngIf="selectedLatitude && selectedLongitude" class="form-group">
-      <p>Coordenadas seleccionadas: {{ selectedLatitude | number:'1.4-4' }}, {{ selectedLongitude | number:'1.4-4' }}</p>
+  <!-- Sección de información de ubicación (se mantiene igual) -->
+<div class="location-info">
+  <div class="form-group">
+    <label>Radio de Cobertura (km):</label>
+    <div class="range-container">
+      <input type="range" 
+             formControlName="coverageRadius" 
+             min="1" 
+             max="100" 
+             step="1">
+      <span>{{ registrationForm.get('coverageRadius')?.value }} km</span>
     </div>
-    
-    <div class="form-group">
-      <label>Radio de Cobertura (km):</label>
-      <input type="number" formControlName="coverageRadius" min="1">
+    <div class="error-message" *ngIf="registrationForm.get('coverageRadius')?.invalid">
+      Radio inválido (mínimo 1 km)
     </div>
+  </div>
+  
+  <div class="coordinates" 
+       *ngIf="registrationForm.get('latitude')?.value && registrationForm.get('longitude')?.value">
+    <p>Ubicación seleccionada:</p>
+    <p>Latitud: {{ registrationForm.get('latitude')?.value | number:'1.4-4' }}</p>
+    <p>Longitud: {{ registrationForm.get('longitude')?.value | number:'1.4-4' }}</p>
+    <div class="error-message" 
+         *ngIf="registrationForm.get('latitude')?.errors || registrationForm.get('longitude')?.errors">
+      Debe seleccionar una ubicación en el mapa
+    </div>
+  </div>
+</div>
 
-    <!-- Información Básica -->
-    <div class="form-group">
-      <label>Nombre Completo:</label>
-      <i class="fas fa-info-circle" title="Ingrese su nombre completo tal como aparece en su documento de identidad."></i>
-      <input type="text" formControlName="fullName">
-      <div *ngIf="registrationForm.get('fullName')?.invalid" class="error-message">
-        Nombre requerido
-      </div>
-    </div>
-
-    <!-- Documentos de Identidad -->
-    <div class="form-row">
+    <!-- Sección de Documentos -->
+    <div class="document-section">
       <div class="form-group">
-        <label>DNI Frente:</label>
-        <i class="fas fa-info-circle" title="Suba una imagen clara del frente de su documento de identidad."></i>
-        <input type="file" (change)="onFileSelected($event, 'dniFront')" accept="image/*" required>
-        <img *ngIf="dniFrontUrl" [src]="dniFrontUrl" class="preview-image">
-        <div *ngIf="registrationForm.get('dniFront')?.invalid" class="error-message">
-          Documento requerido
+        <label>Nombre Completo:</label>
+        <i class="fas fa-info-circle"></i>
+        <input type="text" formControlName="fullName">
+        <!-- Mensaje de error -->
+      </div>
+
+      <div class="form-row">
+        <!-- DNI Frente y Dorso -->
+        <div class="form-group">
+          <label>DNI Frente:</label>
+          <i class="fas fa-info-circle"></i>
+          <input type="file" (change)="onFileSelected($event, 'dniFront')">
+          <img *ngIf="dniFrontUrl" [src]="dniFrontUrl" class="preview-image">
+        </div>
+
+        <div class="form-group">
+          <label>DNI Dorso:</label>
+          <i class="fas fa-info-circle"></i>
+          <input type="file" (change)="onFileSelected($event, 'dniBack')">
+          <img *ngIf="dniBackUrl" [src]="dniBackUrl" class="preview-image">
         </div>
       </div>
-      
-      <div class="form-group">
-        <label>DNI Dorso:</label>
-        <i class="fas fa-info-circle" title="Suba una imagen clara del dorso de su documento de identidad."></i>
-        <input type="file" (change)="onFileSelected($event, 'dniBack')" accept="image/*" required>
-        <img *ngIf="dniBackUrl" [src]="dniBackUrl" class="preview-image">
-        <div *ngIf="registrationForm.get('dniBack')?.invalid" class="error-message">
-          Documento requerido
+
+      <!-- Selfie y Foto de Perfil -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Selfie con DNI:</label>
+          <i class="fas fa-info-circle"></i>
+          <input type="file" (change)="onFileSelected($event, 'selfie')">
+          <img *ngIf="selfieUrl" [src]="selfieUrl" class="preview-image">
         </div>
-      </div>
-    </div>
 
-    <!-- Selfie y Foto de Perfil -->
-    <div class="form-group">
-      <label>Selfie con DNI:</label>
-      <i class="fas fa-info-circle" title="Suba una selfie sosteniendo su documento de identidad."></i>
-      <input type="file" (change)="onFileSelected($event, 'selfie')" accept="image/*" required>
-      <img *ngIf="selfieUrl" [src]="selfieUrl" class="preview-image">
-      <div *ngIf="registrationForm.get('selfie')?.invalid" class="error-message">
-        Selfie requerida
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>Foto de perfil:</label>
-      <i class="fas fa-info-circle" title="Suba una imagen clara de su rostro para su perfil."></i>
-      <input type="file" (change)="onFileSelected($event, 'profilePicture')" accept="image/*" required>
-      <img *ngIf="profilePictureUrl" [src]="profilePictureUrl" class="preview-image">
-      <div *ngIf="registrationForm.get('profilePicture')?.invalid" class="error-message">
-        Campo obligatorio
+        <div class="form-group">
+          <label>Foto de perfil:</label>
+          <i class="fas fa-info-circle"></i>
+          <input type="file" (change)="onFileSelected($event, 'profilePicture')">
+          <img *ngIf="profilePictureUrl" [src]="profilePictureUrl" class="preview-image">
+        </div>
       </div>
     </div>
   </div>
+</div>
 
   <!-- Paso 2: Información Profesional -->
   <div *ngIf="currentStep === 2" class="step-section">

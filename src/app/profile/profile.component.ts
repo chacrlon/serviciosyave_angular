@@ -1,23 +1,27 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { latLng, tileLayer } from 'leaflet';
+import * as L from 'leaflet';
+import { Circle } from 'leaflet';
 
 @Component({
   selector: 'profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, LeafletModule ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
-export class ProfileComponent implements OnInit {
-  
+export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
+  selectedLatitude: number | null = null;
+  selectedLongitude: number | null = null;
+  coverageRadius: number = 5; // Valor por defecto
+  coverageCircle: L.Circle | null = null;
+
   userId: number | null = null;
-  currentStep: number = 1;
+  currentStep: 1 | 2 = 1;
   totalSteps: number = 2;
   registrationForm!: FormGroup;
   registrationSuccess: boolean = false;
@@ -37,25 +41,22 @@ export class ProfileComponent implements OnInit {
   certifications: File[] = [];
   galleryImages: File[] = [];
   galleryImageUrls: string[] = [];
+  private map: L.Map | null = null;
 
-   mapOptions = {
-    layers: [
-      tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      })
-    ],
-    zoom: 12,
-    center: latLng(10.4806, -66.9036) // Coordenadas iniciales (Caracas)
-  };
-
-  selectedLatitude: number | null = null;
-  selectedLongitude: number | null = null;
   // Método para capturar clics en el mapa
-  onMapClick(event: any): void {
-    this.selectedLatitude = event.latlng.lat;
-    this.selectedLongitude = event.latlng.lng;
-    this.cdr.detectChanges();
-  }
+  onMapClick(event: L.LeafletMouseEvent): void {
+  this.selectedLatitude = event.latlng.lat;
+  this.selectedLongitude = event.latlng.lng;
+  
+  // Actualizar el formulario
+  this.registrationForm.patchValue({
+    latitude: this.selectedLatitude,
+    longitude: this.selectedLongitude
+  });
+  
+  this.updateCoverageCircle();
+  this.cdr.detectChanges();
+}
 
 
   constructor(
@@ -73,11 +74,97 @@ export class ProfileComponent implements OnInit {
     this.loadSubcategories();
   }
 
-  ngAfterViewInit(): void {
-  if (this.currentStep === 1) {
-    setTimeout(() => {
-      window.dispatchEvent(new Event('resize')); // Fuerza redibujado del mapa
-    }, 300);
+// Modifica el código así:
+ngAfterViewInit(): void {
+  this.initMap();
+  setTimeout(() => {
+    const mapElement = document.querySelector('.leaflet-container') as HTMLElement & {
+      _leaflet_map?: L.Map;
+    };
+    
+    if (mapElement?._leaflet_map) {
+      mapElement._leaflet_map.invalidateSize();
+    }
+  }, 300);
+}
+
+ngOnDestroy(): void {
+    if (this.map) {
+      this.map.remove();
+    }
+  }
+
+  private initMap(): void {
+  this.map = L.map('map', {
+    center: [10.4806, -66.9036],
+    zoom: 12
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
+
+  // Dibujar círculo inicial
+  if (this.selectedLatitude && this.selectedLongitude) {
+    this.drawCoverageCircle();
+  }
+
+  // Escuchar cambios en el input
+  this.registrationForm.get('coverageRadius')?.valueChanges.subscribe((radius) => {
+    this.coverageRadius = radius;
+    this.updateCoverageCircle();
+  });
+
+  // Evento de clic en el mapa
+  this.map.on('click', (e: L.LeafletMouseEvent) => {
+  this.selectedLatitude = e.latlng.lat;
+  this.selectedLongitude = e.latlng.lng;
+  
+  // Actualizar el formulario
+  this.registrationForm.patchValue({
+    latitude: this.selectedLatitude,
+    longitude: this.selectedLongitude
+  });
+  
+  this.updateCoverageCircle();
+  this.cdr.detectChanges();
+});
+}
+
+private drawCoverageCircle(): void {
+  if (this.coverageCircle) {
+    this.map?.removeLayer(this.coverageCircle);
+  }
+
+  this.coverageCircle = L.circle([this.selectedLatitude!, this.selectedLongitude!], {
+    color: '#3388ff',
+    fillColor: '#3388ff',
+    fillOpacity: 0.2,
+    radius: this.coverageRadius * 1000 // Convertir km a metros
+  }).addTo(this.map!);
+}
+
+updateCoverageCircle(): void {
+  // Usar valores del formulario como fuente principal
+  const formLat = this.registrationForm.get('latitude')?.value;
+  const formLng = this.registrationForm.get('longitude')?.value;
+  const formRadius = this.registrationForm.get('coverageRadius')?.value;
+  
+  // Usar variables del componente como fallback
+  const lat = formLat ?? this.selectedLatitude;
+  const lng = formLng ?? this.selectedLongitude;
+  const radius = formRadius ?? this.coverageRadius;
+
+  if (lat && lng && radius) {
+    if (this.coverageCircle) {
+      this.coverageCircle.setLatLng([lat, lng]);
+      this.coverageCircle.setRadius(radius * 1000);
+    } else {
+      this.coverageCircle = L.circle([lat, lng], {
+        color: '#3388ff',
+        fillColor: '#3388ff',
+        fillOpacity: 0.2,
+        radius: radius * 1000
+      }).addTo(this.map!);
+    }
   }
 }
 
@@ -89,7 +176,10 @@ export class ProfileComponent implements OnInit {
       dniBackName: ['', Validators.required],
       selfieName: ['', Validators.required],
       profilePicture: ['', Validators.required],
-      coverageRadius: [5, Validators.required], // Campo nuevo
+      coverageRadius: [5, [Validators.required, Validators.min(1)]],
+      latitude: [null, Validators.required],
+      longitude: [null, Validators.required],
+      galleryImagesNames: [[]],
 
       // Paso 2: Información Profesional
       profession: ['', Validators.required],
@@ -99,14 +189,20 @@ export class ProfileComponent implements OnInit {
       certificationsNames: [[]],
       selectedSubcategories: [[], Validators.required] // Campo nuevo
     });
+
+    // Escuchar cambios en el radio
+  this.registrationForm.get('coverageRadius')?.valueChanges.subscribe((radius) => {
+    this.coverageRadius = radius;
+    this.updateCoverageCircle();
+  });
   }
 
   isStepValid(step: number): boolean {
     switch (step) {
       case 1: 
         return !!(
-          this.selectedLatitude !== null &&
-          this.selectedLongitude !== null &&
+          this.registrationForm.get('latitude')?.valid &&
+             this.registrationForm.get('longitude')?.valid &&
           this.registrationForm.get('coverageRadius')?.valid
         );
         
@@ -120,6 +216,7 @@ export class ProfileComponent implements OnInit {
         return false;
     }
   }
+
 
   loadSubcategories(): void {
   this.http.get('http://localhost:8080/api/subcategories').subscribe({
@@ -174,21 +271,21 @@ onSubcategoryChange(event: any, subcategoryId: number): void {
       return;
     }
 
-    if (['certifications', 'galleryImages'].includes(field)) {
-      const fileList = Array.from(files) as File[];
-      Promise.all(fileList.map(file => this.convertFileToBase64(file)))
-        .then(base64Files => {
-          if (field === 'certifications') {
-            this.certifications = fileList;
-            this.registrationForm.get('certificationsNames')?.setValue(base64Files);
-          } else {
-            this.galleryImages = fileList;
-            this.galleryImageUrls = fileList.map(file => URL.createObjectURL(file));
-            this.registrationForm.get('galleryImagesNames')?.setValue(base64Files);
-          }
-          this.cdr.detectChanges();
-        });
-    } else {
+      if (['certifications', 'galleryImages'].includes(field)) {
+    const fileList = Array.from(files) as File[];
+    Promise.all(fileList.map(file => this.convertFileToBase64(file)))
+      .then(base64Files => {
+        if (field === 'certifications') {
+          this.certifications = fileList;
+          this.registrationForm.get('certificationsNames')?.setValue(base64Files);
+        } else if (field === 'galleryImages') {
+          this.galleryImages = fileList;
+          this.galleryImageUrls = fileList.map(file => URL.createObjectURL(file));
+          this.registrationForm.get('galleryImagesNames')?.setValue(base64Files);
+        }
+        this.cdr.detectChanges();
+      });
+  }  else {
       const file = files[0];
       this.convertFileToBase64(file).then(base64 => {
         switch (field) {
@@ -231,25 +328,48 @@ onSubcategoryChange(event: any, subcategoryId: number): void {
     });
   }
 
-  saveProfile(): void {
-    this.markFormGroupTouched(this.registrationForm);
-    if (this.registrationForm.invalid) {
-      this.errorMessage = 'Revise los campos obligatorios';
-      return;
-    }
-
-    const sellerData = {
-      ...this.registrationForm.value,
-      user: {id: this.userId},
-       latitude: this.selectedLatitude,
-    longitude: this.selectedLongitude,
-    serviceArea: 'Generado automáticamente', // Lo calcula el backend
-    status: 'PENDIENTE',
-      createdAt: new Date().toISOString()
-    };
-
-    this.sendToBackend(sellerData);
+saveProfile(): void {
+  this.markFormGroupTouched(this.registrationForm);
+  if (this.registrationForm.invalid) {
+    this.errorMessage = 'Revise los campos obligatorios';
+    return;
   }
+
+  const certificationsNamesValue = this.registrationForm.get('certificationsNames')?.value;
+  const certificationsNames = certificationsNamesValue && certificationsNamesValue.length 
+    ? certificationsNamesValue 
+    : null;
+
+    // Obtener el valor de galleryImagesNames del formulario
+  const galleryImagesNames = this.registrationForm.get('galleryImagesNames')?.value;
+
+  const sellerData = {
+    fullName: this.registrationForm.get('fullName')?.value,
+    dniFrontName: this.registrationForm.get('dniFrontName')?.value,
+    dniBackName: this.registrationForm.get('dniBackName')?.value,
+    selfieName: this.registrationForm.get('selfieName')?.value,
+    profilePicture: this.registrationForm.get('profilePicture')?.value,
+    universityTitleName: this.registrationForm.get('universityTitleName')?.value,
+    certificationsNames: certificationsNames,
+    galleryImagesNames: null,
+    profession: this.registrationForm.get('profession')?.value,
+    yearsOfExperience: this.registrationForm.get('yearsOfExperience')?.value,
+    skillsDescription: this.registrationForm.get('skillsDescription')?.value,
+    userId: this.userId,
+    latitude: this.registrationForm.get('latitude')?.value,
+    longitude: this.registrationForm.get('longitude')?.value,
+    coverageRadius: this.registrationForm.get('coverageRadius')?.value,
+    serviceArea: 0, // El backend lo genera automáticamente
+    createdAt: new Date().toISOString(),
+    status: 'PENDIENTE',
+    subcategories: this.subcategories, // Lista completa de subcategorías
+    //selectedSubcategories: null
+    selectedSubcategories: this.registrationForm.get('selectedSubcategories')?.value
+  };
+
+  console.log(sellerData);
+  this.sendToBackend(sellerData);
+}
 
   private sendToBackend(data: any): void {
     this.isLoading = true;

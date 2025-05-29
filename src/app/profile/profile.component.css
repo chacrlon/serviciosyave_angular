@@ -1,151 +1,193 @@
-.profile-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-/* Asegura que el mapa ocupe el espacio correcto */
-.map-container {
-  height: 400px;
-  width: 100%;
-  margin: 1rem 0;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  position: relative; /* Evita desplazamientos extraños */
-  z-index: 0; /* Previene superposición con otros elementos */
-}
+@import "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
 
-/* Reset de estilos de Leaflet */
+
+
+
 .leaflet-container {
   height: 100%;
   width: 100%;
-  background: #f8f9fa !important; /* Fondo temporal para debug */
 }
 
-.progress-steps {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+.profile-container {
+  padding: 1rem;
 }
 
-.step {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: #666;
-}
-
-.step.active {
-  background: #007bff;
-  color: white;
+.map-frame {
+  height: 400px;
+  margin: 1rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #ddd;
 }
 
 .step-section {
-  margin: 2rem 0;
-}
-
-h2 {
-  color: #007bff;
-  margin-bottom: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
+  display: grid;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
 .form-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #333;
-  font-weight: 500;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.modalities {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
 .preview-image {
   max-width: 200px;
-  max-height: 150px;
-  margin-top: 1rem;
-  border-radius: 4px;
-  border: 2px solid #007bff;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  border: 2px solid #eee;
+  padding: 2px;
 }
 
 .gallery-preview {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.8rem;
   margin-top: 1rem;
 }
 
 .gallery-image {
-  width: 100%;
-  height: 150px;
+  aspect-ratio: 1;
   object-fit: cover;
   border-radius: 4px;
 }
 
 .navigation-buttons {
   display: flex;
+  gap: 1rem;
   justify-content: space-between;
   margin-top: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid #eee;
 }
 
-button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
+.location-section {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 3fr 1fr;
 }
 
-.btn-previous {
-  background: #f0f0f0;
+.location-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.coordinates {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.document-section {
+  display: grid;
+  gap: 2rem;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-group label {
+  font-weight: 500;
   color: #333;
-}
-
-.btn-next, .btn-submit {
-  background: #007bff;
-  color: white;
 }
 
 .error-message {
   color: #dc3545;
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f8d7da;
-  border-radius: 4px;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
 }
-.fa-info-circle {
-  margin-left: 5px;
-  color: #007bff;
+
+input, textarea, select {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+input[type="file"] {
+  padding: 0.5rem;
+  background: #f8f9fa;
+}
+/* Estilos para el control de rango */
+.range-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+input[type="range"] {
+  flex-grow: 1;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #3388ff;
+  border-radius: 50%;
   cursor: pointer;
 }
 
-.fa-info-circle:hover {
-  color: #0056b3;
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+/* Estilo para el círculo de cobertura */
+.leaflet-interactive {
+  stroke-width: 2px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 0.4; }
+  100% { opacity: 0.8; }
+}
+
+@media (max-width: 768px) {
+  .location-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .map-container {
+    height: 300px;
+  }
+  
+  .preview-image {
+    max-width: 150px;
+  }
+  
+  .profile-container {
+    padding: 0.5rem;
+  }
 }
