@@ -2,6 +2,7 @@ import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router';  
 import { ChatMessage } from '../models/chat-message';  
 import { ChatService } from '../chat/chat.service';  
+import { ChatStateService } from '../services/chat-state.service';  ;  
 import { AuthService } from '../services/auth.service';  
 import { CommonModule } from '@angular/common';  
 import { FormsModule } from '@angular/forms';   
@@ -35,7 +36,7 @@ export class ChatComponent implements OnInit {
   ineedId: number | null = null;
   userId2: number | null = null;
   isServiceApprovedByProvider: boolean = false;
-
+  paymentId: number | null = null;
   negotiationEnabled: boolean = false;  
   negotiationCancelledByProvider: boolean = false;  
   negotiationCancelledByClient: boolean = false;  
@@ -43,6 +44,7 @@ export class ChatComponent implements OnInit {
   serviceApprovedByClient: boolean = false;  
   serviceConfirmed: boolean = false;
   private token = inject(AuthService).token;
+  
 
   constructor(  
     private chatService: ChatService,  
@@ -50,12 +52,15 @@ export class ChatComponent implements OnInit {
     private authService: AuthService,  
     private router: Router,
     private claimService: ClaimService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private chatStateService: ChatStateService
   ) {}   
 
   ngOnInit(): void {  
     // Obtener el token de la URL al cargar el componente  
     this.route.queryParams.subscribe(params => { 
+        this.paymentId = +params['paymentId']; // Obtener paymentId
+    console.log('ID del pago:', this.paymentId);
       console.log('Servicio aprobado por el cliente:', this.serviceApprovedByClient); 
       this.userType = params['userType']; 
       console.log('Tipo de usuario:', this.userType); 
@@ -76,10 +81,15 @@ export class ChatComponent implements OnInit {
           next: response => {
             this.userId = this.authService.userId; // Ajusta según tu modelo de respuesta
             this.receiverId = this.route.snapshot.params["receiverId"];
+
+            if (this.paymentId) {
+              this.loadChatState();
+            }
             this.vendorServiceId = this.route.snapshot.params["vendorServiceId"];
             this.ineedId = this.route.snapshot.params["ineedId"];
+            const roomId = this.generateRoomId();
             this.getHistoricalConversation();
-            this.chatService.initConnenctionSocket(this.userId, this.receiverId);
+            this.chatService.initConnenctionSocket(roomId);
             this.listenerMessage();
             this.listenerCountdown(); // Escuchar actualizaciones del contador
           },
@@ -97,8 +107,53 @@ export class ChatComponent implements OnInit {
     });  
   }
 
+  private loadChatState(): void {
+    this.chatStateService.getState(this.paymentId!).subscribe({
+      next: (state) => {
+        if (state) {
+          // Restaurar estado desde el backend
+          this.negotiationEnabled = state.negotiationEnabled;
+          this.negotiationCancelledByProvider = state.negotiationCancelledByProvider;
+          this.negotiationCancelledByClient = state.negotiationCancelledByClient;
+          this.serviceApprovedByProvider = state.serviceApprovedByProvider;
+          this.serviceApprovedByClient = state.serviceApprovedByClient;
+          this.serviceConfirmed = state.serviceConfirmed;
+
+          this.isNegotiationEnabled = this.negotiationEnabled;
+          this.isServiceApprovedByProvider = this.serviceApprovedByProvider;
+        }
+      },
+      error: (err) => console.error('Error cargando estado', err)
+    });
+  }
+
+  private saveChatState(): void {
+    console.log('Intentando guardar estado. paymentId:', this.paymentId);
+    if (!this.paymentId) return;
+    console.error('No se puede guardar estado: paymentId es nulo');
+    const state = {
+      paymentId: this.paymentId,
+      negotiationEnabled: this.negotiationEnabled,
+      negotiationCancelledByProvider: this.negotiationCancelledByProvider,
+      negotiationCancelledByClient: this.negotiationCancelledByClient,
+      serviceApprovedByProvider: this.serviceApprovedByProvider,
+      serviceApprovedByClient: this.serviceApprovedByClient,
+      serviceConfirmed: this.serviceConfirmed
+    };
+
+    this.chatStateService.saveState(state).subscribe({
+      next: () => console.log('Estado guardado'),
+      error: (err) => console.error('Error guardando estado', err)
+    });
+  }
+
+  private generateRoomId(): string {
+  const baseRoomId = [this.userId, this.receiverId].sort().join('-');
+  return this.paymentId ? `${baseRoomId}-${this.paymentId}` : baseRoomId;
+}
+
   private getHistoricalConversation(): void {
-    this.chatService.getHistoryChat([this.userId, this.receiverId].sort().join('-')).subscribe({
+    this.chatService.getHistoryChat(this.generateRoomId()).subscribe({
       next: (response: Array<any>) => { 
         console.log("history: ", response);
         this.messageList = response.map((item: any) => ({ 
@@ -152,14 +207,15 @@ export class ChatComponent implements OnInit {
       this.isNegotiationEnabled = true;  
       this.sendNegotiationEnabledMessage();  
       // Envía un mensaje adicional para bloquear cancelaciones
-      const roomId = [this.userId, this.receiverId].sort().join('-');  
+      const roomId = this.generateRoomId();
       const lockMessage: ChatMessage = {  
         message: 'LOCK_NEGOTIATION',  
         sender: this.userId,  
         receiver: this.receiverId,  
         user: this.userId,
         vendorServiceId:this.vendorServiceId,
-        ineedId: this.ineedId
+        ineedId: this.ineedId,
+        paymentId: this.paymentId
       };  
       this.chatService.sendMessage(roomId, lockMessage); 
     }  
@@ -177,16 +233,17 @@ export class ChatComponent implements OnInit {
         console.log("Servicio aprobado por el proveedor:", response);  
         this.isServiceApprovedByProvider = true;  
         this.serviceConfirmed = true; // 👈 Esta linea es para deshabilitar esta funcion cuando el servicio sea realizado
-    
+        this.saveChatState(); 
         // Enviar un mensaje al otro usuario  
-        const roomId = [this.userId, this.receiverId].sort().join('-');  
+        const roomId = this.generateRoomId();  
         const approvalMessage: ChatMessage = {  
           message: 'El servicio ha sido aprobado por el proveedor',  
           sender: this.userId,  
           receiver: this.receiverId,  
           user: this.userId,
           vendorServiceId:this.vendorServiceId,
-          ineedId: this.ineedId
+          ineedId: this.ineedId,
+          paymentId: this.paymentId
         };  
         this.chatService.sendMessage(roomId, approvalMessage);  
       },  
@@ -240,15 +297,18 @@ export class ChatComponent implements OnInit {
     
     this.chatService.rejectServiceByProvider(this.notificationId, this.notificationId2).subscribe({  
       next: (response) => {  
+        this.negotiationCancelledByProvider = true;
+        this.saveChatState();
         console.log("Servicio rechazado por el proveedor:", response);  
-        const roomId = [this.userId, this.receiverId].sort().join('-');  
+        const roomId = this.generateRoomId();  
         const rejectionMessage: ChatMessage = {  
           message: 'El servicio ha sido rechazado por el proveedor',  
           sender: this.userId,  
           receiver: this.receiverId,  
           user: this.userId,
           vendorServiceId:this.vendorServiceId,
-          ineedId: this.ineedId
+          ineedId: this.ineedId,
+          paymentId: this.paymentId
         };  
         this.chatService.sendMessage(roomId, rejectionMessage);  
       },  
@@ -283,14 +343,15 @@ export class ChatComponent implements OnInit {
     this.chatService.rejectServiceByClient(this.notificationId, this.notificationId2).subscribe({  
       next: (response) => {  
         console.log("Servicio rechazado por el cliente:", response);  
-        const roomId = [this.userId, this.receiverId].sort().join('-');  
+        const roomId = this.generateRoomId(); 
         const rejectionMessage: ChatMessage = {  
           message: 'El servicio ha sido rechazado por el cliente',  
           sender: this.userId,  
           receiver: this.receiverId,  
           user: this.userId,
           vendorServiceId:this.vendorServiceId,
-          ineedId: this.ineedId
+          ineedId: this.ineedId,
+          paymentId: this.paymentId
         };  
         this.chatService.sendMessage(roomId, rejectionMessage);  
       },  
@@ -309,10 +370,11 @@ export class ChatComponent implements OnInit {
             user: this.userId,
             vendorServiceId: this.vendorServiceId,
             ineedId: this.ineedId,
-            userType: this.userType == "Buyer" ? "Seller" : "Buyer"
+            userType: this.userType == "Buyer" ? "Seller" : "Buyer",
+            paymentId: this.paymentId
         };
 
-        const roomId = [this.userId, this.receiverId].sort().join('-');  
+        const roomId = this.generateRoomId();  
         this.chatService.sendMessage(roomId, chatMessage);  
         this.messageInput = '';
         this.scrollToBottom();
@@ -320,12 +382,17 @@ export class ChatComponent implements OnInit {
 }   
 
 sendNegotiationEnabledMessage(): void {  
-  const roomId = [this.userId, this.receiverId].sort().join('-');   
+  this.negotiationEnabled = true;  
+  this.isNegotiationEnabled = true; // Solo si es necesario para la UI
+  this.saveChatState();
+
+  const roomId = this.generateRoomId();  
   const negotiationMessage: ChatMessage = {  
-      message: 'Negociación habilitada', // Mensaje indicando que la negociación está habilitada  
+      message: 'Negociación habilitada',
       sender: this.userId,  
       receiver: this.receiverId,  
-      user: this.userId  
+      user: this.userId,
+      paymentId: this.paymentId
   };  
   this.chatService.sendMessage(roomId, negotiationMessage);  
 } 
@@ -347,12 +414,14 @@ listenerMessage() {
       if (approvalMessage) {  
         this.serviceConfirmed = true; // 👈 Oculta botones en ambos lados
         this.isServiceApprovedByProvider = approvalMessage.user !== this.userId;  
+        this.saveChatState(); 
       } 
 
       // Escuchar los mensajes de negociación habilitada  
       const negotiationMessage = messages.find((msg: any) => msg.message === 'Negociación habilitada');  
       if (negotiationMessage) {  
         this.isNegotiationEnabled = true; 
+        this.saveChatState(); 
       } 
       const rejectionMessageProvider = messages.find((msg: any) => msg.message === 'El servicio ha sido rechazado por el proveedor');  
       const rejectionMessageClient = messages.find((msg: any) => msg.message === 'El servicio ha sido rechazado por el cliente');  
@@ -373,11 +442,14 @@ listenerMessage() {
 confirmAction(action: string) {  
   const confirmation = confirm('¿Estás seguro de realizar esta acción?');  
   if (confirmation) {  
+    console.log(`Ejecutando acción: ${action}`);
     switch (action) {  
       case 'enableNegotiation':  
+        this.isNegotiationEnabled = true;
         this.negotiationEnabled = true;  
         this.handleUserType('Buyer');  
-        this.updateUserStatusOccupied();  
+        this.updateUserStatusOccupied(); 
+        this.saveChatState();
         break;  
       case 'cancelNegotiationByProvider':  
         this.negotiationCancelledByProvider = true;  
@@ -396,6 +468,7 @@ confirmAction(action: string) {
         break;  
       case 'approveServiceByClient':  
         this.serviceApprovedByClient = true;  
+        this.serviceConfirmed = true;
         this.approveServiceByClient(); // Ajustado para el Buyer  
         this.updateUserStatusNoOccupied();
         this.dialogValorateService();  
@@ -405,15 +478,18 @@ confirmAction(action: string) {
         break;  
     }  
   }  
+  console.log('Guardando estado después de acción');
+  this.saveChatState();
   }
 
   public claim() {
     let payload: Object = {
       userId: this.userId,
       receiverId: this.receiverId,
-      roomId: [this.userId, this.receiverId].sort().join('-'),
+      roomId: this.generateRoomId(),
       vendorServiceId: this.vendorServiceId,
       ineedId: this.ineedId,
+      paymentId: this.paymentId
     };
 
     this.claimService.createClaim(payload).subscribe({

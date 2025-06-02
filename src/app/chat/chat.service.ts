@@ -20,7 +20,7 @@ export class ChatService {
   private userUrl = 'http://localhost:8080/api/users'; 
   constructor(private http: HttpClient) { }
 
-  initConnenctionSocket(userId: string, receiverId: string) {  
+  initConnenctionSocket(roomId: string) {  // Solo un parámetro ahora
     const url = `http://localhost:8080/chat-socket`;  
     const socket = new SockJS(url);  
     this.stompClient = Stomp.over(socket);
@@ -28,37 +28,37 @@ export class ChatService {
     this.stompClient.connect({}, (frame: any) => {  
         console.log('Connected: ' + frame);  
         this.isConnected = true;
-        this.joinRoom(userId, receiverId);
+        this.joinRoom(roomId);  // Pasa el roomId directamente
 
       // Suscribirse al tema del contador
       this.stompClient.subscribe('/topic/countdown', (message: any) => {
         const countdownMessage = JSON.parse(message.body);
-        this.countdownSubject.next(countdownMessage.countdown); // Actualizamos el contador
+        this.countdownSubject.next(countdownMessage.countdown);
       });
     }, (error: any) => {  
       console.error('Error de conexión:', error);
     });
   }
 
-joinRoom(userId: string, receiverId: string) {  
-  if (!this.isConnected) {
-    console.error('Error: No conectado aún. Intenta nuevamente más tarde.');
-    return;
-  }
+  // Cambia joinRoom para aceptar roomId directamente
+  joinRoom(roomId: string) {  // Solo un parámetro ahora
+    if (!this.isConnected) {
+      console.error('Error: No conectado aún. Intenta nuevamente más tarde.');
+      return;
+    }
 
-  let roomId = [userId, receiverId].sort().join('-');
     // Suscribirse al tema de mensajes del roomId
     this.stompClient.subscribe(`/topic/${roomId}`, (message: any) => {  
-    let messageContent = JSON.parse(message.body);
-        messageContent["sender"]=userId;
-        messageContent["receiver"]=receiverId;
-    let historicalChat: ChatMessage[] = [...this.messageSubject.getValue(), messageContent];
-    this.messageSubject.next(historicalChat);
-    
-  }, (error: any) => {
-    console.error('Error al suscribirse al canal:', error);
-  });
-}
+      const messageContent = JSON.parse(message.body);
+      
+      // Mantén los datos originales del mensaje (no modifiques sender/receiver)
+      const historicalChat: ChatMessage[] = [...this.messageSubject.getValue(), messageContent];
+      this.messageSubject.next(historicalChat);
+      
+    }, (error: any) => {
+      console.error('Error al suscribirse al canal:', error);
+    });
+  }
 
   // ChatService  
   updateUserStatusToOccupied(userId2: number) {  

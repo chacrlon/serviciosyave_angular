@@ -18,7 +18,7 @@ export class NotificationService {
 
     eventSource.onmessage = (event) => {  
       const notification = JSON.parse(event.data);  
-      console.log("Notificación recibida:", notification); // Agrega este log  
+      console.log("PROBANDO Notificación recibida:", notification);
       this.notificationsSubject.next(notification);  
     };  
 

@@ -8,6 +8,7 @@ import { NotificationsseService } from './notificationsse.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PaymentModalComponent } from '../payment-modal/payment-modal.component';
 
+
 @Component({  
   selector: 'app-notification-modal',  
   standalone: true,  
@@ -35,6 +36,11 @@ export class NotificationModalComponent {
   }  
 
   contactUser(): void {  
+        console.log("[Notificaciones] Notificación completa111:", this.data);
+
+      if (!this.data.paymentId) {
+    console.warn("[Notifcaciones] paymentId:", this.data.paymentId);
+  }
         // Verificar estado de pago antes de continuar
   if (this.data.status === 'no_pagado') {
     this.openPaymentModal();
@@ -47,7 +53,8 @@ export class NotificationModalComponent {
     }  
 
     const receiverId = this.data.userId2;  
-    const roomId = [this.data.userId, receiverId].sort().join('-'); // Crear roomId  
+    const baseRoomId = [this.data.userId, receiverId].sort().join('-');
+    const roomId = this.data.paymentId ? `${baseRoomId}-${this.data.paymentId}` : baseRoomId;
 
     // Obtener el correo del usuario usando el receiverId  
     this.http.get<{ email: string }>(`http://localhost:8080/api/users/${receiverId}/email`)  
@@ -64,7 +71,8 @@ export class NotificationModalComponent {
                     text: `Hola, tienes un nuevo mensaje de ${this.data.userId}. Haz clic en el siguiente enlace para unirte al chat: ${chatLink}`,  
                     userType: this.data.userType,
                     vendorServiceId: this.data.vendorServiceId, // Incluir userType  
-                    ineedId: this.data.ineedId
+                    ineedId: this.data.ineedId,
+                    paymentId: this.data.paymentId 
                 };
 
                 // Validar antes de enviar  
@@ -85,7 +93,8 @@ export class NotificationModalComponent {
                               notificationId: this.data.id,
                               notificationId2: this.data.id2,
                               userId2: this.data.userId2,
-                              ineedId: this.data.ineedId
+                              ineedId: this.data.ineedId,
+                              paymentId: this.data.paymentId 
                             } });  
                         this.dialogRef.close();  
                     }, error => {  

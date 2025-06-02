@@ -44,31 +44,41 @@
     </div>  
   </div>  
 
-  <div
-    class="user-type-button" 
-    [class.disabled]="negotiationCancelledByProvider"
-    (click)="claim()">  
+<!-- Botón de disputa -->
+<div class="user-type-button" 
+     [class.disabled]="serviceConfirmed"
+     (click)="claim()">  
   Disputa  
-  </div>
+</div>
+
   
-  <div *ngIf="userType === 'Buyer'" class="user-type-button" [class.disabled]="negotiationEnabled" 
-  (click)="confirmAction('enableNegotiation')">  
-    Habilitar negociación  
-  </div>  
+<div *ngIf="userType === 'Buyer'" 
+     class="user-type-button" 
+     [class.disabled]="negotiationEnabled || negotiationCancelledByClient || serviceConfirmed"
+     (click)="confirmAction('enableNegotiation')">  
+  Habilitar negociación  
+</div>
+
   
 <!-- Botón Cancelar (Proveedor) -->
 <div *ngIf="userType === 'Seller' && !serviceConfirmed && !isNegotiationEnabled" 
      class="user-type-button" 
-     [class.disabled]="negotiationCancelledByProvider" 
+     [class.disabled]="negotiationCancelledByProvider || serviceApprovedByProvider"
      (click)="confirmAction('cancelNegotiationByProvider')">  
   Cancelar negociación  
 </div>
   
-  <div *ngIf="isNegotiationEnabled && userType === 'Seller'" class="user-type-button" [class.disabled]="serviceApprovedByProvider" (click)="confirmAction('approveServiceByProvider')">  
+  <div *ngIf="isNegotiationEnabled && userType === 'Seller'" 
+  class="user-type-button" 
+  [class.disabled]="serviceApprovedByProvider" 
+  (click)="confirmAction('approveServiceByProvider')">  
     Ya realicé el servicio  
   </div>  
   
-  <div *ngIf="isNegotiationEnabled && userType === 'Buyer' && isServiceApprovedByProvider" class="user-type-button" [class.disabled]="serviceApprovedByClient" (click)="confirmAction('approveServiceByClient')">  
+  <div *ngIf="isNegotiationEnabled && userType === 'Buyer' && isServiceApprovedByProvider" 
+  class="user-type-button" 
+  [class.disabled]="serviceApprovedByClient" 
+  (click)="confirmAction('approveServiceByClient')">  
     Ya recibí el servicio  
   </div>  
   

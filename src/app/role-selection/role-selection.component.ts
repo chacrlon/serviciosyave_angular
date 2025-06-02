@@ -45,29 +45,6 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userId = this.token.userId;
     console.log('ID de Usuario desde el componente RoleSelectionComponent:', this.userId);  
-    // this.loadNotifications();
-
-    // this.subscriptions.push(  
-    //   this.route.paramMap.subscribe(params => {  
-    //     this.userId = this.token.userId;
-      // })  
-    // );  
-  
-    // this.subscriptions.push(  
-    //   this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
-    //     if (notification && notification.userId === this.userId) {  
-    //       console.log('Nueva notificación recibida:', notification);  
-    //       this.notifications.push(notification);  
-    //       this.cdr.detectChanges();  
-    //     }  
-    //   })  
-    // );  
-
-    // this.notificationsseService.connectToSSE().subscribe(
-    //   success => {
-    //     this.loadNotifications();
-    //   }
-    // );  
   } 
   
   acceptOffer(notification: Notification): void {  
@@ -92,17 +69,7 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
     });  
   } 
 
-  ngAfterViewInit() { 
-  
-    // this.subscriptions.push(  
-    //   this.notificationsseService.notifications$.subscribe((notification: Notification) => {  
-    //     if (notification && notification.userId === this.userId) {  
-    //       console.log('Nueva notificación recibida:', notification);  
-    //       this.notifications.push(notification);  
-    //       this.cdr.detectChanges();  
-    //     }  
-    //   })  
-    // );  
+  ngAfterViewInit() {  
   }  
 
     openNegotiationModal(negotiationNotification: NegotiationNotification): void {

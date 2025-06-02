@@ -4,6 +4,7 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { Notification } from '../models/Notification';  
 import { AcceptOfferRequest } from '../models/AcceptOfferRequest'; 
 import { AuthService } from '../services/auth.service';
+import { tap } from 'rxjs/operators';
 
 @Injectable({  
   providedIn: 'root'  
@@ -93,9 +94,19 @@ export class NotificationsseService {
   }  
 
   // Métodos REST  
-  getUserNotifications(userId: number): Observable<Notification[]> {  
-    return this.http.get<Notification[]>(`${this.baseUrl}/api/notifications/${userId}`);  
-  }  
+// En notificationsse.service.ts
+// notificationsse.service.ts
+getUserNotifications(userId: number): Observable<Notification[]> {
+  return this.http.get<Notification[]>(`${this.baseUrl}/api/notifications/${userId}`).pipe(
+    tap(notifications => {
+      console.log("Notificaciones del backend:", notifications.map(n => ({
+        id: n.id,
+        message: n.message,
+        paymentId: n.paymentId // Verificar si existe
+      })));
+    })
+  );
+}  
 
   markAsRead(notificationId: number): Observable<void> {  
     return this.http.put<void>(`${this.baseUrl}/api/notifications/read/${notificationId}`, {});  

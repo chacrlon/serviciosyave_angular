@@ -75,6 +75,7 @@ export class NotificationsComponent implements OnInit {
   private getNotifications(): void {
     this.notificationsseService.getUserNotifications(this.authService.userId).subscribe({
       next: (response: Array<any>) => { 
+        console.log("El Response de getNotificacions es :", response);
         const filteredResponse = response.filter((notification: any) => 
           !notification.message.includes("Tienes un nuevo mensaje")
         );
@@ -161,73 +162,77 @@ public getDate(fecha: Date = new Date()): string {
     })
   }
 
-  contactUser(notification: any): void {  
+  contactUser(notification: Notification): void {  
+    console.log("[Mensajes] Notificación completa111:", notification);
 
+      if (!notification.paymentId) {
+    console.warn("[Mensajes] paymentId:", notification.paymentId);
+  }
+    // Verificar estado de pago antes de continuar
     if (notification.status === 'no_pagado') {
-        const tipo = notification.type === 'servicio' ? 'servicio' : 'requerimiento';
-        alert(`Este ${tipo} no ha sido pagado. No puedes contactar al usuario hasta que se complete el pago.`);
-        return;
+      const tipo = notification.type === 'servicio' ? 'servicio' : 'requerimiento';
+      alert(`Este ${tipo} no ha sido pagado. No puedes contactar al usuario hasta que se complete el pago.`);
+      return;
     } else if (notification.status === 'pendiente') {
-        alert('Espere mientras se procesa su pago. Le notificaremos cuando esté completado.');
-        return;
+      alert('Espere mientras se procesa su pago. Le notificaremos cuando esté completado.');
+      return;
     }
+
     const receiverId = notification.userId2;  
-    const roomId = [notification.userId, receiverId].sort().join('-'); // Crear roomId   
+    const baseRoomId = [notification.userId, receiverId].sort().join('-');
+    const roomId = notification.paymentId ? `${baseRoomId}-${notification.paymentId}` : baseRoomId;
+
     // Obtener el correo del usuario usando el receiverId  
-    this.http.get<{ email: string }>(`http://localhost:8080/api/users/${receiverId}/email`)  
-        .subscribe(  
-            userEmailResponse => {  
-                console.log("Correo del usuario:", userEmailResponse.email);  
+    this.http.get<{ email: string }>(`http://localhost:8080/api/users/${receiverId}/email`).subscribe(
+      userEmailResponse => {
+        // Crear el enlace para unirse al chat  
+        const chatLink = `http://localhost:4200/chat/${notification.userId}/${receiverId}`;  
 
-                // Crear el enlace para unirse al chat  
-                const chatLink = `http://localhost:4200/chat/${notification.userId}/${receiverId}`;  
+        const emailRequest = {  
+          toEmail: userEmailResponse.email,  
+          subject: 'Invitación a chat',  
+          text: `Hola, tienes un nuevo mensaje de ${notification.userId}. Haz clic en el siguiente enlace para unirte al chat: ${chatLink}`,  
+          userType: notification.userType,
+          vendorServiceId: notification.vendorServiceId,
+          ineedId: notification.ineedId,
+          paymentId: notification.paymentId
+        };
 
-                const emailRequest = {  
-                    toEmail: userEmailResponse.email,  
-                    subject: 'Invitación a chat',  
-                    text: `Hola, tienes un nuevo mensaje de ${notification.userId}. Haz clic en el siguiente enlace para unirte al chat: ${chatLink}`,  
-                    userType: notification.userType,
-                    vendorServiceId: notification.vendorServiceId, // Incluir userType  
-                    ineedId: notification.ineedId
-                };
+        // Validar antes de enviar  
+        if (!emailRequest.toEmail || !emailRequest.subject || !emailRequest.text || 
+            !emailRequest.userType || (!emailRequest.vendorServiceId && !emailRequest.ineedId)) {  
+          console.error('Los campos toEmail, subject, text y userType son requeridos.');  
+          return;  
+        }  
 
-                // Validar antes de enviar  
-                if (!emailRequest.toEmail || !emailRequest.subject || !emailRequest.text || !emailRequest.userType || (!emailRequest.vendorServiceId && !emailRequest.ineedId)) {  
-                    console.error('Los campos toEmail, subject, text y userType son requeridos.');  
-                    return;  
-                }  
-
-                // Enviar el correo  
-                this.http.post('http://localhost:8080/api/email/send', emailRequest)  
-                    .subscribe(response => {  
-                        console.log('Correo enviado:', response);  
-                        // Navegar al chat y pasar userType como parámetro de consulta  
-                        this.router.navigate(['chat', notification.userId, receiverId, notification.vendorServiceId || 0, notification.ineedId || 0], 
-                          { queryParams: 
-                            { userType: notification.userType,
-                              vendorServiceId: notification.vendorServiceId,
-                              notificationId: notification.id,
-                              notificationId2: notification.id2,
-                              userId2: notification.userId2,
-                              ineedId: notification.ineedId
-                            } });  
-                        // this.dialogRef.close();  
-                    }, error => {  
-                        console.error('Error al enviar el correo:', error);  
-                    });  
-            },   
-            error => {  
-                console.error('Error al obtener el correo del usuario:', error);  
-            }  
+        // Enviar el correo  
+        this.http.post('http://localhost:8080/api/email/send', emailRequest).subscribe(
+          response => {  
+            console.log('Correo enviado:', response);  
+            // Navegar al chat y pasar userType como parámetro de consulta  
+            this.router.navigate(['chat', notification.userId, receiverId, notification.vendorServiceId || 0, notification.ineedId || 0], 
+              { queryParams: 
+                { 
+                  userType: notification.userType, 
+                  vendorServiceId: notification.vendorServiceId,
+                  notificationId: notification.id,
+                  notificationId2: notification.id2,
+                  userId2: notification.userId2,
+                  ineedId: notification.ineedId,
+                  paymentId: notification.paymentId
+                } 
+              }
+            );  
+          }, 
+          error => console.error('Error al enviar el correo:', error)
         );
+      },   
+      error => console.error('Error al obtener el correo del usuario:', error)
+    );
 
-        this.notificationsseService.markAsRead(notification.id!).subscribe({
-          next: (response) => {  
-            console.log('Notificación marcada como leída:', response);  
-          },
-          error: (error) => {
-            console.error('Error al marcar la notificación como leída:', error);  
-          }
-        });
-}
+    this.notificationsseService.markAsRead(notification.id!).subscribe({
+      next: (response) => console.log('Notificación marcada como leída:', response),
+      error: (error) => console.error('Error al marcar la notificación como leída:', error)
+    });
+  }
 }
